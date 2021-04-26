@@ -6,4 +6,4 @@ deployments:
   cdk-playground:
     type: autoscaling
     parameters:
-      bucketSsmLookup: true
+      bucket: deploy-tools-dist
