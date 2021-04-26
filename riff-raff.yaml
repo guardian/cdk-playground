@@ -1,0 +1,9 @@
+stacks:
+  - deploy
+regions:
+  - eu-west-1
+deployments:
+  cdk-playground:
+    type: autoscaling
+    parameters:
+      bucketSsmLookup: true

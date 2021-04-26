@@ -2,4 +2,4 @@
 
 set -e
 
-sbt clean compile test
+sbt clean compile test riffRaffNotifyTeamcity
