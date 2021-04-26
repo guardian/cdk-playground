@@ -6,7 +6,7 @@ import org.scalatestplus.play._
  */
 class ServerSpec extends PlaySpec
   with BaseOneServerPerSuite
-  with MyApplicationFactory
+  with AppFactory
   with ScalaFutures
   with IntegrationPatience {
 

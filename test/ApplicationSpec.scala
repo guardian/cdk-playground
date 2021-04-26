@@ -8,7 +8,7 @@ import play.api.test._
  */
 class ApplicationSpec extends PlaySpec
   with BaseOneAppPerTest
-  with MyApplicationFactory
+  with AppFactory
   with ScalaFutures {
 
   "Routes" should {

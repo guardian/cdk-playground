@@ -19,7 +19,7 @@ trait MyApplicationFactory extends FakeApplicationFactory {
       initialConfiguration = configuration,
       lifecycle = new DefaultApplicationLifecycle()
     )
-    val loader = new MyApplicationLoader()
+    val loader = new AppLoader()
     loader.load(context)
   }
 
