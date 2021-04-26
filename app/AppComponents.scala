@@ -1,4 +1,4 @@
-import controllers.{AssetsComponents, HomeController}
+import controllers.{AssetsComponents, HomeController, ManagementController}
 import play.api.{ApplicationLoader, BuiltInComponentsFromContext}
 import play.api.routing.Router
 import play.filters.HttpFiltersComponents
@@ -10,6 +10,7 @@ class AppComponents(context: ApplicationLoader.Context)
     with AssetsComponents {
 
   lazy val homeController = new HomeController(controllerComponents)
+  lazy val managementController = new ManagementController(controllerComponents)
 
-  lazy val router: Router = new Routes(httpErrorHandler, homeController, assets)
+  lazy val router: Router = new Routes(httpErrorHandler, homeController, managementController, assets)
 }

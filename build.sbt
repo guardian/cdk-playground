@@ -29,4 +29,8 @@ lazy val root = (project in file("."))
         BuildInfoKey.sbtbuildinfoConstantEntry("gitCommitId", buildInfo.revision)
       )
     },
+    buildInfoOptions:= Seq(
+      BuildInfoOption.Traits("management.BuildInfo"),
+      BuildInfoOption.ToJson
+    )
   )
