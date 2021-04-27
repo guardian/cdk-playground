@@ -1,11 +1,4 @@
-# Routes
-# This file defines all application routes (Higher priority routes first)
-# ~~~~
-
-# An example controller showing a sample home page
-GET     /                           controllers.HomeController.index
-
-GET     /management/manifest        controllers.ManagementController.manifest
+GET     /                           controllers.ManagementController.manifest
 GET     /healthcheck                controllers.ManagementController.healthCheck
 GET     /robots.txt                 controllers.ManagementController.disallowRobots
 
