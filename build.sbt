@@ -31,7 +31,8 @@ lazy val root = (project in file("."))
         // we only really care about build time on teamcity, when a constant based on when
         // it was loaded is just fine
         BuildInfoKey.sbtbuildinfoConstantEntry("buildTime", System.currentTimeMillis),
-        BuildInfoKey.sbtbuildinfoConstantEntry("gitCommitId", buildInfo.revision)
+        BuildInfoKey.sbtbuildinfoConstantEntry("gitCommitId", buildInfo.revision),
+        BuildInfoKey.sbtbuildinfoConstantEntry("branch", buildInfo.branch)
       )
     },
     buildInfoOptions:= Seq(
