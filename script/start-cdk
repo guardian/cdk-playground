@@ -8,5 +8,5 @@ ROOT_DIR=$DIR/..
 (
   cd $ROOT_DIR/cdk
 
-  yarn start
+  npm start
 )
