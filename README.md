@@ -13,6 +13,7 @@ There are a couple of helpful scripts in the [script](./script) directory:
   1. `./script/start-play` to run the Play app
   1. `./script/start-cdk` to start Jest in watch mode, to test the CDK stack
   1. `./script/build-cdk` to synthesise the CDK stack into a template
+  1. `./script/switch-cdk` to install GuCDK from a GitHub branch. This is useful to test changes _without_ publishing to NPM first.
 
 ## Deploying
 The app is set up in the usual way, with CI on each branch and CD on `main`.
