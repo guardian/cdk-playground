@@ -10,7 +10,9 @@
     "watch": "tsc -w",
     "test": "jest",
     "format": "prettier --write \"{lib,bin}/**/*.ts\"",
-    "synth": "cdk synth --path-metadata false --version-reporting false",
+    "synth": "cdk synth --path-metadata false",
+    "diff": "cdk diff --path-metadata false",
+    "deploy": "cdk deploy --path-metadata false",
     "lint": "eslint lib/** bin/** --ext .ts --no-error-on-unmatched-pattern",
     "start": "jest --watch"
   },
