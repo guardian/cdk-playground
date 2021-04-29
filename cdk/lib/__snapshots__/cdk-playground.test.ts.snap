@@ -16,6 +16,17 @@ Object {
       },
     },
   },
+  "Outputs": Object {
+    "LoadBalancerCdkplaygroundDnsName": Object {
+      "Description": "DNS entry for LoadBalancerCdkplayground",
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "LoadBalancerCdkplayground7C6B4D97",
+          "DNSName",
+        ],
+      },
+    },
+  },
   "Parameters": Object {
     "AMICdkplayground": Object {
       "Description": "Amazon Machine Image ID for the app cdk-playground. Use this in conjunction with AMIgo to keep AMIs up to date.",
