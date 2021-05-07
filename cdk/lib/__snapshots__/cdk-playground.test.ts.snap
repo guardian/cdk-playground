@@ -51,11 +51,6 @@ Object {
       "Description": "SSM parameter containing the Name (not ARN) on the kinesis stream",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "PublicSubnets": Object {
-      "Default": "/account/vpc/primary/subnets/public",
-      "Description": "A list of public subnets",
-      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
-    },
     "Stage": Object {
       "AllowedValues": Array [
         "CODE",
@@ -68,6 +63,11 @@ Object {
     "cdkplaygroundPrivateSubnets": Object {
       "Default": "/account/vpc/primary/subnets/private",
       "Description": "A list of private subnets",
+      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
+    },
+    "cdkplaygroundPublicSubnets": Object {
+      "Default": "/account/vpc/primary/subnets/public",
+      "Description": "A list of public subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
     "cdkplaygroundVpcId": Object {
@@ -485,7 +485,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
             "Value": "true",
           },
         ],
-        "Scheme": "internal",
+        "Scheme": "internet-facing",
         "SecurityGroups": Array [
           Object {
             "Fn::GetAtt": Array [
@@ -495,7 +495,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           },
         ],
         "Subnets": Object {
-          "Ref": "PublicSubnets",
+          "Ref": "cdkplaygroundPublicSubnets",
         },
         "Tags": Array [
           Object {
