@@ -3,7 +3,7 @@ import { Stage } from "@guardian/cdk/lib/constants";
 import type { GuStackProps } from "@guardian/cdk/lib/constructs/core";
 import { GuStack, GuStringParameter } from "@guardian/cdk/lib/constructs/core";
 import { AppIdentity } from "@guardian/cdk/lib/constructs/core/identity";
-import { GuPlayApp } from "@guardian/cdk/lib/patterns/ec2-app";
+import { AccessScope, GuPlayApp } from "@guardian/cdk/lib/patterns/ec2-app";
 
 export class CdkPlayground extends GuStack {
   private static app: AppIdentity = {
@@ -21,7 +21,7 @@ export class CdkPlayground extends GuStack {
 
     new GuPlayApp(this, {
       app,
-      publicFacing: true,
+      access: { scope: AccessScope.PUBLIC },
       userData: {
         distributable: {
           fileName: `${app}.deb`,
