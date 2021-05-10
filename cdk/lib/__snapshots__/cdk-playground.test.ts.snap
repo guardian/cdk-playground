@@ -114,6 +114,11 @@ Object {
             "Value": "TEST",
           },
           Object {
+            "Key": "gu:repo",
+            "PropagateAtLaunch": true,
+            "Value": "guardian/cdk-playground",
+          },
+          Object {
             "Key": "Name",
             "PropagateAtLaunch": true,
             "Value": "CdkPlayground/AutoScalingGroupCdkplayground",
@@ -226,6 +231,10 @@ dpkg -i /cdk-playground/cdk-playground.deb",
             "Value": "TEST",
           },
           Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          Object {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -323,6 +332,10 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           Object {
             "Key": "gu:cdk:version",
             "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
           },
           Object {
             "Key": "Stack",
@@ -439,6 +452,10 @@ dpkg -i /cdk-playground/cdk-playground.deb",
             "Value": "TEST",
           },
           Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          Object {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -507,6 +524,10 @@ dpkg -i /cdk-playground/cdk-playground.deb",
             "Value": "TEST",
           },
           Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          Object {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -540,6 +561,10 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           Object {
             "Key": "gu:cdk:version",
             "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
           },
           Object {
             "Key": "Stack",
@@ -674,6 +699,10 @@ dpkg -i /cdk-playground/cdk-playground.deb",
             "Value": "TEST",
           },
           Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          Object {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -719,6 +748,10 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           Object {
             "Key": "gu:cdk:version",
             "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
           },
           Object {
             "Key": "Stack",
