@@ -1,9 +1,9 @@
-import type { App } from "@aws-cdk/core";
 import { Stage } from "@guardian/cdk/lib/constants";
-import type { GuStackProps } from "@guardian/cdk/lib/constructs/core";
 import { GuStack, GuStringParameter } from "@guardian/cdk/lib/constructs/core";
 import { AppIdentity } from "@guardian/cdk/lib/constructs/core/identity";
 import { AccessScope, GuPlayApp } from "@guardian/cdk/lib/patterns/ec2-app";
+import type { App } from "@aws-cdk/core";
+import type { GuStackProps } from "@guardian/cdk/lib/constructs/core";
 
 export class CdkPlayground extends GuStack {
   private static app: AppIdentity = {
