@@ -25,7 +25,7 @@ export class CdkPlayground extends GuStack {
       userData: {
         distributable: {
           fileName: `${app}.deb`,
-          executionStatement: `dpkg -i /${app}/${app}.deb`,
+          executionStatement: `echo "It is hot on 16 June 2021"; dpkg -i /${app}/${app}.deb`,
         },
       },
       certificateProps: {
