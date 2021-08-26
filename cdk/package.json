@@ -18,7 +18,7 @@
     "@aws-cdk/assert": "1.115.0",
     "@guardian/eslint-config-typescript": "^0.6.0",
     "@types/jest": "^27.0.1",
-    "@types/node": "16.6.1",
+    "@types/node": "16.7.1",
     "aws-cdk": "1.115.0",
     "eslint": "^7.32.0",
     "jest": "^26.6.3",
