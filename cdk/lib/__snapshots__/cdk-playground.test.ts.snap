@@ -688,11 +688,11 @@ dpkg -i /cdk-playground/cdk-playground.deb",
     },
     "TargetGroupCdkplayground7A453FC2": Object {
       "Properties": Object {
-        "HealthCheckIntervalSeconds": 30,
+        "HealthCheckIntervalSeconds": 10,
         "HealthCheckPath": "/healthcheck",
         "HealthCheckProtocol": "HTTP",
         "HealthCheckTimeoutSeconds": 10,
-        "HealthyThresholdCount": 2,
+        "HealthyThresholdCount": 5,
         "Port": 9000,
         "Protocol": "HTTP",
         "Tags": Array [
@@ -719,8 +719,14 @@ dpkg -i /cdk-playground/cdk-playground.deb",
             },
           },
         ],
+        "TargetGroupAttributes": Array [
+          Object {
+            "Key": "deregistration_delay.timeout_seconds",
+            "Value": "30",
+          },
+        ],
         "TargetType": "instance",
-        "UnhealthyThresholdCount": 5,
+        "UnhealthyThresholdCount": 2,
         "VpcId": Object {
           "Ref": "VpcId",
         },
