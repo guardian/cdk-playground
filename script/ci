@@ -27,4 +27,4 @@ synthCdk() {
 }
 
 synthCdk
-sbt clean compile test riffRaffNotifyTeamcity
+sbt clean compile test riffRaffUpload
