@@ -2,11 +2,6 @@
 
 set -e
 
-if [[ ! -z "${TEAMCITY_VERSION}" ]]; then
-  echo "Running in TeamCity. Don't build anything!"
-  exit 0
-fi
-
 (
   cd cdk
   npm ci
