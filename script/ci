@@ -2,29 +2,12 @@
 
 set -e
 
-DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-ROOT_DIR=$DIR/..
-
-setupNvm() {
-  export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-
-  nvm install
-  nvm use
-}
-
-synthCdk() {
-  setupNvm
-
-  pushd $ROOT_DIR/cdk
-
+(
+  cd cdk
   npm ci
   npm run lint
   npm run test
   npm run synth
+)
 
-  popd
-}
-
-synthCdk
-sbt clean compile test riffRaffNotifyTeamcity
+sbt clean compile test riffRaffUpload
