@@ -30,4 +30,7 @@ jobs:
         with:
           java-version: '8'
           distribution: 'adopt'
-      - run: ./script/ci
+      - run: |
+          LAST_TEAMCITY_BUILD=100
+          export GITHUB_RUN_NUMBER=$(( $GITHUB_RUN_NUMBER + $LAST_TEAMCITY_BUILD ))
+          ./script/ci
