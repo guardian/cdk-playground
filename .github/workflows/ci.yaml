@@ -13,16 +13,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v2
-      - uses: guardian/actions-assume-aws-role@v1.0.0
-        with:
-          awsRoleToAssume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
-
       - uses: guardian/cdk@aa-composite-action
-
-      # Java is needed for the Scala Play app
-      - name: Set up JDK 8
-        uses: actions/setup-java@v2
+      - uses: guardian/sbt-riffraff-artifact@aa-composite-action
         with:
-          java-version: '8'
-          distribution: 'adopt'
-      - run: ./script/ci
+          riffRaffRoleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
