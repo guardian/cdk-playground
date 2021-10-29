@@ -17,12 +17,7 @@ jobs:
         with:
           awsRoleToAssume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
 
-      # Node is needed for CDK
-      - name: Setup node
-        uses: guardian/actions-setup-node@v2.4.1
-        with:
-          cache: 'npm'
-          cache-dependency-path: 'cdk/package-lock.json'
+      - uses: guardian/cdk@aa-composite-action
 
       # Java is needed for the Scala Play app
       - name: Set up JDK 8

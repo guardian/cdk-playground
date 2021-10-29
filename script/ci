@@ -2,12 +2,4 @@
 
 set -e
 
-(
-  cd cdk
-  npm ci
-  npm run lint
-  npm run test
-  npm run synth
-)
-
 sbt clean compile test riffRaffUpload
