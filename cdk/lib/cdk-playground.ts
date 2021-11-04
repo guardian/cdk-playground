@@ -1,7 +1,8 @@
+import { InstanceClass, InstanceSize, InstanceType } from "@aws-cdk/aws-ec2";
 import type { App } from "@aws-cdk/core";
 import { Stage } from "@guardian/cdk/lib/constants";
-import { GuStack, GuStringParameter } from "@guardian/cdk/lib/constructs/core";
 import type { GuStackProps } from "@guardian/cdk/lib/constructs/core";
+import { GuStack, GuStringParameter } from "@guardian/cdk/lib/constructs/core";
 import { AppIdentity } from "@guardian/cdk/lib/constructs/core/identity";
 import { AccessScope, GuPlayApp } from "@guardian/cdk/lib/patterns/ec2-app";
 
@@ -21,6 +22,7 @@ export class CdkPlayground extends GuStack {
 
     new GuPlayApp(this, {
       app,
+      instanceType: InstanceType.of(InstanceClass.T3, InstanceSize.SMALL),
       access: { scope: AccessScope.PUBLIC },
       userData: {
         distributable: {

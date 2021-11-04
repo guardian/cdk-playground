@@ -41,11 +41,6 @@ Object {
       "Description": "Route53 hosted zone",
       "Type": "String",
     },
-    "InstanceTypeCdkplayground": Object {
-      "Default": "t3.small",
-      "Description": "EC2 Instance Type for the app cdk-playground",
-      "Type": "String",
-    },
     "LoggingStreamName": Object {
       "Default": "/account/services/logging.stream.name",
       "Description": "SSM parameter containing the Name (not ARN) on the kinesis stream",
@@ -173,9 +168,7 @@ Object {
         "ImageId": Object {
           "Ref": "AMICdkplayground",
         },
-        "InstanceType": Object {
-          "Ref": "InstanceTypeCdkplayground",
-        },
+        "InstanceType": "t3.small",
         "SecurityGroups": Array [
           Object {
             "Fn::GetAtt": Array [
