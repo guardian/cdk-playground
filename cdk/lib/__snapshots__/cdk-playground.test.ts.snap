@@ -3,7 +3,7 @@
 exports[`The Deploy stack matches the snapshot 1`] = `
 Object {
   "Mappings": Object {
-    "stagemapping": Object {
+    "cdkplayground": Object {
       "CODE": Object {
         "domainName": "IGNORED. Just here to satisfy the type checks.",
         "maxInstances": 2,
@@ -39,11 +39,6 @@ Object {
     },
     "HostedZone": Object {
       "Description": "Route53 hosted zone",
-      "Type": "String",
-    },
-    "InstanceTypeCdkplayground": Object {
-      "Default": "t3.small",
-      "Description": "EC2 Instance Type for the app cdk-playground",
       "Type": "String",
     },
     "LoggingStreamName": Object {
@@ -86,7 +81,7 @@ Object {
         },
         "MaxSize": Object {
           "Fn::FindInMap": Array [
-            "stagemapping",
+            "cdkplayground",
             Object {
               "Ref": "Stage",
             },
@@ -95,7 +90,7 @@ Object {
         },
         "MinSize": Object {
           "Fn::FindInMap": Array [
-            "stagemapping",
+            "cdkplayground",
             Object {
               "Ref": "Stage",
             },
@@ -173,9 +168,7 @@ Object {
         "ImageId": Object {
           "Ref": "AMICdkplayground",
         },
-        "InstanceType": Object {
-          "Ref": "InstanceTypeCdkplayground",
-        },
+        "InstanceType": "t3.small",
         "SecurityGroups": Array [
           Object {
             "Fn::GetAtt": Array [
@@ -219,7 +212,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       "Properties": Object {
         "DomainName": Object {
           "Fn::FindInMap": Array [
-            "stagemapping",
+            "cdkplayground",
             Object {
               "Ref": "Stage",
             },
@@ -723,6 +716,10 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           Object {
             "Key": "deregistration_delay.timeout_seconds",
             "Value": "30",
+          },
+          Object {
+            "Key": "stickiness.enabled",
+            "Value": "false",
           },
         ],
         "TargetType": "instance",
