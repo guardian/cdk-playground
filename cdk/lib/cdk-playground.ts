@@ -40,6 +40,16 @@ export class CdkPlayground extends GuStack {
         },
       },
       monitoringConfiguration: { noMonitoring: true },
+      scaling: {
+        [Stage.CODE]: {
+          minimumInstances: 0,
+          maximumInstances: 0,
+        },
+        [Stage.PROD]: {
+          minimumInstances: 1,
+          maximumInstances: 2,
+        },
+      },
     });
   }
 }
