@@ -6,13 +6,13 @@ Object {
     "cdkplayground": Object {
       "CODE": Object {
         "domainName": "IGNORED. Just here to satisfy the type checks.",
-        "maxInstances": 2,
-        "minInstances": 1,
+        "maxInstances": 0,
+        "minInstances": 0,
       },
       "PROD": Object {
         "domainName": "cdk-playground.devx.dev-gutools.co.uk",
-        "maxInstances": 6,
-        "minInstances": 3,
+        "maxInstances": 2,
+        "minInstances": 1,
       },
     },
   },
@@ -168,7 +168,7 @@ Object {
         "ImageId": Object {
           "Ref": "AMICdkplayground",
         },
-        "InstanceType": "t3.small",
+        "InstanceType": "t4g.micro",
         "SecurityGroups": Array [
           Object {
             "Fn::GetAtt": Array [
