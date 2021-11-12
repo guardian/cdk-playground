@@ -168,7 +168,7 @@ Object {
         "ImageId": Object {
           "Ref": "AMICdkplayground",
         },
-        "InstanceType": "t3.small",
+        "InstanceType": "t4g.micro",
         "SecurityGroups": Array [
           Object {
             "Fn::GetAtt": Array [

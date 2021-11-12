@@ -22,7 +22,7 @@ export class CdkPlayground extends GuStack {
 
     new GuPlayApp(this, {
       app,
-      instanceType: InstanceType.of(InstanceClass.T3, InstanceSize.SMALL),
+      instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
       access: { scope: AccessScope.PUBLIC },
       userData: {
         distributable: {
