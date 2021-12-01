@@ -4,3 +4,4 @@ import { CdkPlayground } from "../lib/cdk-playground";
 
 const app = new App();
 new CdkPlayground(app, "CdkPlayground", { stack: "deploy" });
+new CdkPlayground(app, "CdkPlaygroundPreview", { stack: "deploy-preview" });

@@ -1,9 +1,9 @@
-stacks:
-  - deploy
 regions:
   - eu-west-1
 deployments:
-  cloudformation:
+  cloudformation-for-deploy:
+    stacks:
+      - deploy
     type: cloud-formation
     app: cdk-playground
     parameters:
@@ -14,9 +14,26 @@ deployments:
         Recipe: arm64-bionic-java11-deploy-infrastructure
         AmigoStage: PROD
         BuiltBy: amigo
+  cloudformation-for-deploy-preview:
+    stacks:
+      - deploy-preview
+      type: cloud-formation
+      app: cdk-playground
+      parameters:
+        templatePath: CdkPlaygroundPreview.template.json
+        amiParameter: AMICdkplayground
+        amiEncrypted: true
+        amiTags:
+          Recipe: arm64-bionic-java11-deploy-infrastructure
+          AmigoStage: PROD
+          BuiltBy: amigo
   cdk-playground:
+    stacks:
+      - deploy
+      - deploy-preview
     type: autoscaling
     parameters:
       bucket: deploy-tools-dist
     dependencies:
-      - cloudformation
+      - cloudformation-for-deploy
+      - cloudformation-for-deploy-preview
