@@ -17,16 +17,16 @@ deployments:
   cloudformation-for-deploy-preview:
     stacks:
       - deploy-preview
-      type: cloud-formation
-      app: cdk-playground
-      parameters:
-        templatePath: CdkPlaygroundPreview.template.json
-        amiParameter: AMICdkplayground
-        amiEncrypted: true
-        amiTags:
-          Recipe: arm64-bionic-java11-deploy-infrastructure
-          AmigoStage: PROD
-          BuiltBy: amigo
+    type: cloud-formation
+    app: cdk-playground
+    parameters:
+      templatePath: CdkPlaygroundPreview.template.json
+      amiParameter: AMICdkplayground
+      amiEncrypted: true
+      amiTags:
+        Recipe: arm64-bionic-java11-deploy-infrastructure
+        AmigoStage: PROD
+        BuiltBy: amigo
   cdk-playground:
     stacks:
       - deploy
