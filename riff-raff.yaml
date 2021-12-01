@@ -1,32 +1,29 @@
 regions:
   - eu-west-1
+templates:
+  cloudformation:
+    type: cloud-formation
+    app: cdk-playground
+    parameters:
+      amiParameter: AMICdkplayground
+      amiEncrypted: true
+      amiTags:
+        Recipe: arm64-bionic-java11-deploy-infrastructure
+        AmigoStage: PROD
+        BuiltBy: amigo
 deployments:
   cloudformation-for-deploy:
+    template: cloudformation
     stacks:
       - deploy
-    type: cloud-formation
-    app: cdk-playground
     parameters:
       templatePath: CdkPlayground.template.json
-      amiParameter: AMICdkplayground
-      amiEncrypted: true
-      amiTags:
-        Recipe: arm64-bionic-java11-deploy-infrastructure
-        AmigoStage: PROD
-        BuiltBy: amigo
   cloudformation-for-deploy-preview:
+    template: cloudformation
     stacks:
       - deploy-preview
-    type: cloud-formation
-    app: cdk-playground
     parameters:
       templatePath: CdkPlaygroundPreview.template.json
-      amiParameter: AMICdkplayground
-      amiEncrypted: true
-      amiTags:
-        Recipe: arm64-bionic-java11-deploy-infrastructure
-        AmigoStage: PROD
-        BuiltBy: amigo
   cdk-playground:
     stacks:
       - deploy
