@@ -13,7 +13,7 @@ lazy val root = (project in file("."))
       "-unchecked",
       "-Xfatal-warnings"
     ),
-    javaOptions in Universal ++= Seq(
+    Universal / javaOptions ++= Seq(
       s"-Dpidfile.path=/dev/null",
       s"-J-Dlogs.home=/var/log/${packageName.value}",
       s"-J-Xloggc:/var/log/${packageName.value}/gc.log",
@@ -21,7 +21,7 @@ lazy val root = (project in file("."))
     riffRaffPackageName := s"devx::${name.value}",
     riffRaffManifestProjectName := riffRaffPackageName.value,
     riffRaffArtifactResources := Seq(
-      (packageBin in Debian).value -> s"${name.value}/${name.value}.deb",
+      (Debian / packageBin).value -> s"${name.value}/${name.value}.deb",
       baseDirectory.value / "riff-raff.yaml" -> "riff-raff.yaml",
       baseDirectory.value / "cdk" / "cdk.out" / "CdkPlayground.template.json" -> s"cloudformation/CdkPlayground.template.json"
     ),
