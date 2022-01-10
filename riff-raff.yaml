@@ -7,7 +7,8 @@ deployments:
     type: cloud-formation
     app: cdk-playground
     parameters:
-      templatePath: CdkPlayground.template.json
+      # inntentionally breaking to test https://github.com/guardian/riff-raff/pull/668
+      # templatePath: CdkPlayground.template.json
       amiParameter: AMICdkplayground
       amiEncrypted: true
       amiTags:
