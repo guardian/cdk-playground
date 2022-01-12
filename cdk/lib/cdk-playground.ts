@@ -4,6 +4,7 @@ import { Stage } from "@guardian/cdk/lib/constants";
 import type { GuStackProps } from "@guardian/cdk/lib/constructs/core";
 import { GuStack, GuStringParameter } from "@guardian/cdk/lib/constructs/core";
 import { AppIdentity } from "@guardian/cdk/lib/constructs/core/identity";
+import { GuS3Bucket } from "@guardian/cdk/lib/constructs/s3";
 import { AccessScope, GuPlayApp } from "@guardian/cdk/lib/patterns/ec2-app";
 
 export class CdkPlayground extends GuStack {
@@ -51,5 +52,7 @@ export class CdkPlayground extends GuStack {
         },
       },
     });
+
+    new GuS3Bucket(this, "my-bucket", {});
   }
 }
