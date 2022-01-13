@@ -16,4 +16,4 @@ There are a couple of helpful scripts in the [script](./script) directory:
   1. `./script/switch-cdk` to install GuCDK from a GitHub branch. This is useful to test changes _without_ publishing to NPM first.
 
 ## Deploying
-The app is set up in the usual way, with CI on each branch (via GitHub Actions) and [CD](https://riffraff.gutools.co.uk/deployment/history?projectName=devx%3A%3Acdk-playground&stage=PROD&pageSize=20&page=1) on `main`.
+The app is set up in the usual way, with CI on each branch (via GitHub Actions) and [CD](https://riffraff.gutools.co.uk/deployment/history?projectName=devx%3A%3Acdk-playground&stage=PROD&pageSize=20&page=1) on `main`
