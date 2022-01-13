@@ -38,7 +38,7 @@ Object {
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "HostedZone": Object {
-      "Description": "Route53 hosted zone",
+      "Description": "Route53 hosted zone.",
       "Type": "String",
     },
     "LoggingStreamName": Object {

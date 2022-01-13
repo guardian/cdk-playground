@@ -17,7 +17,7 @@ export class CdkPlayground extends GuStack {
     AppIdentity.taggedConstruct(CdkPlayground.app, this);
 
     const hostedZoneIdParam = new GuStringParameter(this, "HostedZone", {
-      description: "Route53 hosted zone",
+      description: "Route53 hosted zone.",
     });
 
     new GuPlayApp(this, {
