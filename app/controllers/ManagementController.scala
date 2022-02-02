@@ -15,6 +15,6 @@ class ManagementController (override val controllerComponents: ControllerCompone
   }
 
   def healthCheck: Action[AnyContent] = Action {
-    Ok("OK")
+     InternalServerError
   }
 }
