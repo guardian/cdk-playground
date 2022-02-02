@@ -39,15 +39,19 @@ export class CdkPlayground extends GuStack {
           hostedZoneId: hostedZoneIdParam.valueAsString,
         },
       },
-      monitoringConfiguration: { noMonitoring: true },
+      monitoringConfiguration: {
+        snsTopicName: "jacob-testing",
+        unhealthyInstancesAlarm: true,
+        http5xxAlarm: false,
+      },
       scaling: {
         [Stage.CODE]: {
           minimumInstances: 0,
           maximumInstances: 0,
         },
         [Stage.PROD]: {
-          minimumInstances: 1,
-          maximumInstances: 2,
+          minimumInstances: 3,
+          maximumInstances: 6,
         },
       },
     });
