@@ -1,12 +1,15 @@
 import { InstanceClass, InstanceSize, InstanceType } from "@aws-cdk/aws-ec2";
 import type { App } from "@aws-cdk/core";
-import { Stage } from "@guardian/cdk/lib/constants";
+import { StageForInfrastructure } from "@guardian/cdk/lib/constants";
 import type { GuStackProps } from "@guardian/cdk/lib/constructs/core";
-import { GuStack, GuStringParameter } from "@guardian/cdk/lib/constructs/core";
+import {
+  GuStackForInfrastructure,
+  GuStringParameter,
+} from "@guardian/cdk/lib/constructs/core";
 import { AppIdentity } from "@guardian/cdk/lib/constructs/core/identity";
 import { AccessScope, GuPlayApp } from "@guardian/cdk/lib/patterns/ec2-app";
 
-export class CdkPlayground extends GuStack {
+export class CdkPlayground extends GuStackForInfrastructure {
   private static app: AppIdentity = {
     app: "cdk-playground",
   };
@@ -31,23 +34,15 @@ export class CdkPlayground extends GuStack {
         },
       },
       certificateProps: {
-        [Stage.CODE]: {
-          domainName: "IGNORED. Just here to satisfy the type checks.",
-        },
-        [Stage.PROD]: {
+        [StageForInfrastructure]: {
           domainName: "cdk-playground.devx.dev-gutools.co.uk",
           hostedZoneId: hostedZoneIdParam.valueAsString,
         },
       },
       monitoringConfiguration: { noMonitoring: true },
       scaling: {
-        [Stage.CODE]: {
-          minimumInstances: 0,
-          maximumInstances: 0,
-        },
-        [Stage.PROD]: {
+        [StageForInfrastructure]: {
           minimumInstances: 1,
-          maximumInstances: 2,
         },
       },
     });
