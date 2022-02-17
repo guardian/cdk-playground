@@ -631,6 +631,33 @@ dpkg -i /cdk-playground/cdk-playground.deb",
                 ],
               },
             },
+            Object {
+              "Action": Array [
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:ssm:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/",
+                    Object {
+                      "Ref": "Stage",
+                    },
+                    "/deploy/cdk-playground/*",
+                  ],
+                ],
+              },
+            },
           ],
           "Version": "2012-10-17",
         },
