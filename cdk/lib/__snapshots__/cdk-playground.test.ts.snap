@@ -57,7 +57,7 @@ Object {
     },
     "VpcId": Object {
       "Default": "/account/vpc/primary/id",
-      "Description": "Virtual Private Cloud to run EC2 instances within",
+      "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
     "cdkplaygroundPrivateSubnets": Object {
