@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@aws-cdk/core": "1.145.0",
-    "@guardian/cdk": "36.1.0",
+    "@guardian/cdk": "github:guardian/cdk#aa-rm-stage",
     "source-map-support": "^0.5.21"
   }
 }
