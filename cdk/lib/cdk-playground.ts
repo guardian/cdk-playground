@@ -14,7 +14,11 @@ export class CdkPlayground extends GuStack {
   constructor(scope: App, id: string, props: GuStackProps) {
     const { app } = CdkPlayground.app;
 
-    super(scope, id, props);
+    super(scope, id, {
+      ...props,
+      env: { region: "eu-west-1" },
+    });
+
     AppIdentity.taggedConstruct(CdkPlayground.app, this);
 
     const hostedZoneIdParam = new GuStringParameter(this, "HostedZone", {
@@ -25,6 +29,10 @@ export class CdkPlayground extends GuStack {
       app,
       instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
       access: { scope: AccessScope.PUBLIC },
+      accessLogging: {
+        enabled: true,
+        prefix: `${this.stack}/${this.stage}/${app}`,
+      },
       userData: {
         distributable: {
           fileName: `${app}.deb`,

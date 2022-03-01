@@ -32,6 +32,11 @@ Object {
       "Description": "Amazon Machine Image ID for the app cdk-playground. Use this in conjunction with AMIgo to keep AMIs up to date.",
       "Type": "AWS::EC2::Image::Id",
     },
+    "AccessLoggingBucket": Object {
+      "Default": "/account/services/access-logging/bucket",
+      "Description": "S3 bucket to store your access logs",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
     "DistributionBucketName": Object {
       "Default": "/account/services/artifact.bucket",
       "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
@@ -387,11 +392,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
                 "Fn::Join": Array [
                   "",
                   Array [
-                    "arn:aws:kinesis:",
-                    Object {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:kinesis:eu-west-1:",
                     Object {
                       "Ref": "AWS::AccountId",
                     },
@@ -423,17 +424,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Principal": Object {
-                "Service": Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      "ec2.",
-                      Object {
-                        "Ref": "AWS::URLSuffix",
-                      },
-                    ],
-                  ],
-                },
+                "Service": "ec2.amazonaws.com",
               },
             },
           ],
@@ -498,6 +489,31 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           Object {
             "Key": "deletion_protection.enabled",
             "Value": "true",
+          },
+          Object {
+            "Key": "access_logs.s3.enabled",
+            "Value": "true",
+          },
+          Object {
+            "Key": "access_logs.s3.bucket",
+            "Value": Object {
+              "Ref": "AccessLoggingBucket",
+            },
+          },
+          Object {
+            "Key": "access_logs.s3.prefix",
+            "Value": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "deploy/",
+                  Object {
+                    "Ref": "Stage",
+                  },
+                  "/cdk-playground",
+                ],
+              ],
+            },
           },
         ],
         "Scheme": "internet-facing",
@@ -614,11 +630,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
                 "Fn::Join": Array [
                   "",
                   Array [
-                    "arn:aws:ssm:",
-                    Object {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     Object {
                       "Ref": "AWS::AccountId",
                     },
@@ -641,11 +653,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
                 "Fn::Join": Array [
                   "",
                   Array [
-                    "arn:aws:ssm:",
-                    Object {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     Object {
                       "Ref": "AWS::AccountId",
                     },
