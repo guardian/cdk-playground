@@ -12,6 +12,7 @@
     "format": "prettier --write \"{lib,bin}/**/*.ts\"",
     "synth": "cdk synth --path-metadata false --version-reporting false",
     "lint": "eslint lib/** bin/** --ext .ts --no-error-on-unmatched-pattern",
+    "diff": "cdk diff --path-metadata false --version-reporting false",
     "start": "jest --watch"
   },
   "devDependencies": {
