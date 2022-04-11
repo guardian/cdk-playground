@@ -169,6 +169,9 @@ Object {
           "Ref": "AMICdkplayground",
         },
         "InstanceType": "t4g.micro",
+        "MetadataOptions": Object {
+          "HttpTokens": "required",
+        },
         "SecurityGroups": Array [
           Object {
             "Fn::GetAtt": Array [
