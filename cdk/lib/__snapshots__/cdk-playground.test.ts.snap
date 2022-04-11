@@ -2,20 +2,6 @@
 
 exports[`The Deploy stack matches the snapshot 1`] = `
 Object {
-  "Mappings": Object {
-    "cdkplayground": Object {
-      "CODE": Object {
-        "domainName": "IGNORED. Just here to satisfy the type checks.",
-        "maxInstances": 0,
-        "minInstances": 0,
-      },
-      "PROD": Object {
-        "domainName": "cdk-playground.devx.dev-gutools.co.uk",
-        "maxInstances": 2,
-        "minInstances": 1,
-      },
-    },
-  },
   "Outputs": Object {
     "LoadBalancerCdkplaygroundDnsName": Object {
       "Description": "DNS entry for LoadBalancerCdkplayground",
@@ -46,15 +32,6 @@ Object {
       "Description": "SSM parameter containing the Name (not ARN) on the kinesis stream",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "Stage": Object {
-      "AllowedValues": Array [
-        "CODE",
-        "PROD",
-      ],
-      "Default": "CODE",
-      "Description": "Stage name",
-      "Type": "String",
-    },
     "VpcId": Object {
       "Default": "/account/vpc/primary/id",
       "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
@@ -79,24 +56,8 @@ Object {
         "LaunchConfigurationName": Object {
           "Ref": "AutoScalingGroupCdkplaygroundLaunchConfigFAE27BB8",
         },
-        "MaxSize": Object {
-          "Fn::FindInMap": Array [
-            "cdkplayground",
-            Object {
-              "Ref": "Stage",
-            },
-            "maxInstances",
-          ],
-        },
-        "MinSize": Object {
-          "Fn::FindInMap": Array [
-            "cdkplayground",
-            Object {
-              "Ref": "Stage",
-            },
-            "minInstances",
-          ],
-        },
+        "MaxSize": "2",
+        "MinSize": "1",
         "Tags": Array [
           Object {
             "Key": "App",
@@ -131,9 +92,7 @@ Object {
           Object {
             "Key": "Stage",
             "PropagateAtLaunch": true,
-            "Value": Object {
-              "Ref": "Stage",
-            },
+            "Value": "PROD",
           },
         ],
         "TargetGroupARNs": Array [
@@ -169,6 +128,9 @@ Object {
           "Ref": "AMICdkplayground",
         },
         "InstanceType": "t4g.micro",
+        "MetadataOptions": Object {
+          "HttpTokens": "required",
+        },
         "SecurityGroups": Array [
           Object {
             "Fn::GetAtt": Array [
@@ -194,11 +156,7 @@ aws s3 cp 's3://",
                 Object {
                   "Ref": "DistributionBucketName",
                 },
-                "/deploy/",
-                Object {
-                  "Ref": "Stage",
-                },
-                "/cdk-playground/cdk-playground.deb' '/cdk-playground/cdk-playground.deb'
+                "/deploy/PROD/cdk-playground/cdk-playground.deb' '/cdk-playground/cdk-playground.deb'
 dpkg -i /cdk-playground/cdk-playground.deb",
               ],
             ],
@@ -210,15 +168,15 @@ dpkg -i /cdk-playground/cdk-playground.deb",
     "CertificateCdkplayground47FCF7D9": Object {
       "DeletionPolicy": "Retain",
       "Properties": Object {
-        "DomainName": Object {
-          "Fn::FindInMap": Array [
-            "cdkplayground",
-            Object {
-              "Ref": "Stage",
+        "DomainName": "cdk-playground.devx.dev-gutools.co.uk",
+        "DomainValidationOptions": Array [
+          Object {
+            "DomainName": "cdk-playground.devx.dev-gutools.co.uk",
+            "HostedZoneId": Object {
+              "Ref": "HostedZone",
             },
-            "domainName",
-          ],
-        },
+          },
+        ],
         "Tags": Array [
           Object {
             "Key": "App",
@@ -238,9 +196,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           },
           Object {
             "Key": "Stage",
-            "Value": Object {
-              "Ref": "Stage",
-            },
+            "Value": "PROD",
           },
         ],
         "ValidationMethod": "DNS",
@@ -289,11 +245,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
                     Object {
                       "Ref": "DistributionBucketName",
                     },
-                    "/deploy/",
-                    Object {
-                      "Ref": "Stage",
-                    },
-                    "/cdk-playground/*",
+                    "/deploy/PROD/cdk-playground/*",
                   ],
                 ],
               },
@@ -341,9 +293,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           },
           Object {
             "Key": "Stage",
-            "Value": Object {
-              "Ref": "Stage",
-            },
+            "Value": "PROD",
           },
         ],
         "VpcId": Object {
@@ -459,9 +409,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           },
           Object {
             "Key": "Stage",
-            "Value": Object {
-              "Ref": "Stage",
-            },
+            "Value": "PROD",
           },
         ],
       },
@@ -531,9 +479,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           },
           Object {
             "Key": "Stage",
-            "Value": Object {
-              "Ref": "Stage",
-            },
+            "Value": "PROD",
           },
         ],
         "Type": "application",
@@ -571,9 +517,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           },
           Object {
             "Key": "Stage",
-            "Value": Object {
-              "Ref": "Stage",
-            },
+            "Value": "PROD",
           },
         ],
         "VpcId": Object {
@@ -622,11 +566,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
                     Object {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/",
-                    Object {
-                      "Ref": "Stage",
-                    },
-                    "/deploy/cdk-playground",
+                    ":parameter/PROD/deploy/cdk-playground",
                   ],
                 ],
               },
@@ -649,11 +589,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
                     Object {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/",
-                    Object {
-                      "Ref": "Stage",
-                    },
-                    "/deploy/cdk-playground/*",
+                    ":parameter/PROD/deploy/cdk-playground/*",
                   ],
                 ],
               },
@@ -734,9 +670,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           },
           Object {
             "Key": "Stage",
-            "Value": Object {
-              "Ref": "Stage",
-            },
+            "Value": "PROD",
           },
         ],
         "TargetGroupAttributes": Array [
@@ -795,9 +729,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           },
           Object {
             "Key": "Stage",
-            "Value": Object {
-              "Ref": "Stage",
-            },
+            "Value": "PROD",
           },
         ],
         "VpcId": Object {
