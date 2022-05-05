@@ -4,6 +4,7 @@ import type { GuStackProps } from "@guardian/cdk/lib/constructs/core";
 import { GuStack, GuStringParameter } from "@guardian/cdk/lib/constructs/core";
 import { AppIdentity } from "@guardian/cdk/lib/constructs/core/identity";
 import type { App } from "aws-cdk-lib";
+import { Tags } from "aws-cdk-lib";
 import { InstanceClass, InstanceSize, InstanceType } from "aws-cdk-lib/aws-ec2";
 
 export class CdkPlayground extends GuStack {
@@ -20,7 +21,7 @@ export class CdkPlayground extends GuStack {
       description: "Route53 hosted zone",
     });
 
-    new GuPlayApp(this, {
+    const { autoScalingGroup } = new GuPlayApp(this, {
       app,
       instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
       access: { scope: AccessScope.PUBLIC },
@@ -40,5 +41,10 @@ export class CdkPlayground extends GuStack {
         maximumInstances: 2,
       },
     });
+
+    Tags.of(autoScalingGroup).add(
+      "SystemdUnit",
+      `${CdkPlayground.app.app}.service`
+    );
   }
 }
