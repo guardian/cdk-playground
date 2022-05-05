@@ -7,6 +7,7 @@ import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
 
 class ManagementController (override val controllerComponents: ControllerComponents) extends BaseController with Logging {
   def manifest: Action[AnyContent] = Action {
+    logger.info("Manifest requested")
     Ok(Json.parse(BuildInfo.toJson))
   }
 
@@ -15,6 +16,7 @@ class ManagementController (override val controllerComponents: ControllerCompone
   }
 
   def healthCheck: Action[AnyContent] = Action {
+    logger.info("Healthcheck requested")
     Ok("OK")
   }
 }
