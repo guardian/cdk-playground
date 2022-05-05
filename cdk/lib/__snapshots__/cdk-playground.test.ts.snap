@@ -65,6 +65,11 @@ Object {
             "Value": "cdk-playground",
           },
           Object {
+            "Key": "gu:build-number",
+            "PropagateAtLaunch": true,
+            "Value": "TEST",
+          },
+          Object {
             "Key": "gu:cdk:pattern-name",
             "PropagateAtLaunch": true,
             "Value": "GuPlayApp",
@@ -78,6 +83,13 @@ Object {
             "Key": "gu:repo",
             "PropagateAtLaunch": true,
             "Value": "guardian/cdk-playground",
+          },
+          Object {
+            "Key": "LogKinesisStreamName",
+            "PropagateAtLaunch": true,
+            "Value": Object {
+              "Ref": "LoggingStreamName",
+            },
           },
           Object {
             "Key": "Name",
@@ -183,6 +195,10 @@ dpkg -i /cdk-playground/cdk-playground.deb",
             "Value": "cdk-playground",
           },
           Object {
+            "Key": "gu:build-number",
+            "Value": "TEST",
+          },
+          Object {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
@@ -278,6 +294,10 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           Object {
             "Key": "App",
             "Value": "cdk-playground",
+          },
+          Object {
+            "Key": "gu:build-number",
+            "Value": "TEST",
           },
           Object {
             "Key": "gu:cdk:version",
@@ -396,6 +416,10 @@ dpkg -i /cdk-playground/cdk-playground.deb",
             "Value": "cdk-playground",
           },
           Object {
+            "Key": "gu:build-number",
+            "Value": "TEST",
+          },
+          Object {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
@@ -466,6 +490,10 @@ dpkg -i /cdk-playground/cdk-playground.deb",
             "Value": "cdk-playground",
           },
           Object {
+            "Key": "gu:build-number",
+            "Value": "TEST",
+          },
+          Object {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
@@ -502,6 +530,10 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           Object {
             "Key": "App",
             "Value": "cdk-playground",
+          },
+          Object {
+            "Key": "gu:build-number",
+            "Value": "TEST",
           },
           Object {
             "Key": "gu:cdk:version",
@@ -657,6 +689,10 @@ dpkg -i /cdk-playground/cdk-playground.deb",
             "Value": "cdk-playground",
           },
           Object {
+            "Key": "gu:build-number",
+            "Value": "TEST",
+          },
+          Object {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
@@ -714,6 +750,10 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           Object {
             "Key": "App",
             "Value": "cdk-playground",
+          },
+          Object {
+            "Key": "gu:build-number",
+            "Value": "TEST",
           },
           Object {
             "Key": "gu:cdk:version",
