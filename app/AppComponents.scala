@@ -11,7 +11,9 @@ class AppComponents(context: ApplicationLoader.Context)
     with AssetsComponents {
 
   private val disabledFilters: Set[EssentialFilter] = Set(allowedHostsFilter)
-  override def httpFilters: Seq[EssentialFilter] = super.httpFilters.filterNot(disabledFilters.contains)
+  override def httpFilters: Seq[EssentialFilter] = super.httpFilters.filterNot(disabledFilters.contains) ++ Seq(
+    new RequestLoggingFilter(materializer)
+  )
 
   lazy val managementController = new ManagementController(controllerComponents)
 

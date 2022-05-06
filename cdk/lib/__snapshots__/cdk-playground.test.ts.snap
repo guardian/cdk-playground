@@ -80,6 +80,13 @@ Object {
             "Value": "guardian/cdk-playground",
           },
           Object {
+            "Key": "LogKinesisStreamName",
+            "PropagateAtLaunch": true,
+            "Value": Object {
+              "Ref": "LoggingStreamName",
+            },
+          },
+          Object {
             "Key": "Name",
             "PropagateAtLaunch": true,
             "Value": "CdkPlayground/AutoScalingGroupCdkplayground",
@@ -93,6 +100,11 @@ Object {
             "Key": "Stage",
             "PropagateAtLaunch": true,
             "Value": "PROD",
+          },
+          Object {
+            "Key": "SystemdUnit",
+            "PropagateAtLaunch": true,
+            "Value": "cdk-playground.service",
           },
         ],
         "TargetGroupARNs": Array [
