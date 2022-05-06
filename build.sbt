@@ -1,5 +1,26 @@
 import com.gu.riffraff.artifact.BuildInfo
 
+// https://github.com/orgs/playframework/discussions/11222
+val jacksonVersion         = "2.13.2"
+val jacksonDatabindVersion = "2.13.2.2"
+
+val jacksonOverrides = Seq(
+  "com.fasterxml.jackson.core"     % "jackson-core",
+  "com.fasterxml.jackson.core"     % "jackson-annotations",
+  "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8",
+  "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310"
+).map(_ % jacksonVersion)
+
+val jacksonDatabindOverrides = Seq(
+  "com.fasterxml.jackson.core" % "jackson-databind" % jacksonDatabindVersion
+)
+
+val akkaSerializationJacksonOverrides = Seq(
+  "com.fasterxml.jackson.dataformat" % "jackson-dataformat-cbor",
+  "com.fasterxml.jackson.module"     % "jackson-module-parameter-names",
+  "com.fasterxml.jackson.module"     %% "jackson-module-scala",
+).map(_ % jacksonVersion)
+
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala, BuildInfoPlugin, RiffRaffArtifact, JDebPackaging, SystemdPlugin)
   .settings(
@@ -18,6 +39,14 @@ lazy val root = (project in file("."))
       s"-J-Dlogs.home=/var/log/${packageName.value}",
       s"-J-Xloggc:/var/log/${packageName.value}/gc.log",
     ),
+
+    libraryDependencies ++= jacksonDatabindOverrides
+      ++ jacksonOverrides
+      ++ akkaSerializationJacksonOverrides
+      ++ Seq(
+        "net.logstash.logback" % "logstash-logback-encoder" % "7.1.1"
+      ),
+
     riffRaffPackageName := s"devx::${name.value}",
     riffRaffManifestProjectName := riffRaffPackageName.value,
     riffRaffArtifactResources := Seq(
