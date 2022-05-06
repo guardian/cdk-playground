@@ -35,7 +35,8 @@ class RequestLoggingFilter(override val mat: Materializer)(implicit ec: Executio
       "referrer" -> referer,
       "method" -> request.method,
       "status" -> response.header.status,
-      "duration" -> duration
+      "duration" -> duration,
+      "stage" -> "monkey"
     )
 
     val markers = MarkerContext(appendEntries(mandatoryMarkers.asJava))
