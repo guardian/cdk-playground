@@ -3,6 +3,8 @@ import net.logstash.logback.marker.Markers.appendEntries
 import play.api.{Logging, MarkerContext}
 import play.api.mvc.{Filter, RequestHeader, Result}
 
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 import scala.jdk.CollectionConverters._
@@ -35,7 +37,8 @@ class RequestLoggingFilter(override val mat: Materializer)(implicit ec: Executio
       "referrer" -> referer,
       "method" -> request.method,
       "status" -> response.header.status,
-      "duration" -> duration
+      "duration" -> duration,
+      "applicationTimestamp" -> OffsetDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
     )
 
     val markers = MarkerContext(appendEntries(mandatoryMarkers.asJava))
