@@ -11,7 +11,7 @@ deployments:
       amiParameter: AMICdkplayground
       amiEncrypted: true
       amiTags:
-        Recipe: arm64-bionic-java11-deploy-infrastructure
+        Recipe: jw-test
         AmigoStage: PROD
         BuiltBy: amigo
   cdk-playground:

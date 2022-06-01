@@ -5,7 +5,12 @@ import { GuStack, GuStringParameter } from "@guardian/cdk/lib/constructs/core";
 import { AppIdentity } from "@guardian/cdk/lib/constructs/core/identity";
 import type { App } from "aws-cdk-lib";
 import { Tags } from "aws-cdk-lib";
-import { InstanceClass, InstanceSize, InstanceType } from "aws-cdk-lib/aws-ec2";
+import {
+  InstanceClass,
+  InstanceSize,
+  InstanceType,
+  Port,
+} from "aws-cdk-lib/aws-ec2";
 
 export class CdkPlayground extends GuStack {
   private static app: AppIdentity = {
@@ -46,5 +51,7 @@ export class CdkPlayground extends GuStack {
       "SystemdUnit",
       `${CdkPlayground.app.app}.service`
     );
+
+    autoScalingGroup.connections.allowToAnyIpv4(Port.tcp(80));
   }
 }
