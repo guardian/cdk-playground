@@ -28,7 +28,7 @@ export class CdkPlayground extends GuStack {
 
     const { autoScalingGroup } = new GuPlayApp(this, {
       app,
-      instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
+      instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MEDIUM),
       access: { scope: AccessScope.PUBLIC },
       userData: {
         distributable: {

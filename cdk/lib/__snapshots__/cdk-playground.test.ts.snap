@@ -139,7 +139,7 @@ Object {
         "ImageId": Object {
           "Ref": "AMICdkplayground",
         },
-        "InstanceType": "t4g.micro",
+        "InstanceType": "t4g.medium",
         "MetadataOptions": Object {
           "HttpTokens": "required",
         },
