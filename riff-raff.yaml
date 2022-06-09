@@ -2,6 +2,8 @@ stacks:
   - deploy
 regions:
   - eu-west-1
+allowedStages:
+  - PROD
 deployments:
   cloudformation:
     type: cloud-formation
