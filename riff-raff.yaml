@@ -9,7 +9,8 @@ deployments:
     type: cloud-formation
     app: cdk-playground
     parameters:
-      templatePath: CdkPlayground.template.json
+      templateStagePaths:
+        CODE: CdkPlayground.template.json
       amiParameter: AMICdkplayground
       amiEncrypted: true
       amiTags:
