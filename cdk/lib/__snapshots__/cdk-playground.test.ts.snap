@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`The Deploy stack matches the snapshot 1`] = `
+exports[`The CdkPlayground stack matches the snapshot 1`] = `
 Object {
   "Outputs": Object {
     "LoadBalancerCdkplaygroundDnsName": Object {
@@ -349,11 +349,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
                 "Fn::Join": Array [
                   "",
                   Array [
-                    "arn:aws:kinesis:",
-                    Object {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:kinesis:eu-west-1:",
                     Object {
                       "Ref": "AWS::AccountId",
                     },
@@ -385,17 +381,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Principal": Object {
-                "Service": Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      "ec2.",
-                      Object {
-                        "Ref": "AWS::URLSuffix",
-                      },
-                    ],
-                  ],
-                },
+                "Service": "ec2.amazonaws.com",
               },
             },
           ],
@@ -570,11 +556,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
                 "Fn::Join": Array [
                   "",
                   Array [
-                    "arn:aws:ssm:",
-                    Object {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     Object {
                       "Ref": "AWS::AccountId",
                     },
@@ -593,11 +575,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
                 "Fn::Join": Array [
                   "",
                   Array [
-                    "arn:aws:ssm:",
-                    Object {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     Object {
                       "Ref": "AWS::AccountId",
                     },
@@ -752,4 +730,50 @@ dpkg -i /cdk-playground/cdk-playground.deb",
     },
   },
 }
+`;
+
+exports[`The CdkPlayground stack matches the snapshot 2`] = `
+"allowedStages:
+  - PROD
+deployments:
+  cdk-playground-cfn-deploy-eu-west-1:
+    type: cloud-formation
+    regions:
+      - eu-west-1
+    stacks:
+      - deploy
+    app: cdk-playground
+    contentDirectory: /tmp/cdk.out
+    parameters:
+      templateStagePaths:
+        PROD: CdkPlayground.template.json
+  cdk-playground-ami-deploy-eu-west-1:
+    type: ami-cloudformation-parameter
+    regions:
+      - eu-west-1
+    stacks:
+      - deploy
+    app: cdk-playground
+    parameters:
+      cloudFormationStackByTags: true
+      amiParametersToTags:
+        AMICdkplayground:
+          BuiltBy: amigo
+          AmigoStage: PROD
+          Recipe: arm64-bionic-java11-deploy-infrastructure
+    dependencies:
+      - cdk-playground-cfn-deploy-eu-west-1
+  cdk-playground-asg-deploy-eu-west-1:
+    type: autoscaling
+    regions:
+      - eu-west-1
+    stacks:
+      - deploy
+    app: cdk-playground
+    parameters:
+      bucketSsmLookup: true
+    dependencies:
+      - cdk-playground-ami-deploy-eu-west-1
+    contentDirectory: cdk-playground
+"
 `;
