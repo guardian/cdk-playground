@@ -40,6 +40,7 @@ export class CdkPlayground extends GuStack {
         minimumInstances: 1,
         maximumInstances: 2,
       },
+      imageRecipe: "arm64-bionic-java11-deploy-infrastructure",
     });
 
     Tags.of(autoScalingGroup).add(
