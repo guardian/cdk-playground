@@ -15,7 +15,7 @@
     "start": "jest --watch"
   },
   "devDependencies": {
-    "@guardian/cdk": "45.0.0",
+    "@guardian/cdk": "45.1.3",
     "@guardian/eslint-config-typescript": "^1.0.1",
     "@types/jest": "^27.5.1",
     "@types/node": "18.0.6",
