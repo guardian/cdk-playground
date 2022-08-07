@@ -10,4 +10,9 @@ set -e
   npm run synth
 )
 
+(
+  cd lambda
+  zip cdk-playground-lambda.zip handler.js
+)
+
 sbt clean compile test riffRaffUpload
