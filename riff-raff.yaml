@@ -22,3 +22,9 @@ deployments:
       bucketSsmLookup: true
     dependencies:
       - cloudformation
+  cdk-playground-lambda:
+    type: aws-lambda
+    parameters:
+      bucketSsmLookup: true
+      lookupByTags: true
+      fileName: cdk-playground-lambda.zip

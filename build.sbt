@@ -52,7 +52,8 @@ lazy val root = (project in file("."))
     riffRaffArtifactResources := Seq(
       (Debian / packageBin).value -> s"${name.value}/${name.value}.deb",
       baseDirectory.value / "riff-raff.yaml" -> "riff-raff.yaml",
-      baseDirectory.value / "cdk" / "cdk.out" / "CdkPlayground.template.json" -> s"cloudformation/CdkPlayground.template.json"
+      baseDirectory.value / "cdk" / "cdk.out" / "CdkPlayground.template.json" -> s"cloudformation/CdkPlayground.template.json",
+      baseDirectory.value / "lambda" / "cdk-playground-lambda.zip" -> "cdk-playground-lambda/cdk-playground-lambda.zip"
     ),
     buildInfoKeys := {
       lazy val buildInfo = BuildInfo(baseDirectory.value)

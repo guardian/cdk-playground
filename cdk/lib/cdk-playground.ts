@@ -1,37 +1,30 @@
-import { GuPlayApp } from '@guardian/cdk';
-import { AccessScope } from '@guardian/cdk/lib/constants';
+import { GuApiLambda, GuPlayApp } from '@guardian/cdk';
+import { AccessScope } from '@guardian/cdk/lib/constants/access';
+import { GuCertificate } from '@guardian/cdk/lib/constructs/acm';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
-import {
-	AppIdentity,
-	GuStack,
-	GuStringParameter,
-} from '@guardian/cdk/lib/constructs/core';
+import { GuStack, GuStringParameter } from '@guardian/cdk/lib/constructs/core';
 import type { App } from 'aws-cdk-lib';
 import { Tags } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
+import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
 export class CdkPlayground extends GuStack {
-	private static app: AppIdentity = {
-		app: 'cdk-playground',
-	};
 	constructor(scope: App, id: string, props: Omit<GuStackProps, 'stage'>) {
-		const { app } = CdkPlayground.app;
-
 		super(scope, id, { ...props, stage: 'PROD' });
-		AppIdentity.taggedConstruct(CdkPlayground.app, this);
 
 		const hostedZoneIdParam = new GuStringParameter(this, 'HostedZone', {
 			description: 'Route53 hosted zone',
 		});
 
+		const ec2App = 'cdk-playground';
 		const { autoScalingGroup } = new GuPlayApp(this, {
-			app,
+			app: ec2App,
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
 			access: { scope: AccessScope.PUBLIC },
 			userData: {
 				distributable: {
-					fileName: `${app}.deb`,
-					executionStatement: `dpkg -i /${app}/${app}.deb`,
+					fileName: `${ec2App}.deb`,
+					executionStatement: `dpkg -i /${ec2App}/${ec2App}.deb`,
 				},
 			},
 			certificateProps: {
@@ -45,9 +38,32 @@ export class CdkPlayground extends GuStack {
 			},
 		});
 
-		Tags.of(autoScalingGroup).add(
-			'SystemdUnit',
-			`${CdkPlayground.app.app}.service`,
-		);
+		Tags.of(autoScalingGroup).add('SystemdUnit', `${ec2App}.service`);
+
+		const lambdaApp = 'cdk-playground-lambda';
+		const lambdaDomainName = 'cdk-playground-lambda.devx.dev-gutools.co.uk';
+
+		const lambda = new GuApiLambda(this, 'lambda', {
+			fileName: `cdk-playground-lambda.zip`,
+			handler: 'handler.main',
+			runtime: Runtime.NODEJS_16_X,
+			monitoringConfiguration: {
+				noMonitoring: true,
+			},
+			app: lambdaApp,
+			api: {
+				id: `${lambdaApp}-api`,
+				description: lambdaApp,
+			},
+		});
+
+		lambda.api.addDomainName('domain', {
+			domainName: lambdaDomainName,
+			certificate: new GuCertificate(this, {
+				app: lambdaApp,
+				domainName: lambdaDomainName,
+				hostedZoneId: hostedZoneIdParam.valueAsString,
+			}),
+		});
 	}
 }
