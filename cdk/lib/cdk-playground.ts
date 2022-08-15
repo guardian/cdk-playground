@@ -15,7 +15,7 @@ export class CdkPlayground extends GuStack {
 		id: string,
 		props?: Omit<GuStackProps, 'stack' | 'stage'>,
 	) {
-		super(scope, id, { ...props, stack: 'deploy', stage: 'PROD' });
+		super(scope, id, { ...props, stack: 'playground', stage: 'PROD' });
 
 		const ec2App = 'cdk-playground';
 		const ec2AppDomainName = 'cdk-playground.gutools.co.uk';
