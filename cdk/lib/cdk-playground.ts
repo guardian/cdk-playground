@@ -9,8 +9,12 @@ import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
 export class CdkPlayground extends GuStack {
-	constructor(scope: App, id: string, props: Omit<GuStackProps, 'stage'>) {
-		super(scope, id, { ...props, stage: 'PROD' });
+	constructor(
+		scope: App,
+		id: string,
+		props?: Omit<GuStackProps, 'stack' | 'stage'>,
+	) {
+		super(scope, id, { ...props, stack: 'deploy', stage: 'PROD' });
 
 		const hostedZoneIdParam = new GuStringParameter(this, 'HostedZone', {
 			description: 'Route53 hosted zone',
