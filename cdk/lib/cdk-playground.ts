@@ -15,7 +15,12 @@ export class CdkPlayground extends GuStack {
 		id: string,
 		props?: Omit<GuStackProps, 'stack' | 'stage'>,
 	) {
-		super(scope, id, { ...props, stack: 'playground', stage: 'PROD' });
+		super(scope, id, {
+			...props,
+			stack: 'playground',
+			stage: 'PROD',
+			env: { region: 'eu-west-1' },
+		});
 
 		const ec2App = 'cdk-playground';
 		const ec2AppDomainName = 'cdk-playground.gutools.co.uk';
@@ -38,6 +43,7 @@ export class CdkPlayground extends GuStack {
 				minimumInstances: 1,
 				maximumInstances: 2,
 			},
+			imageRecipe: 'arm64-bionic-java11-deploy-infrastructure',
 		});
 
 		// Get devx-logs to ship EC2 application logs to Central ELK

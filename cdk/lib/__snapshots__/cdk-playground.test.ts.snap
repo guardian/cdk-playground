@@ -21,11 +21,7 @@ Object {
             Object {
               "Ref": "lambdacdkplaygroundlambdaapi061BB942",
             },
-            ".execute-api.",
-            Object {
-              "Ref": "AWS::Region",
-            },
-            ".",
+            ".execute-api.eu-west-1.",
             Object {
               "Ref": "AWS::URLSuffix",
             },
@@ -411,11 +407,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
                 "Fn::Join": Array [
                   "",
                   Array [
-                    "arn:aws:kinesis:",
-                    Object {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:kinesis:eu-west-1:",
                     Object {
                       "Ref": "AWS::AccountId",
                     },
@@ -447,17 +439,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Principal": Object {
-                "Service": Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      "ec2.",
-                      Object {
-                        "Ref": "AWS::URLSuffix",
-                      },
-                    ],
-                  ],
-                },
+                "Service": "ec2.amazonaws.com",
               },
             },
           ],
@@ -649,11 +631,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
                 "Fn::Join": Array [
                   "",
                   Array [
-                    "arn:aws:ssm:",
-                    Object {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     Object {
                       "Ref": "AWS::AccountId",
                     },
@@ -672,11 +650,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
                 "Fn::Join": Array [
                   "",
                   Array [
-                    "arn:aws:ssm:",
-                    Object {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     Object {
                       "Ref": "AWS::AccountId",
                     },
@@ -984,11 +958,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
                 "Fn::Join": Array [
                   "",
                   Array [
-                    "arn:aws:ssm:",
-                    Object {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     Object {
                       "Ref": "AWS::AccountId",
                     },
@@ -1007,11 +977,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
                 "Fn::Join": Array [
                   "",
                   Array [
-                    "arn:aws:ssm:",
-                    Object {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     Object {
                       "Ref": "AWS::AccountId",
                     },
@@ -1076,11 +1042,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
                 Object {
                   "Ref": "AWS::Partition",
                 },
-                ":apigateway:",
-                Object {
-                  "Ref": "AWS::Region",
-                },
-                ":lambda:path/2015-03-31/functions/",
+                ":apigateway:eu-west-1:lambda:path/2015-03-31/functions/",
                 Object {
                   "Fn::GetAtt": Array [
                     "lambda8B5974B5",
@@ -1122,11 +1084,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
               Object {
                 "Ref": "AWS::Partition",
               },
-              ":execute-api:",
-              Object {
-                "Ref": "AWS::Region",
-              },
-              ":",
+              ":execute-api:eu-west-1:",
               Object {
                 "Ref": "AWS::AccountId",
               },
@@ -1163,11 +1121,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
               Object {
                 "Ref": "AWS::Partition",
               },
-              ":execute-api:",
-              Object {
-                "Ref": "AWS::Region",
-              },
-              ":",
+              ":execute-api:eu-west-1:",
               Object {
                 "Ref": "AWS::AccountId",
               },
@@ -1249,7 +1203,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "AWS::IAM::Role",
     },
-    "lambdacdkplaygroundlambdaapiDeployment157471B2a29cd8fbf3d024a708683557bf579dbb": Object {
+    "lambdacdkplaygroundlambdaapiDeployment157471B23507d885fa4f6f2bfbd1011b60b24ca1": Object {
       "DependsOn": Array [
         "lambdacdkplaygroundlambdaapiproxyANYDB984CB2",
         "lambdacdkplaygroundlambdaapiproxyFA4DE6D2",
@@ -1269,7 +1223,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       ],
       "Properties": Object {
         "DeploymentId": Object {
-          "Ref": "lambdacdkplaygroundlambdaapiDeployment157471B2a29cd8fbf3d024a708683557bf579dbb",
+          "Ref": "lambdacdkplaygroundlambdaapiDeployment157471B23507d885fa4f6f2bfbd1011b60b24ca1",
         },
         "RestApiId": Object {
           "Ref": "lambdacdkplaygroundlambdaapi061BB942",
@@ -1368,11 +1322,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
               Object {
                 "Ref": "AWS::Partition",
               },
-              ":execute-api:",
-              Object {
-                "Ref": "AWS::Region",
-              },
-              ":",
+              ":execute-api:eu-west-1:",
               Object {
                 "Ref": "AWS::AccountId",
               },
@@ -1409,11 +1359,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
               Object {
                 "Ref": "AWS::Partition",
               },
-              ":execute-api:",
-              Object {
-                "Ref": "AWS::Region",
-              },
-              ":",
+              ":execute-api:eu-west-1:",
               Object {
                 "Ref": "AWS::AccountId",
               },
@@ -1443,11 +1389,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
                 Object {
                   "Ref": "AWS::Partition",
                 },
-                ":apigateway:",
-                Object {
-                  "Ref": "AWS::Region",
-                },
-                ":lambda:path/2015-03-31/functions/",
+                ":apigateway:eu-west-1:lambda:path/2015-03-31/functions/",
                 Object {
                   "Fn::GetAtt": Array [
                     "lambda8B5974B5",
