@@ -2,9 +2,10 @@ import { GuApiLambda, GuPlayApp } from '@guardian/cdk';
 import { AccessScope } from '@guardian/cdk/lib/constants/access';
 import { GuCertificate } from '@guardian/cdk/lib/constructs/acm';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
-import { GuStack, GuStringParameter } from '@guardian/cdk/lib/constructs/core';
+import { GuStack } from '@guardian/cdk/lib/constructs/core';
+import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import type { App } from 'aws-cdk-lib';
-import { Tags } from 'aws-cdk-lib';
+import { Duration, Tags } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
@@ -16,12 +17,10 @@ export class CdkPlayground extends GuStack {
 	) {
 		super(scope, id, { ...props, stack: 'deploy', stage: 'PROD' });
 
-		const hostedZoneIdParam = new GuStringParameter(this, 'HostedZone', {
-			description: 'Route53 hosted zone',
-		});
-
 		const ec2App = 'cdk-playground';
-		const { autoScalingGroup } = new GuPlayApp(this, {
+		const ec2AppDomainName = 'cdk-playground.gutools.co.uk';
+
+		const { autoScalingGroup, loadBalancer } = new GuPlayApp(this, {
 			app: ec2App,
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
 			access: { scope: AccessScope.PUBLIC },
@@ -32,8 +31,7 @@ export class CdkPlayground extends GuStack {
 				},
 			},
 			certificateProps: {
-				domainName: 'cdk-playground.devx.dev-gutools.co.uk',
-				hostedZoneId: hostedZoneIdParam.valueAsString,
+				domainName: ec2AppDomainName,
 			},
 			monitoringConfiguration: { noMonitoring: true },
 			scaling: {
@@ -42,10 +40,18 @@ export class CdkPlayground extends GuStack {
 			},
 		});
 
+		// Get devx-logs to ship EC2 application logs to Central ELK
 		Tags.of(autoScalingGroup).add('SystemdUnit', `${ec2App}.service`);
 
+		new GuCname(this, 'EC2AppDNS', {
+			app: ec2App,
+			ttl: Duration.hours(1),
+			domainName: ec2AppDomainName,
+			resourceRecord: loadBalancer.loadBalancerDnsName,
+		});
+
 		const lambdaApp = 'cdk-playground-lambda';
-		const lambdaDomainName = 'cdk-playground-lambda.devx.dev-gutools.co.uk';
+		const lambdaDomainName = 'cdk-playground-lambda.gutools.co.uk';
 
 		const lambda = new GuApiLambda(this, 'lambda', {
 			fileName: `cdk-playground-lambda.zip`,
@@ -61,13 +67,19 @@ export class CdkPlayground extends GuStack {
 			},
 		});
 
-		lambda.api.addDomainName('domain', {
+		const domain = lambda.api.addDomainName('domain', {
 			domainName: lambdaDomainName,
 			certificate: new GuCertificate(this, {
 				app: lambdaApp,
 				domainName: lambdaDomainName,
-				hostedZoneId: hostedZoneIdParam.valueAsString,
 			}),
+		});
+
+		new GuCname(this, 'LambdaDNS', {
+			app: lambdaApp,
+			ttl: Duration.hours(1),
+			domainName: lambdaDomainName,
+			resourceRecord: domain.domainNameAliasDomainName,
 		});
 	}
 }

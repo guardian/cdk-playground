@@ -49,10 +49,6 @@ Object {
       "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "HostedZone": Object {
-      "Description": "Route53 hosted zone",
-      "Type": "String",
-    },
     "LoggingStreamName": Object {
       "Default": "/account/services/logging.stream.name",
       "Description": "SSM parameter containing the Name (not ARN) on the kinesis stream",
@@ -206,15 +202,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
     "CertificateCdkplayground47FCF7D9": Object {
       "DeletionPolicy": "Retain",
       "Properties": Object {
-        "DomainName": "cdk-playground.devx.dev-gutools.co.uk",
-        "DomainValidationOptions": Array [
-          Object {
-            "DomainName": "cdk-playground.devx.dev-gutools.co.uk",
-            "HostedZoneId": Object {
-              "Ref": "HostedZone",
-            },
-          },
-        ],
+        "DomainName": "cdk-playground.gutools.co.uk",
         "Tags": Array [
           Object {
             "Key": "App",
@@ -245,15 +233,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
     "CertificateCdkplaygroundlambda82D0BE4D": Object {
       "DeletionPolicy": "Retain",
       "Properties": Object {
-        "DomainName": "cdk-playground-lambda.devx.dev-gutools.co.uk",
-        "DomainValidationOptions": Array [
-          Object {
-            "DomainName": "cdk-playground-lambda.devx.dev-gutools.co.uk",
-            "HostedZoneId": Object {
-              "Ref": "HostedZone",
-            },
-          },
-        ],
+        "DomainName": "cdk-playground-lambda.gutools.co.uk",
         "Tags": Array [
           Object {
             "Key": "App",
@@ -306,6 +286,23 @@ dpkg -i /cdk-playground/cdk-playground.deb",
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "EC2AppDNS": Object {
+      "Properties": Object {
+        "Name": "cdk-playground.gutools.co.uk",
+        "RecordType": "CNAME",
+        "ResourceRecords": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "LoadBalancerCdkplayground7C6B4D97",
+              "DNSName",
+            ],
+          },
+        ],
+        "Stage": "PROD",
+        "TTL": 3600,
+      },
+      "Type": "Guardian::DNS::RecordSet",
     },
     "GetDistributablePolicyCdkplaygroundBFB4D02B": Object {
       "Properties": Object {
@@ -491,6 +488,23 @@ dpkg -i /cdk-playground/cdk-playground.deb",
         ],
       },
       "Type": "AWS::IAM::Role",
+    },
+    "LambdaDNS": Object {
+      "Properties": Object {
+        "Name": "cdk-playground-lambda.gutools.co.uk",
+        "RecordType": "CNAME",
+        "ResourceRecords": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "lambdacdkplaygroundlambdaapidomainD1A8D46F",
+              "RegionalDomainName",
+            ],
+          },
+        ],
+        "Stage": "PROD",
+        "TTL": 3600,
+      },
+      "Type": "Guardian::DNS::RecordSet",
     },
     "ListenerCdkplaygroundA8D9CA6F": Object {
       "Properties": Object {
@@ -1288,7 +1302,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
     },
     "lambdacdkplaygroundlambdaapidomainD1A8D46F": Object {
       "Properties": Object {
-        "DomainName": "cdk-playground-lambda.devx.dev-gutools.co.uk",
+        "DomainName": "cdk-playground-lambda.gutools.co.uk",
         "EndpointConfiguration": Object {
           "Types": Array [
             "REGIONAL",
