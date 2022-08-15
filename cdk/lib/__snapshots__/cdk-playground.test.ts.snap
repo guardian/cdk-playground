@@ -1242,7 +1242,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
         "lambdacdkplaygroundlambdaapiANY46D7365E",
       ],
       "Properties": Object {
-        "Description": "Automatically created by the RestApi construct",
+        "Description": "cdk-playground-lambda",
         "RestApiId": Object {
           "Ref": "lambdacdkplaygroundlambdaapi061BB942",
         },
