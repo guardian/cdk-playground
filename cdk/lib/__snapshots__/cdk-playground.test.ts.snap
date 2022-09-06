@@ -300,6 +300,204 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "Guardian::DNS::RecordSet",
     },
+    "FastBurnCompositeAlarm65F2DA31": Object {
+      "Properties": Object {
+        "AlarmName": "CdkPlaygroundFastBurnCompositeAlarm3B066476",
+        "AlarmRule": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "(ALARM(\\"",
+              Object {
+                "Fn::GetAtt": Array [
+                  "FastBurnOver1hourDE51E30A",
+                  "Arn",
+                ],
+              },
+              "\\") AND ALARM(\\"",
+              Object {
+                "Fn::GetAtt": Array [
+                  "FastBurnOver5minutes1539F91D",
+                  "Arn",
+                ],
+              },
+              "\\"))",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::CloudWatch::CompositeAlarm",
+    },
+    "FastBurnOver1hourDE51E30A": Object {
+      "Properties": Object {
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": Array [
+          Object {
+            "Expression": "(m1+m2)/m3",
+            "Id": "expr_1",
+            "Label": "Observed failure rate",
+          },
+          Object {
+            "Id": "m1",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerCdkplayground7C6B4D97",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "HTTPCode_ELB_5XX_Count",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 3600,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+          Object {
+            "Id": "m2",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerCdkplayground7C6B4D97",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "HTTPCode_Target_5XX_Count",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 3600,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+          Object {
+            "Id": "m3",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerCdkplayground7C6B4D97",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "RequestCount",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 3600,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+        ],
+        "Threshold": 0.015000000000000013,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "FastBurnOver5minutes1539F91D": Object {
+      "Properties": Object {
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": Array [
+          Object {
+            "Expression": "(m1+m2)/m3",
+            "Id": "expr_1",
+            "Label": "Observed failure rate",
+          },
+          Object {
+            "Id": "m1",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerCdkplayground7C6B4D97",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "HTTPCode_ELB_5XX_Count",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 300,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+          Object {
+            "Id": "m2",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerCdkplayground7C6B4D97",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "HTTPCode_Target_5XX_Count",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 300,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+          Object {
+            "Id": "m3",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerCdkplayground7C6B4D97",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "RequestCount",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 300,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+        ],
+        "Threshold": 0.015000000000000013,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
     "GetDistributablePolicyCdkplaygroundBFB4D02B": Object {
       "Properties": Object {
         "PolicyDocument": Object {
@@ -620,6 +818,204 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
     },
+    "ModerateBurnCompositeAlarm860865F4": Object {
+      "Properties": Object {
+        "AlarmName": "CdkPlaygroundModerateBurnCompositeAlarmCF097D66",
+        "AlarmRule": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "(ALARM(\\"",
+              Object {
+                "Fn::GetAtt": Array [
+                  "ModerateBurnOver6hoursE1C862D7",
+                  "Arn",
+                ],
+              },
+              "\\") AND ALARM(\\"",
+              Object {
+                "Fn::GetAtt": Array [
+                  "ModerateBurnOver30minutes0000A6D8",
+                  "Arn",
+                ],
+              },
+              "\\"))",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::CloudWatch::CompositeAlarm",
+    },
+    "ModerateBurnOver30minutes0000A6D8": Object {
+      "Properties": Object {
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": Array [
+          Object {
+            "Expression": "(m1+m2)/m3",
+            "Id": "expr_1",
+            "Label": "Observed failure rate",
+          },
+          Object {
+            "Id": "m1",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerCdkplayground7C6B4D97",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "HTTPCode_ELB_5XX_Count",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 1800,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+          Object {
+            "Id": "m2",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerCdkplayground7C6B4D97",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "HTTPCode_Target_5XX_Count",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 1800,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+          Object {
+            "Id": "m3",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerCdkplayground7C6B4D97",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "RequestCount",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 1800,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+        ],
+        "Threshold": 0.006000000000000005,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "ModerateBurnOver6hoursE1C862D7": Object {
+      "Properties": Object {
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": Array [
+          Object {
+            "Expression": "(m1+m2)/m3",
+            "Id": "expr_1",
+            "Label": "Observed failure rate",
+          },
+          Object {
+            "Id": "m1",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerCdkplayground7C6B4D97",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "HTTPCode_ELB_5XX_Count",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 21600,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+          Object {
+            "Id": "m2",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerCdkplayground7C6B4D97",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "HTTPCode_Target_5XX_Count",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 21600,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+          Object {
+            "Id": "m3",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerCdkplayground7C6B4D97",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "RequestCount",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 21600,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+        ],
+        "Threshold": 0.006000000000000005,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
     "ParameterStoreReadCdkplaygroundF78958B9": Object {
       "Properties": Object {
         "PolicyDocument": Object {
@@ -706,6 +1102,204 @@ dpkg -i /cdk-playground/cdk-playground.deb",
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "SlowBurnCompositeAlarm076ED15F": Object {
+      "Properties": Object {
+        "AlarmName": "CdkPlaygroundSlowBurnCompositeAlarm0C3A370B",
+        "AlarmRule": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "(ALARM(\\"",
+              Object {
+                "Fn::GetAtt": Array [
+                  "SlowBurnOver1dayCB46E84F",
+                  "Arn",
+                ],
+              },
+              "\\") AND ALARM(\\"",
+              Object {
+                "Fn::GetAtt": Array [
+                  "SlowBurnOver2hours2548C3D9",
+                  "Arn",
+                ],
+              },
+              "\\"))",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::CloudWatch::CompositeAlarm",
+    },
+    "SlowBurnOver1dayCB46E84F": Object {
+      "Properties": Object {
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": Array [
+          Object {
+            "Expression": "(m1+m2)/m3",
+            "Id": "expr_1",
+            "Label": "Observed failure rate",
+          },
+          Object {
+            "Id": "m1",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerCdkplayground7C6B4D97",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "HTTPCode_ELB_5XX_Count",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 86400,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+          Object {
+            "Id": "m2",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerCdkplayground7C6B4D97",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "HTTPCode_Target_5XX_Count",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 86400,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+          Object {
+            "Id": "m3",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerCdkplayground7C6B4D97",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "RequestCount",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 86400,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+        ],
+        "Threshold": 0.0030000000000000027,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "SlowBurnOver2hours2548C3D9": Object {
+      "Properties": Object {
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": Array [
+          Object {
+            "Expression": "(m1+m2)/m3",
+            "Id": "expr_1",
+            "Label": "Observed failure rate",
+          },
+          Object {
+            "Id": "m1",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerCdkplayground7C6B4D97",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "HTTPCode_ELB_5XX_Count",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 7200,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+          Object {
+            "Id": "m2",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerCdkplayground7C6B4D97",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "HTTPCode_Target_5XX_Count",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 7200,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+          Object {
+            "Id": "m3",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerCdkplayground7C6B4D97",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "RequestCount",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 7200,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+        ],
+        "Threshold": 0.0030000000000000027,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
     },
     "TargetGroupCdkplayground7A453FC2": Object {
       "Properties": Object {

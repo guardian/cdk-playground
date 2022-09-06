@@ -6,7 +6,20 @@ import { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import type { App } from 'aws-cdk-lib';
 import { Duration, Tags } from 'aws-cdk-lib';
+import {
+	Alarm,
+	AlarmRule,
+	AlarmState,
+	ComparisonOperator,
+	CompositeAlarm,
+	MathExpression,
+	TreatMissingData,
+} from 'aws-cdk-lib/aws-cloudwatch';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
+import {
+	HttpCodeElb,
+	HttpCodeTarget,
+} from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
 export class CdkPlayground extends GuStack {
@@ -54,6 +67,87 @@ export class CdkPlayground extends GuStack {
 			ttl: Duration.hours(1),
 			domainName: ec2AppDomainName,
 			resourceRecord: loadBalancer.loadBalancerDnsName,
+		});
+
+		interface BurnRate {
+			speed: 'Fast' | 'Moderate' | 'Slow';
+			burnRate: number;
+			longWindow: Duration;
+			shortWindow: Duration;
+			action: 'notify' | 'ticket';
+		}
+
+		const fastBurnRate: BurnRate = {
+			speed: 'Fast',
+			burnRate: 15,
+			longWindow: Duration.hours(1),
+			shortWindow: Duration.minutes(5),
+			action: 'notify',
+		};
+
+		const moderateBurnRate: BurnRate = {
+			speed: 'Moderate',
+			burnRate: 6,
+			longWindow: Duration.hours(6),
+			shortWindow: Duration.minutes(30),
+			action: 'notify',
+		};
+
+		const slowBurnRate: BurnRate = {
+			speed: 'Slow',
+			burnRate: 3,
+			longWindow: Duration.days(1),
+			shortWindow: Duration.hours(2),
+			action: 'ticket',
+		};
+
+		const sloTarget = 0.999;
+		const errorBudget = 1 - sloTarget;
+
+		function burnRateAlarm(
+			scope: GuStack,
+			burnRate: BurnRate,
+			window: Duration,
+		): Alarm {
+			const undesirableErrorBudgetConsumption = errorBudget * burnRate.burnRate;
+			return new Alarm(
+				scope,
+				`${burnRate.speed}BurnOver${window.toHumanString()}`,
+				{
+					metric: new MathExpression({
+						expression: `(m1+m2)/m3`,
+						label: 'Observed failure rate',
+						usingMetrics: {
+							m1: loadBalancer.metricHttpCodeElb(HttpCodeElb.ELB_5XX_COUNT),
+							m2: loadBalancer.metricHttpCodeTarget(
+								HttpCodeTarget.TARGET_5XX_COUNT,
+							),
+							m3: loadBalancer.metricRequestCount(),
+						},
+						period: window,
+					}),
+					evaluationPeriods: 1,
+					threshold: undesirableErrorBudgetConsumption,
+					comparisonOperator: ComparisonOperator.GREATER_THAN_THRESHOLD,
+					treatMissingData: TreatMissingData.NOT_BREACHING,
+				},
+			);
+		}
+
+		[fastBurnRate, moderateBurnRate, slowBurnRate].map((burnRate) => {
+			return new CompositeAlarm(this, `${burnRate.speed}BurnCompositeAlarm`, {
+				alarmRule: AlarmRule.allOf(
+					AlarmRule.fromAlarm(
+						burnRateAlarm(this, burnRate, burnRate.longWindow),
+						AlarmState.ALARM,
+					),
+					AlarmRule.fromAlarm(
+						burnRateAlarm(this, burnRate, burnRate.shortWindow),
+						AlarmState.ALARM,
+					),
+				),
+				// Use burnRate.action to do something useful
+			});
 		});
 
 		const lambdaApp = 'cdk-playground-lambda';
