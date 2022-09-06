@@ -18,4 +18,10 @@ class ManagementController (override val controllerComponents: ControllerCompone
     logger.info("hello from the health check")
     Ok("OK")
   }
+
+  def serveAnError: Action[AnyContent] = Action {
+    logger.warn("serving an error")
+    InternalServerError
+  }
+
 }

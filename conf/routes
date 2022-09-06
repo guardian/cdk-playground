@@ -1,5 +1,6 @@
 GET     /                           controllers.ManagementController.manifest
 GET     /healthcheck                controllers.ManagementController.healthCheck
+GET     /error                      controllers.ManagementController.serveAnError
 GET     /robots.txt                 controllers.ManagementController.disallowRobots
 
 # Map static resources from the /public folder to the /assets URL path
