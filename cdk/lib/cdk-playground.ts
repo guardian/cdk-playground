@@ -6,6 +6,7 @@ import { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import type { App } from 'aws-cdk-lib';
 import { Duration, Tags } from 'aws-cdk-lib';
+import type { CfnCompositeAlarm } from 'aws-cdk-lib/aws-cloudwatch';
 import {
 	Alarm,
 	AlarmRule,
@@ -15,12 +16,15 @@ import {
 	MathExpression,
 	TreatMissingData,
 } from 'aws-cdk-lib/aws-cloudwatch';
+import { SnsAction } from 'aws-cdk-lib/aws-cloudwatch-actions';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import {
 	HttpCodeElb,
 	HttpCodeTarget,
 } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import type { ITopic } from 'aws-cdk-lib/aws-sns';
+import { Topic } from 'aws-cdk-lib/aws-sns';
 
 export class CdkPlayground extends GuStack {
 	constructor(
@@ -104,6 +108,13 @@ export class CdkPlayground extends GuStack {
 		const sloTarget = 0.999;
 		const errorBudget = 1 - sloTarget;
 
+		const testTopicArn: string = `arn:aws:sns:${this.region}:${this.account}:jacob-test`; // FIXME
+		const testSnsTopic: ITopic = Topic.fromTopicArn(
+			this,
+			'SnsSloAlarms',
+			testTopicArn,
+		);
+
 		function burnRateAlarm(
 			scope: GuStack,
 			burnRate: BurnRate,
@@ -134,21 +145,57 @@ export class CdkPlayground extends GuStack {
 			);
 		}
 
-		[fastBurnRate, moderateBurnRate, slowBurnRate].map((burnRate) => {
-			return new CompositeAlarm(this, `${burnRate.speed}BurnCompositeAlarm`, {
-				alarmRule: AlarmRule.allOf(
-					AlarmRule.fromAlarm(
-						burnRateAlarm(this, burnRate, burnRate.longWindow),
-						AlarmState.ALARM,
+		function applySuppression(
+			alarmToSuppress: CompositeAlarm,
+			suppressingAlarm: CompositeAlarm,
+			shortWindow: Duration,
+		) {
+			const cfnAlarm = alarmToSuppress.node.defaultChild as CfnCompositeAlarm;
+			cfnAlarm.actionsSuppressor = suppressingAlarm.alarmArn;
+			cfnAlarm.actionsSuppressorWaitPeriod = 120;
+			cfnAlarm.actionsSuppressorExtensionPeriod = shortWindow.toSeconds();
+		}
+
+		function createCompositeAlarm(
+			scope: GuStack,
+			burnRate: BurnRate,
+		): CompositeAlarm {
+			const alarm = new CompositeAlarm(
+				scope,
+				`${burnRate.speed}BurnCompositeAlarm`,
+				{
+					alarmRule: AlarmRule.allOf(
+						AlarmRule.fromAlarm(
+							burnRateAlarm(scope, burnRate, burnRate.longWindow),
+							AlarmState.ALARM,
+						),
+						AlarmRule.fromAlarm(
+							burnRateAlarm(scope, burnRate, burnRate.shortWindow),
+							AlarmState.ALARM,
+						),
 					),
-					AlarmRule.fromAlarm(
-						burnRateAlarm(this, burnRate, burnRate.shortWindow),
-						AlarmState.ALARM,
-					),
-				),
-				// Use burnRate.action to do something useful
-			});
-		});
+				},
+			);
+			// TODO: Alter the behaviour depending on burnRate.action. For now, just send everything to a test SNS topic
+			alarm.addAlarmAction(new SnsAction(testSnsTopic));
+			return alarm;
+		}
+
+		const fastBurnAlarm = createCompositeAlarm(this, fastBurnRate);
+
+		const moderateBurnAlarm = createCompositeAlarm(this, moderateBurnRate);
+		applySuppression(
+			moderateBurnAlarm,
+			fastBurnAlarm,
+			moderateBurnRate.shortWindow,
+		);
+
+		const slowBurnAlarm = createCompositeAlarm(this, slowBurnRate);
+		applySuppression(
+			slowBurnAlarm,
+			moderateBurnAlarm,
+			slowBurnRate.shortWindow,
+		);
 
 		const lambdaApp = 'cdk-playground-lambda';
 		const lambdaDomainName = 'cdk-playground-lambda.gutools.co.uk';

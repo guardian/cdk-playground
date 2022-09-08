@@ -302,6 +302,20 @@ dpkg -i /cdk-playground/cdk-playground.deb",
     },
     "FastBurnCompositeAlarm65F2DA31": Object {
       "Properties": Object {
+        "AlarmActions": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:aws:sns:eu-west-1:",
+                Object {
+                  "Ref": "AWS::AccountId",
+                },
+                ":jacob-test",
+              ],
+            ],
+          },
+        ],
         "AlarmName": "CdkPlaygroundFastBurnCompositeAlarm3B066476",
         "AlarmRule": Object {
           "Fn::Join": Array [
@@ -820,6 +834,28 @@ dpkg -i /cdk-playground/cdk-playground.deb",
     },
     "ModerateBurnCompositeAlarm860865F4": Object {
       "Properties": Object {
+        "ActionsSuppressor": Object {
+          "Fn::GetAtt": Array [
+            "FastBurnCompositeAlarm65F2DA31",
+            "Arn",
+          ],
+        },
+        "ActionsSuppressorExtensionPeriod": 1800,
+        "ActionsSuppressorWaitPeriod": 120,
+        "AlarmActions": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:aws:sns:eu-west-1:",
+                Object {
+                  "Ref": "AWS::AccountId",
+                },
+                ":jacob-test",
+              ],
+            ],
+          },
+        ],
         "AlarmName": "CdkPlaygroundModerateBurnCompositeAlarmCF097D66",
         "AlarmRule": Object {
           "Fn::Join": Array [
@@ -1105,6 +1141,28 @@ dpkg -i /cdk-playground/cdk-playground.deb",
     },
     "SlowBurnCompositeAlarm076ED15F": Object {
       "Properties": Object {
+        "ActionsSuppressor": Object {
+          "Fn::GetAtt": Array [
+            "ModerateBurnCompositeAlarm860865F4",
+            "Arn",
+          ],
+        },
+        "ActionsSuppressorExtensionPeriod": 7200,
+        "ActionsSuppressorWaitPeriod": 120,
+        "AlarmActions": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:aws:sns:eu-west-1:",
+                Object {
+                  "Ref": "AWS::AccountId",
+                },
+                ":jacob-test",
+              ],
+            ],
+          },
+        ],
         "AlarmName": "CdkPlaygroundSlowBurnCompositeAlarm0C3A370B",
         "AlarmRule": Object {
           "Fn::Join": Array [
