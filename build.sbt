@@ -1,5 +1,3 @@
-import com.gu.riffraff.artifact.BuildInfo
-
 // https://github.com/orgs/playframework/discussions/11222
 val jacksonVersion         = "2.13.2"
 val jacksonDatabindVersion = "2.13.2.2"
@@ -21,8 +19,10 @@ val akkaSerializationJacksonOverrides = Seq(
   "com.fasterxml.jackson.module"     %% "jackson-module-scala",
 ).map(_ % jacksonVersion)
 
+def env(propName: String): Option[String] = sys.env.get(propName).filter(_.trim.nonEmpty)
+
 lazy val root = (project in file("."))
-  .enablePlugins(PlayScala, BuildInfoPlugin, RiffRaffArtifact, JDebPackaging, SystemdPlugin)
+  .enablePlugins(PlayScala, BuildInfoPlugin, JDebPackaging, SystemdPlugin)
   .settings(
     name := """cdk-playground""",
     version := "1.0-SNAPSHOT",
@@ -47,27 +47,25 @@ lazy val root = (project in file("."))
         "net.logstash.logback" % "logstash-logback-encoder" % "7.1.1"
       ),
 
-    riffRaffPackageName := s"devx::${name.value}",
-    riffRaffManifestProjectName := riffRaffPackageName.value,
-    riffRaffArtifactResources := Seq(
-      (Debian / packageBin).value -> s"${name.value}/${name.value}.deb",
-      baseDirectory.value / "cdk" / "cdk.out" / "riff-raff.yaml" -> "riff-raff.yaml",
-      baseDirectory.value / "cdk" / "cdk.out" / "CdkPlayground.template.json" -> s"cdk.out/CdkPlayground.template.json",
-      baseDirectory.value / "lambda" / "cdk-playground-lambda.zip" -> "cdk-playground-lambda/cdk-playground-lambda.zip"
+    buildInfoKeys ++= Seq[BuildInfoKey](
+      name,
+      scalaVersion,
+      sbtVersion,
+
+      // copied from https://github.com/guardian/sbt-riffraff-artifact/blob/e6f5e62d8f776b1004f72ed1ea415328fa43ed31/src/main/scala/com/gu/riffraff/artifact/BuildInfo.scala
+      BuildInfoKey.sbtbuildinfoConstantEntry("buildNumber", env("GITHUB_RUN_NUMBER")),
+      BuildInfoKey.sbtbuildinfoConstantEntry("buildTime", System.currentTimeMillis),
+      BuildInfoKey.sbtbuildinfoConstantEntry("gitCommitId", env("GITHUB_SHA")),
+
+      BuildInfoKey.sbtbuildinfoConstantEntry(
+        "branch",
+        env("GITHUB_HEAD_REF")
+          .orElse(env("GITHUB_REF"))
+          .orElse(Some("unknown-branch"))
+          .get
+          .stripPrefix("refs/heads/")),
     ),
-    buildInfoKeys := {
-      lazy val buildInfo = BuildInfo(baseDirectory.value)
-      Seq[BuildInfoKey](
-        BuildInfoKey.sbtbuildinfoConstantEntry("buildNumber", buildInfo.buildIdentifier),
-        // so this next one is constant to avoid it always recompiling on dev machines.
-        // we only really care about build time on teamcity, when a constant based on when
-        // it was loaded is just fine
-        BuildInfoKey.sbtbuildinfoConstantEntry("buildTime", System.currentTimeMillis),
-        BuildInfoKey.sbtbuildinfoConstantEntry("gitCommitId", buildInfo.revision),
-        BuildInfoKey.sbtbuildinfoConstantEntry("branch", buildInfo.branch)
-      )
-    },
-    buildInfoOptions:= Seq(
+    buildInfoOptions := Seq(
       BuildInfoOption.Traits("management.BuildInfo"),
       BuildInfoOption.ToJson
     )
