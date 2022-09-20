@@ -2,6 +2,32 @@
 
 exports[`The Deploy stack matches the snapshot 1`] = `
 Object {
+  "Metadata": Object {
+    "gu:cdk:constructs": Array [
+      "GuVpcParameter",
+      "GuSubnetListParameter",
+      "GuCertificate",
+      "GuInstanceRole",
+      "GuSSMRunCommandPolicy",
+      "GuDescribeEC2Policy",
+      "GuLoggingStreamNameParameter",
+      "GuLogShippingPolicy",
+      "GuDistributionBucketParameter",
+      "GuGetDistributablePolicy",
+      "GuParameterStoreReadPolicy",
+      "GuAmiParameter",
+      "GuHttpsEgressSecurityGroup",
+      "GuAutoScalingGroup",
+      "GuWazuhAccess",
+      "GuSubnetListParameter",
+      "GuApplicationLoadBalancer",
+      "GuApplicationTargetGroup",
+      "GuHttpsApplicationListener",
+      "GuApiLambda",
+      "GuCertificate",
+    ],
+    "gu:cdk:version": "TEST",
+  },
   "Outputs": Object {
     "LoadBalancerCdkplaygroundDnsName": Object {
       "Description": "DNS entry for LoadBalancerCdkplayground",
@@ -945,7 +971,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
                       Object {
                         "Ref": "DistributionBucketName",
                       },
-                      "/*",
+                      "/playground/PROD/cdk-playground-lambda/cdk-playground-lambda.zip",
                     ],
                   ],
                 },
@@ -1137,6 +1163,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       "Type": "AWS::Lambda::Permission",
     },
     "lambdacdkplaygroundlambdaapiAccount6891AB06": Object {
+      "DeletionPolicy": "Retain",
       "DependsOn": Array [
         "lambdacdkplaygroundlambdaapi061BB942",
       ],
@@ -1149,8 +1176,10 @@ dpkg -i /cdk-playground/cdk-playground.deb",
         },
       },
       "Type": "AWS::ApiGateway::Account",
+      "UpdateReplacePolicy": "Retain",
     },
     "lambdacdkplaygroundlambdaapiCloudWatchRole4B1F446E": Object {
+      "DeletionPolicy": "Retain",
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -1202,6 +1231,7 @@ dpkg -i /cdk-playground/cdk-playground.deb",
         ],
       },
       "Type": "AWS::IAM::Role",
+      "UpdateReplacePolicy": "Retain",
     },
     "lambdacdkplaygroundlambdaapiDeployment157471B23507d885fa4f6f2bfbd1011b60b24ca1": Object {
       "DependsOn": Array [
