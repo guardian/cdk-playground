@@ -4,6 +4,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
 Object {
   "Metadata": Object {
     "gu:cdk:constructs": Array [
+      "GuAllowPolicy",
       "GuVpcParameter",
       "GuSubnetListParameter",
       "GuCertificate",
@@ -93,6 +94,27 @@ Object {
     },
   },
   "Resources": Object {
+    "AdotPolicyCE5C7192": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "aps:RemoteWrite",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "AdotPolicyCE5C7192",
+        "Roles": Array [
+          Object {
+            "Ref": "InstanceRoleCdkplaygroundC280027A",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "AutoScalingGroupCdkplaygroundASGD6E49F0F": Object {
       "Properties": Object {
         "HealthCheckGracePeriod": 120,
@@ -213,7 +235,11 @@ aws s3 cp 's3://",
                   "Ref": "DistributionBucketName",
                 },
                 "/playground/PROD/cdk-playground/cdk-playground.deb' '/cdk-playground/cdk-playground.deb'
-dpkg -i /cdk-playground/cdk-playground.deb",
+dpkg -i /cdk-playground/cdk-playground.deb
+wget https://aws-otel-collector.s3.amazonaws.com/ubuntu/arm64/latest/aws-otel-collector.deb
+dpkg -i -E ./aws-otel-collector.deb
+aws s3 cp s3://developer-playground-dist/playground/PROD/cdk-playground/metrics-config.yaml /opt/aws/aws-otel-collector/etc/metrics-config.yaml
+/opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -c /opt/aws/aws-otel-collector/etc/metrics-config.yaml -a start",
               ],
             ],
           },

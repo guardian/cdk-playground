@@ -1,6 +1,7 @@
 package controllers
 
 import buildinfo.BuildInfo
+import io.prometheus.client.Counter
 import play.api.Logging
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
@@ -18,4 +19,13 @@ class ManagementController (override val controllerComponents: ControllerCompone
     logger.info("hello from the health check")
     Ok("OK")
   }
+
+  //  Setting up a custom metric for Prometheus
+  val errors = Counter.build().name("custom_errors_total").help("Total errors.").register()
+  def testError: Action[AnyContent] = Action {
+    // Adding a data point to the Prometheus metric
+    errors.inc()
+    InternalServerError
+  }
+
 }

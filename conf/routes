@@ -1,6 +1,9 @@
 GET     /                           controllers.ManagementController.manifest
 GET     /healthcheck                controllers.ManagementController.healthCheck
+GET     /test-error                 controllers.ManagementController.testError
 GET     /robots.txt                 controllers.ManagementController.disallowRobots
+
+GET     /metrics                    com.github.stijndehaes.playprometheusfilters.controllers.PrometheusController.getMetrics
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
