@@ -44,8 +44,10 @@ lazy val root = (project in file("."))
       ++ jacksonOverrides
       ++ akkaSerializationJacksonOverrides
       ++ Seq(
-        "net.logstash.logback" % "logstash-logback-encoder" % "7.1.1"
-      ),
+        "net.logstash.logback" % "logstash-logback-encoder" % "7.1.1",
+        "io.prometheus" % "simpleclient" % "0.16.0",
+        "io.github.jyllands-posten" %% "play-prometheus-filters" % "0.6.1"
+    ),
 
     buildInfoKeys ++= Seq[BuildInfoKey](
       name,
