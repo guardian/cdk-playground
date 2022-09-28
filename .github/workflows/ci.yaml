@@ -32,3 +32,15 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
       - run: ./script/ci
+
+      - uses: guardian/actions-riff-raff@v2
+        with:
+          projectName: devx::cdk-playground
+          configPath: cdk/cdk.out/riff-raff.yaml
+          contentDirectories: |
+            cdk.out:
+              - cdk/cdk.out
+            cdk-playground:
+              - target/cdk-playground.deb
+            cdk-playground-lambda:
+              - lambda/cdk-playground-lambda.zip

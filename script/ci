@@ -15,4 +15,7 @@ set -e
   zip cdk-playground-lambda.zip handler.js
 )
 
-sbt clean compile test riffRaffUpload
+sbt clean compile test debian:packageBin
+
+# `sbt debian:packageBin` produces `target/cdk-playground_1.0-SNAPSHOT_all.deb`. Rename it to something easier.
+mv target/cdk-playground_1.0-SNAPSHOT_all.deb target/cdk-playground.deb
