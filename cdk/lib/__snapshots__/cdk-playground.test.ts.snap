@@ -26,6 +26,7 @@ Object {
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
       "GuCname",
+      "GuPrometheusErrorBudgetAlarmExperimental",
       "GuApiLambda",
       "GuCertificate",
       "GuCname",
@@ -249,6 +250,66 @@ aws s3 cp s3://developer-playground-dist/playground/PROD/cdk-playground/metrics-
         },
       },
       "Type": "AWS::AutoScaling::LaunchConfiguration",
+    },
+    "CdkPlaygroundAvailability": Object {
+      "Properties": Object {
+        "Data": "groups:
+  - name: multiwindow_recording_rules
+    rules:
+      - record: sli_for_CdkPlaygroundAvailability_5m
+        expr: sum by (job) (rate(http_requests_total{status=\\"500\\"}[5m])) / sum by (job) (rate(http_requests_total[5m]))
+      - record: sli_for_CdkPlaygroundAvailability_30m
+        expr: sum by (job) (rate(http_requests_total{status=\\"500\\"}[30m])) / sum by (job) (rate(http_requests_total[30m]))
+      - record: sli_for_CdkPlaygroundAvailability_1h
+        expr: sum by (job) (rate(http_requests_total{status=\\"500\\"}[1h])) / sum by (job) (rate(http_requests_total[1h]))
+      - record: sli_for_CdkPlaygroundAvailability_2h
+        expr: sum by (job) (rate(http_requests_total{status=\\"500\\"}[2h])) / sum by (job) (rate(http_requests_total[2h]))
+      - record: sli_for_CdkPlaygroundAvailability_6h
+        expr: sum by (job) (rate(http_requests_total{status=\\"500\\"}[6h])) / sum by (job) (rate(http_requests_total[6h]))
+      - record: sli_for_CdkPlaygroundAvailability_1d
+        expr: sum by (job) (rate(http_requests_total{status=\\"500\\"}[1d])) / sum by (job) (rate(http_requests_total[1d]))
+  - name: multiwindow_alerts
+    rules:
+      - alert: FastBurnAlarm
+        expr: (sli_for_CdkPlaygroundAvailability_5m > 0.014400000000000013) and (sli_for_CdkPlaygroundAvailability_1h > 0.014400000000000013)
+      - alert: MediumBurnAlarm
+        expr: (sli_for_CdkPlaygroundAvailability_30m > 0.006000000000000005) and (sli_for_CdkPlaygroundAvailability_6h > 0.006000000000000005)
+      - alert: SlowBurnAlarm
+        expr: (sli_for_CdkPlaygroundAvailability_2h > 0.0030000000000000027) and (sli_for_CdkPlaygroundAvailability_1d > 0.0030000000000000027)
+  ",
+        "Name": "test-cdk-rules",
+        "Tags": Array [
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "Workspace": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:aws:aps:eu-west-1:",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":workspace/ws-e4fe0f0b-2372-4309-901b-9aae06e4d9ba",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::APS::RuleGroupsNamespace",
     },
     "CertificateCdkplayground47FCF7D9": Object {
       "DeletionPolicy": "Retain",

@@ -5,6 +5,7 @@ import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuAllowPolicy } from '@guardian/cdk/lib/constructs/iam';
+import { GuPrometheusErrorBudgetAlarmExperimental } from "@guardian/cdk/lib/experimental/constructs";
 import type { App } from 'aws-cdk-lib';
 import { Duration, Tags } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
@@ -72,6 +73,13 @@ export class CdkPlayground extends GuStack {
 			domainName: ec2AppDomainName,
 			resourceRecord: loadBalancer.loadBalancerDnsName,
 		});
+
+    new GuPrometheusErrorBudgetAlarmExperimental(this, {
+      sloName: "CdkPlaygroundAvailability",
+      sloTarget: 0.999,
+      badEvents: 'http_requests_total{status="500"}',
+      validEvents: "http_requests_total",
+    });
 
 		const lambdaApp = 'cdk-playground-lambda';
 		const lambdaDomainName = 'cdk-playground-lambda.gutools.co.uk';
