@@ -7,6 +7,8 @@ Object {
       "GuAllowPolicy",
       "GuVpcParameter",
       "GuSubnetListParameter",
+      "GuSubnetListParameter",
+      "GuPlayApp",
       "GuCertificate",
       "GuInstanceRole",
       "GuSSMRunCommandPolicy",
@@ -20,12 +22,13 @@ Object {
       "GuHttpsEgressSecurityGroup",
       "GuAutoScalingGroup",
       "GuWazuhAccess",
-      "GuSubnetListParameter",
       "GuApplicationLoadBalancer",
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
+      "GuCname",
       "GuApiLambda",
       "GuCertificate",
+      "GuCname",
     ],
     "gu:cdk:version": "TEST",
   },
@@ -265,6 +268,10 @@ aws s3 cp s3://developer-playground-dist/playground/PROD/cdk-playground/metrics-
             "Value": "guardian/cdk-playground",
           },
           Object {
+            "Key": "Name",
+            "Value": "CdkPlayground/CertificateCdkplayground",
+          },
+          Object {
             "Key": "Stack",
             "Value": "playground",
           },
@@ -294,6 +301,10 @@ aws s3 cp s3://developer-playground-dist/playground/PROD/cdk-playground/metrics-
           Object {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "CdkPlayground/CertificateCdkplaygroundlambda",
           },
           Object {
             "Key": "Stack",
