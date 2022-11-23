@@ -1,3 +1,4 @@
+import join from 'path'
 import { GuApiLambda, GuPlayApp } from '@guardian/cdk';
 import { AccessScope } from '@guardian/cdk/lib/constants/access';
 import { GuCertificate } from '@guardian/cdk/lib/constructs/acm';
@@ -8,6 +9,8 @@ import type { App } from 'aws-cdk-lib';
 import { Duration, Tags } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
+
+const unused = "Hello there linter! You well?"
 
 export class CdkPlayground extends GuStack {
 	constructor(
