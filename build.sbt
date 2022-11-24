@@ -19,6 +19,8 @@ val akkaSerializationJacksonOverrides = Seq(
   "com.fasterxml.jackson.module"     %% "jackson-module-scala",
 ).map(_ % jacksonVersion)
 
+val otelVersion = "1.20.1"
+
 def env(propName: String): Option[String] = sys.env.get(propName).filter(_.trim.nonEmpty)
 
 lazy val root = (project in file("."))
@@ -44,8 +46,12 @@ lazy val root = (project in file("."))
       ++ jacksonOverrides
       ++ akkaSerializationJacksonOverrides
       ++ Seq(
-        "net.logstash.logback" % "logstash-logback-encoder" % "7.1.1"
-      ),
+        "net.logstash.logback" % "logstash-logback-encoder" % "7.1.1",
+        "io.opentelemetry" % "opentelemetry-bom" % otelVersion,
+        "io.opentelemetry" % "opentelemetry-api" % otelVersion,
+        "io.opentelemetry" % "opentelemetry-exporter-otlp" % otelVersion,
+        "io.opentelemetry" % "opentelemetry-sdk" % otelVersion
+    ),
 
     buildInfoKeys ++= Seq[BuildInfoKey](
       name,

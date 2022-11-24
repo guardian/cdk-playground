@@ -6,6 +6,7 @@ class AppLoader extends ApplicationLoader {
 
   def load(context: ApplicationLoader.Context): Application = {
     new LogbackLoggerConfigurator().configure(context.environment)
+    Otel.configure()
     components = new AppComponents(context)
     components.application
   }
