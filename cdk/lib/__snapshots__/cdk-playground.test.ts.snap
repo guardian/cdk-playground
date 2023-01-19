@@ -1,14 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`The Deploy stack matches the snapshot 1`] = `
-Object {
-  "Metadata": Object {
-    "gu:cdk:constructs": Array [
+{
+  "Metadata": {
+    "gu:cdk:constructs": [
       "GuVpcParameter",
       "GuSubnetListParameter",
+      "GuSubnetListParameter",
+      "GuPlayApp",
       "GuCertificate",
       "GuInstanceRole",
-      "GuSSMRunCommandPolicy",
       "GuDescribeEC2Policy",
       "GuLoggingStreamNameParameter",
       "GuLogShippingPolicy",
@@ -19,40 +20,41 @@ Object {
       "GuHttpsEgressSecurityGroup",
       "GuAutoScalingGroup",
       "GuWazuhAccess",
-      "GuSubnetListParameter",
       "GuApplicationLoadBalancer",
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
+      "GuCname",
       "GuApiLambda",
       "GuCertificate",
+      "GuCname",
     ],
     "gu:cdk:version": "TEST",
   },
-  "Outputs": Object {
-    "LoadBalancerCdkplaygroundDnsName": Object {
+  "Outputs": {
+    "LoadBalancerCdkplaygroundDnsName": {
       "Description": "DNS entry for LoadBalancerCdkplayground",
-      "Value": Object {
-        "Fn::GetAtt": Array [
+      "Value": {
+        "Fn::GetAtt": [
           "LoadBalancerCdkplayground7C6B4D97",
           "DNSName",
         ],
       },
     },
-    "lambdacdkplaygroundlambdaapiEndpoint0E1DFC5F": Object {
-      "Value": Object {
-        "Fn::Join": Array [
+    "lambdacdkplaygroundlambdaapiEndpoint0E1DFC5F": {
+      "Value": {
+        "Fn::Join": [
           "",
-          Array [
+          [
             "https://",
-            Object {
+            {
               "Ref": "lambdacdkplaygroundlambdaapi061BB942",
             },
             ".execute-api.eu-west-1.",
-            Object {
+            {
               "Ref": "AWS::URLSuffix",
             },
             "/",
-            Object {
+            {
               "Ref": "lambdacdkplaygroundlambdaapiDeploymentStageprod4C07895E",
             },
             "/",
@@ -61,155 +63,150 @@ Object {
       },
     },
   },
-  "Parameters": Object {
-    "AMICdkplayground": Object {
+  "Parameters": {
+    "AMICdkplayground": {
       "Description": "Amazon Machine Image ID for the app cdk-playground. Use this in conjunction with AMIgo to keep AMIs up to date.",
       "Type": "AWS::EC2::Image::Id",
     },
-    "DistributionBucketName": Object {
+    "DistributionBucketName": {
       "Default": "/account/services/artifact.bucket",
       "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "LoggingStreamName": Object {
+    "LoggingStreamName": {
       "Default": "/account/services/logging.stream.name",
       "Description": "SSM parameter containing the Name (not ARN) on the kinesis stream",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "VpcId": Object {
+    "VpcId": {
       "Default": "/account/vpc/primary/id",
       "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
-    "cdkplaygroundPrivateSubnets": Object {
+    "cdkplaygroundPrivateSubnets": {
       "Default": "/account/vpc/primary/subnets/private",
       "Description": "A list of private subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
-    "cdkplaygroundPublicSubnets": Object {
+    "cdkplaygroundPublicSubnets": {
       "Default": "/account/vpc/primary/subnets/public",
       "Description": "A list of public subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
   },
-  "Resources": Object {
-    "AutoScalingGroupCdkplaygroundASGD6E49F0F": Object {
-      "Properties": Object {
+  "Resources": {
+    "AutoScalingGroupCdkplaygroundASGD6E49F0F": {
+      "Properties": {
         "HealthCheckGracePeriod": 120,
         "HealthCheckType": "ELB",
-        "LaunchConfigurationName": Object {
+        "LaunchConfigurationName": {
           "Ref": "AutoScalingGroupCdkplaygroundLaunchConfigFAE27BB8",
         },
         "MaxSize": "2",
         "MinSize": "1",
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "PropagateAtLaunch": true,
             "Value": "cdk-playground",
           },
-          Object {
-            "Key": "gu:cdk:pattern-name",
-            "PropagateAtLaunch": true,
-            "Value": "GuPlayApp",
-          },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "PropagateAtLaunch": true,
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "PropagateAtLaunch": true,
             "Value": "guardian/cdk-playground",
           },
-          Object {
+          {
             "Key": "LogKinesisStreamName",
             "PropagateAtLaunch": true,
-            "Value": Object {
+            "Value": {
               "Ref": "LoggingStreamName",
             },
           },
-          Object {
+          {
             "Key": "Name",
             "PropagateAtLaunch": true,
             "Value": "CdkPlayground/AutoScalingGroupCdkplayground",
           },
-          Object {
+          {
             "Key": "Stack",
             "PropagateAtLaunch": true,
             "Value": "playground",
           },
-          Object {
+          {
             "Key": "Stage",
             "PropagateAtLaunch": true,
             "Value": "PROD",
           },
-          Object {
+          {
             "Key": "SystemdUnit",
             "PropagateAtLaunch": true,
             "Value": "cdk-playground.service",
           },
         ],
-        "TargetGroupARNs": Array [
-          Object {
+        "TargetGroupARNs": [
+          {
             "Ref": "TargetGroupCdkplayground7A453FC2",
           },
         ],
-        "VPCZoneIdentifier": Object {
+        "VPCZoneIdentifier": {
           "Ref": "cdkplaygroundPrivateSubnets",
         },
       },
       "Type": "AWS::AutoScaling::AutoScalingGroup",
     },
-    "AutoScalingGroupCdkplaygroundInstanceProfileE118C4BB": Object {
-      "Properties": Object {
-        "Roles": Array [
-          Object {
+    "AutoScalingGroupCdkplaygroundInstanceProfileE118C4BB": {
+      "Properties": {
+        "Roles": [
+          {
             "Ref": "InstanceRoleCdkplaygroundC280027A",
           },
         ],
       },
       "Type": "AWS::IAM::InstanceProfile",
     },
-    "AutoScalingGroupCdkplaygroundLaunchConfigFAE27BB8": Object {
-      "DependsOn": Array [
+    "AutoScalingGroupCdkplaygroundLaunchConfigFAE27BB8": {
+      "DependsOn": [
         "InstanceRoleCdkplaygroundC280027A",
       ],
-      "Properties": Object {
-        "IamInstanceProfile": Object {
+      "Properties": {
+        "IamInstanceProfile": {
           "Ref": "AutoScalingGroupCdkplaygroundInstanceProfileE118C4BB",
         },
-        "ImageId": Object {
+        "ImageId": {
           "Ref": "AMICdkplayground",
         },
         "InstanceType": "t4g.micro",
-        "MetadataOptions": Object {
+        "MetadataOptions": {
           "HttpTokens": "required",
         },
-        "SecurityGroups": Array [
-          Object {
-            "Fn::GetAtt": Array [
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
               "GuHttpsEgressSecurityGroupCdkplaygroundAF9827C8",
               "GroupId",
             ],
           },
-          Object {
-            "Fn::GetAtt": Array [
+          {
+            "Fn::GetAtt": [
               "WazuhSecurityGroup",
               "GroupId",
             ],
           },
         ],
-        "UserData": Object {
-          "Fn::Base64": Object {
-            "Fn::Join": Array [
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "#!/bin/bash
 mkdir -p $(dirname '/cdk-playground/cdk-playground.deb')
 aws s3 cp 's3://",
-                Object {
+                {
                   "Ref": "DistributionBucketName",
                 },
                 "/playground/PROD/cdk-playground/cdk-playground.deb' '/cdk-playground/cdk-playground.deb'
@@ -221,28 +218,32 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "AWS::AutoScaling::LaunchConfiguration",
     },
-    "CertificateCdkplayground47FCF7D9": Object {
+    "CertificateCdkplayground47FCF7D9": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
+      "Properties": {
         "DomainName": "cdk-playground.gutools.co.uk",
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "cdk-playground",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
           },
-          Object {
+          {
+            "Key": "Name",
+            "Value": "CdkPlayground/CertificateCdkplayground",
+          },
+          {
             "Key": "Stack",
             "Value": "playground",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "PROD",
           },
@@ -252,28 +253,32 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       "Type": "AWS::CertificateManager::Certificate",
       "UpdateReplacePolicy": "Retain",
     },
-    "CertificateCdkplaygroundlambda82D0BE4D": Object {
+    "CertificateCdkplaygroundlambda82D0BE4D": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
+      "Properties": {
         "DomainName": "cdk-playground-lambda.gutools.co.uk",
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "cdk-playground-lambda",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
           },
-          Object {
+          {
+            "Key": "Name",
+            "Value": "CdkPlayground/CertificateCdkplaygroundlambda",
+          },
+          {
             "Key": "Stack",
             "Value": "playground",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "PROD",
           },
@@ -283,12 +288,12 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       "Type": "AWS::CertificateManager::Certificate",
       "UpdateReplacePolicy": "Retain",
     },
-    "DescribeEC2PolicyFF5F9295": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "DescribeEC2PolicyFF5F9295": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "autoscaling:DescribeAutoScalingInstances",
                 "autoscaling:DescribeAutoScalingGroups",
                 "ec2:DescribeTags",
@@ -301,21 +306,21 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           "Version": "2012-10-17",
         },
         "PolicyName": "describe-ec2-policy",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "InstanceRoleCdkplaygroundC280027A",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "EC2AppDNS": Object {
-      "Properties": Object {
+    "EC2AppDNS": {
+      "Properties": {
         "Name": "cdk-playground.gutools.co.uk",
         "RecordType": "CNAME",
-        "ResourceRecords": Array [
-          Object {
-            "Fn::GetAtt": Array [
+        "ResourceRecords": [
+          {
+            "Fn::GetAtt": [
               "LoadBalancerCdkplayground7C6B4D97",
               "DNSName",
             ],
@@ -326,19 +331,19 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "Guardian::DNS::RecordSet",
     },
-    "GetDistributablePolicyCdkplaygroundBFB4D02B": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "GetDistributablePolicyCdkplaygroundBFB4D02B": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "s3:GetObject",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
+                  [
                     "arn:aws:s3:::",
-                    Object {
+                    {
                       "Ref": "DistributionBucketName",
                     },
                     "/playground/PROD/cdk-playground/*",
@@ -350,19 +355,19 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           "Version": "2012-10-17",
         },
         "PolicyName": "GetDistributablePolicyCdkplaygroundBFB4D02B",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "InstanceRoleCdkplaygroundC280027A",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "GuHttpsEgressSecurityGroupCdkplaygroundAF9827C8": Object {
-      "Properties": Object {
+    "GuHttpsEgressSecurityGroupCdkplaygroundAF9827C8": {
+      "Properties": {
         "GroupDescription": "Allow all outbound HTTPS traffic",
-        "SecurityGroupEgress": Array [
-          Object {
+        "SecurityGroupEgress": [
+          {
             "CidrIp": "0.0.0.0/0",
             "Description": "Allow all outbound HTTPS traffic",
             "FromPort": 443,
@@ -370,47 +375,47 @@ dpkg -i /cdk-playground/cdk-playground.deb",
             "ToPort": 443,
           },
         ],
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "cdk-playground",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "playground",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "PROD",
           },
         ],
-        "VpcId": Object {
+        "VpcId": {
           "Ref": "VpcId",
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "GuHttpsEgressSecurityGroupCdkplaygroundfromCdkPlaygroundLoadBalancerCdkplaygroundSecurityGroupE52E5B389000361696B8": Object {
-      "Properties": Object {
+    "GuHttpsEgressSecurityGroupCdkplaygroundfromCdkPlaygroundLoadBalancerCdkplaygroundSecurityGroupE52E5B389000361696B8": {
+      "Properties": {
         "Description": "Load balancer to target",
         "FromPort": 9000,
-        "GroupId": Object {
-          "Fn::GetAtt": Array [
+        "GroupId": {
+          "Fn::GetAtt": [
             "GuHttpsEgressSecurityGroupCdkplaygroundAF9827C8",
             "GroupId",
           ],
         },
         "IpProtocol": "tcp",
-        "SourceSecurityGroupId": Object {
-          "Fn::GetAtt": Array [
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
             "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
             "GroupId",
           ],
@@ -419,26 +424,26 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
-    "GuLogShippingPolicy981BFE5A": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "GuLogShippingPolicy981BFE5A": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "kinesis:Describe*",
                 "kinesis:Put*",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
+                  [
                     "arn:aws:kinesis:eu-west-1:",
-                    Object {
+                    {
                       "Ref": "AWS::AccountId",
                     },
                     ":stream/",
-                    Object {
+                    {
                       "Ref": "LoggingStreamName",
                     },
                   ],
@@ -449,47 +454,61 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           "Version": "2012-10-17",
         },
         "PolicyName": "GuLogShippingPolicy981BFE5A",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "InstanceRoleCdkplaygroundC280027A",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "InstanceRoleCdkplaygroundC280027A": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "InstanceRoleCdkplaygroundC280027A": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "ec2.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonSSMManagedInstanceCore",
+              ],
+            ],
+          },
+        ],
         "Path": "/",
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "cdk-playground",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "playground",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "PROD",
           },
@@ -497,13 +516,13 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "AWS::IAM::Role",
     },
-    "LambdaDNS": Object {
-      "Properties": Object {
+    "LambdaDNS": {
+      "Properties": {
         "Name": "cdk-playground-lambda.gutools.co.uk",
         "RecordType": "CNAME",
-        "ResourceRecords": Array [
-          Object {
-            "Fn::GetAtt": Array [
+        "ResourceRecords": [
+          {
+            "Fn::GetAtt": [
               "lambdacdkplaygroundlambdaapidomainD1A8D46F",
               "RegionalDomainName",
             ],
@@ -514,24 +533,24 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "Guardian::DNS::RecordSet",
     },
-    "ListenerCdkplaygroundA8D9CA6F": Object {
-      "Properties": Object {
-        "Certificates": Array [
-          Object {
-            "CertificateArn": Object {
+    "ListenerCdkplaygroundA8D9CA6F": {
+      "Properties": {
+        "Certificates": [
+          {
+            "CertificateArn": {
               "Ref": "CertificateCdkplayground47FCF7D9",
             },
           },
         ],
-        "DefaultActions": Array [
-          Object {
-            "TargetGroupArn": Object {
+        "DefaultActions": [
+          {
+            "TargetGroupArn": {
               "Ref": "TargetGroupCdkplayground7A453FC2",
             },
             "Type": "forward",
           },
         ],
-        "LoadBalancerArn": Object {
+        "LoadBalancerArn": {
           "Ref": "LoadBalancerCdkplayground7C6B4D97",
         },
         "Port": 443,
@@ -539,44 +558,44 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "AWS::ElasticLoadBalancingV2::Listener",
     },
-    "LoadBalancerCdkplayground7C6B4D97": Object {
-      "Properties": Object {
-        "LoadBalancerAttributes": Array [
-          Object {
+    "LoadBalancerCdkplayground7C6B4D97": {
+      "Properties": {
+        "LoadBalancerAttributes": [
+          {
             "Key": "deletion_protection.enabled",
             "Value": "true",
           },
         ],
         "Scheme": "internet-facing",
-        "SecurityGroups": Array [
-          Object {
-            "Fn::GetAtt": Array [
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
               "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
               "GroupId",
             ],
           },
         ],
-        "Subnets": Object {
+        "Subnets": {
           "Ref": "cdkplaygroundPublicSubnets",
         },
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "cdk-playground",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "playground",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "PROD",
           },
@@ -585,11 +604,11 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
     },
-    "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05": Object {
-      "Properties": Object {
+    "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05": {
+      "Properties": {
         "GroupDescription": "Automatically created Security Group for ELB CdkPlaygroundLoadBalancerCdkplayground0F8432FC",
-        "SecurityGroupIngress": Array [
-          Object {
+        "SecurityGroupIngress": [
+          {
             "CidrIp": "0.0.0.0/0",
             "Description": "Allow from anyone on port 443",
             "FromPort": 443,
@@ -597,46 +616,46 @@ dpkg -i /cdk-playground/cdk-playground.deb",
             "ToPort": 443,
           },
         ],
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "cdk-playground",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "playground",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "PROD",
           },
         ],
-        "VpcId": Object {
+        "VpcId": {
           "Ref": "VpcId",
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundGuHttpsEgressSecurityGroupCdkplaygroundFCB890AC9000F547AD56": Object {
-      "Properties": Object {
+    "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundGuHttpsEgressSecurityGroupCdkplaygroundFCB890AC9000F547AD56": {
+      "Properties": {
         "Description": "Load balancer to target",
-        "DestinationSecurityGroupId": Object {
-          "Fn::GetAtt": Array [
+        "DestinationSecurityGroupId": {
+          "Fn::GetAtt": [
             "GuHttpsEgressSecurityGroupCdkplaygroundAF9827C8",
             "GroupId",
           ],
         },
         "FromPort": 9000,
-        "GroupId": Object {
-          "Fn::GetAtt": Array [
+        "GroupId": {
+          "Fn::GetAtt": [
             "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
             "GroupId",
           ],
@@ -646,19 +665,19 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
     },
-    "ParameterStoreReadCdkplaygroundF78958B9": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "ParameterStoreReadCdkplaygroundF78958B9": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "ssm:GetParametersByPath",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
+                  [
                     "arn:aws:ssm:eu-west-1:",
-                    Object {
+                    {
                       "Ref": "AWS::AccountId",
                     },
                     ":parameter/PROD/playground/cdk-playground",
@@ -666,18 +685,18 @@ dpkg -i /cdk-playground/cdk-playground.deb",
                 ],
               },
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "ssm:GetParameters",
                 "ssm:GetParameter",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
+                  [
                     "arn:aws:ssm:eu-west-1:",
-                    Object {
+                    {
                       "Ref": "AWS::AccountId",
                     },
                     ":parameter/PROD/playground/cdk-playground/*",
@@ -689,52 +708,16 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           "Version": "2012-10-17",
         },
         "PolicyName": "parameter-store-read-policy",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "InstanceRoleCdkplaygroundC280027A",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "SSMRunCommandPolicy244E1613": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "ec2messages:AcknowledgeMessage",
-                "ec2messages:DeleteMessage",
-                "ec2messages:FailMessage",
-                "ec2messages:GetEndpoint",
-                "ec2messages:GetMessages",
-                "ec2messages:SendReply",
-                "ssm:UpdateInstanceInformation",
-                "ssm:ListInstanceAssociations",
-                "ssm:DescribeInstanceProperties",
-                "ssm:DescribeDocumentParameters",
-                "ssmmessages:CreateControlChannel",
-                "ssmmessages:CreateDataChannel",
-                "ssmmessages:OpenControlChannel",
-                "ssmmessages:OpenDataChannel",
-              ],
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "ssm-run-command-policy",
-        "Roles": Array [
-          Object {
-            "Ref": "InstanceRoleCdkplaygroundC280027A",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "TargetGroupCdkplayground7A453FC2": Object {
-      "Properties": Object {
+    "TargetGroupCdkplayground7A453FC2": {
+      "Properties": {
         "HealthCheckIntervalSeconds": 10,
         "HealthCheckPath": "/healthcheck",
         "HealthCheckProtocol": "HTTP",
@@ -742,58 +725,58 @@ dpkg -i /cdk-playground/cdk-playground.deb",
         "HealthyThresholdCount": 5,
         "Port": 9000,
         "Protocol": "HTTP",
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "cdk-playground",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "playground",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "PROD",
           },
         ],
-        "TargetGroupAttributes": Array [
-          Object {
+        "TargetGroupAttributes": [
+          {
             "Key": "deregistration_delay.timeout_seconds",
             "Value": "30",
           },
-          Object {
+          {
             "Key": "stickiness.enabled",
             "Value": "false",
           },
         ],
         "TargetType": "instance",
         "UnhealthyThresholdCount": 2,
-        "VpcId": Object {
+        "VpcId": {
           "Ref": "VpcId",
         },
       },
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
     },
-    "WazuhSecurityGroup": Object {
-      "Properties": Object {
+    "WazuhSecurityGroup": {
+      "Properties": {
         "GroupDescription": "Allow outbound traffic from wazuh agent to manager",
-        "SecurityGroupEgress": Array [
-          Object {
+        "SecurityGroupEgress": [
+          {
             "CidrIp": "0.0.0.0/0",
             "Description": "Wazuh event logging",
             "FromPort": 1514,
             "IpProtocol": "tcp",
             "ToPort": 1514,
           },
-          Object {
+          {
             "CidrIp": "0.0.0.0/0",
             "Description": "Wazuh agent registration",
             "FromPort": 1515,
@@ -801,44 +784,44 @@ dpkg -i /cdk-playground/cdk-playground.deb",
             "ToPort": 1515,
           },
         ],
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "playground",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "PROD",
           },
         ],
-        "VpcId": Object {
+        "VpcId": {
           "Ref": "VpcId",
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "lambda8B5974B5": Object {
-      "DependsOn": Array [
+    "lambda8B5974B5": {
+      "DependsOn": [
         "lambdaServiceRoleDefaultPolicyBF6FA5E7",
         "lambdaServiceRole494E4CA6",
       ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
           "S3Key": "playground/PROD/cdk-playground-lambda/cdk-playground-lambda.zip",
         },
-        "Environment": Object {
-          "Variables": Object {
+        "Environment": {
+          "Variables": {
             "APP": "cdk-playground-lambda",
             "STACK": "playground",
             "STAGE": "PROD",
@@ -846,31 +829,31 @@ dpkg -i /cdk-playground/cdk-playground.deb",
         },
         "Handler": "handler.main",
         "MemorySize": 512,
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "lambdaServiceRole494E4CA6",
             "Arn",
           ],
         },
         "Runtime": "nodejs16.x",
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "cdk-playground-lambda",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "playground",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "PROD",
           },
@@ -879,27 +862,27 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "AWS::Lambda::Function",
     },
-    "lambdaServiceRole494E4CA6": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "lambdaServiceRole494E4CA6": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -907,24 +890,24 @@ dpkg -i /cdk-playground/cdk-playground.deb",
             ],
           },
         ],
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "cdk-playground-lambda",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "playground",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "PROD",
           },
@@ -932,43 +915,43 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "AWS::IAM::Role",
     },
-    "lambdaServiceRoleDefaultPolicyBF6FA5E7": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "lambdaServiceRoleDefaultPolicyBF6FA5E7": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
                 "s3:List*",
               ],
               "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::Join": Array [
+              "Resource": [
+                {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "arn:",
-                      Object {
+                      {
                         "Ref": "AWS::Partition",
                       },
                       ":s3:::",
-                      Object {
+                      {
                         "Ref": "DistributionBucketName",
                       },
                     ],
                   ],
                 },
-                Object {
-                  "Fn::Join": Array [
+                {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "arn:",
-                      Object {
+                      {
                         "Ref": "AWS::Partition",
                       },
                       ":s3:::",
-                      Object {
+                      {
                         "Ref": "DistributionBucketName",
                       },
                       "/playground/PROD/cdk-playground-lambda/cdk-playground-lambda.zip",
@@ -977,15 +960,15 @@ dpkg -i /cdk-playground/cdk-playground.deb",
                 },
               ],
             },
-            Object {
+            {
               "Action": "ssm:GetParametersByPath",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
+                  [
                     "arn:aws:ssm:eu-west-1:",
-                    Object {
+                    {
                       "Ref": "AWS::AccountId",
                     },
                     ":parameter/PROD/playground/cdk-playground-lambda",
@@ -993,18 +976,18 @@ dpkg -i /cdk-playground/cdk-playground.deb",
                 ],
               },
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "ssm:GetParameters",
                 "ssm:GetParameter",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
+                  [
                     "arn:aws:ssm:eu-west-1:",
-                    Object {
+                    {
                       "Ref": "AWS::AccountId",
                     },
                     ":parameter/PROD/playground/cdk-playground-lambda/*",
@@ -1016,36 +999,36 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           "Version": "2012-10-17",
         },
         "PolicyName": "lambdaServiceRoleDefaultPolicyBF6FA5E7",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "lambdaServiceRole494E4CA6",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "lambdacdkplaygroundlambdaapi061BB942": Object {
-      "Properties": Object {
+    "lambdacdkplaygroundlambdaapi061BB942": {
+      "Properties": {
         "Description": "cdk-playground-lambda",
         "Name": "playground-PROD-cdk-playground-lambda-api",
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "cdk-playground-lambda",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "playground",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "PROD",
           },
@@ -1053,24 +1036,24 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "AWS::ApiGateway::RestApi",
     },
-    "lambdacdkplaygroundlambdaapiANY46D7365E": Object {
-      "Properties": Object {
+    "lambdacdkplaygroundlambdaapiANY46D7365E": {
+      "Properties": {
         "AuthorizationType": "NONE",
         "HttpMethod": "ANY",
-        "Integration": Object {
+        "Integration": {
           "IntegrationHttpMethod": "POST",
           "Type": "AWS_PROXY",
-          "Uri": Object {
-            "Fn::Join": Array [
+          "Uri": {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":apigateway:eu-west-1:lambda:path/2015-03-31/functions/",
-                Object {
-                  "Fn::GetAtt": Array [
+                {
+                  "Fn::GetAtt": [
                     "lambda8B5974B5",
                     "Arn",
                   ],
@@ -1080,46 +1063,46 @@ dpkg -i /cdk-playground/cdk-playground.deb",
             ],
           },
         },
-        "ResourceId": Object {
-          "Fn::GetAtt": Array [
+        "ResourceId": {
+          "Fn::GetAtt": [
             "lambdacdkplaygroundlambdaapi061BB942",
             "RootResourceId",
           ],
         },
-        "RestApiId": Object {
+        "RestApiId": {
           "Ref": "lambdacdkplaygroundlambdaapi061BB942",
         },
       },
       "Type": "AWS::ApiGateway::Method",
     },
-    "lambdacdkplaygroundlambdaapiANYApiPermissionCdkPlaygroundlambdacdkplaygroundlambdaapiF2456CACANYCB19A7C3": Object {
-      "Properties": Object {
+    "lambdacdkplaygroundlambdaapiANYApiPermissionCdkPlaygroundlambdacdkplaygroundlambdaapiF2456CACANYCB19A7C3": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "lambda8B5974B5",
             "Arn",
           ],
         },
         "Principal": "apigateway.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::Join": Array [
+        "SourceArn": {
+          "Fn::Join": [
             "",
-            Array [
+            [
               "arn:",
-              Object {
+              {
                 "Ref": "AWS::Partition",
               },
               ":execute-api:eu-west-1:",
-              Object {
+              {
                 "Ref": "AWS::AccountId",
               },
               ":",
-              Object {
+              {
                 "Ref": "lambdacdkplaygroundlambdaapi061BB942",
               },
               "/",
-              Object {
+              {
                 "Ref": "lambdacdkplaygroundlambdaapiDeploymentStageprod4C07895E",
               },
               "/*/",
@@ -1129,30 +1112,30 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "lambdacdkplaygroundlambdaapiANYApiPermissionTestCdkPlaygroundlambdacdkplaygroundlambdaapiF2456CACANY3C082094": Object {
-      "Properties": Object {
+    "lambdacdkplaygroundlambdaapiANYApiPermissionTestCdkPlaygroundlambdacdkplaygroundlambdaapiF2456CACANY3C082094": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "lambda8B5974B5",
             "Arn",
           ],
         },
         "Principal": "apigateway.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::Join": Array [
+        "SourceArn": {
+          "Fn::Join": [
             "",
-            Array [
+            [
               "arn:",
-              Object {
+              {
                 "Ref": "AWS::Partition",
               },
               ":execute-api:eu-west-1:",
-              Object {
+              {
                 "Ref": "AWS::AccountId",
               },
               ":",
-              Object {
+              {
                 "Ref": "lambdacdkplaygroundlambdaapi061BB942",
               },
               "/test-invoke-stage/*/",
@@ -1162,14 +1145,14 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "lambdacdkplaygroundlambdaapiAccount6891AB06": Object {
+    "lambdacdkplaygroundlambdaapiAccount6891AB06": {
       "DeletionPolicy": "Retain",
-      "DependsOn": Array [
+      "DependsOn": [
         "lambdacdkplaygroundlambdaapi061BB942",
       ],
-      "Properties": Object {
-        "CloudWatchRoleArn": Object {
-          "Fn::GetAtt": Array [
+      "Properties": {
+        "CloudWatchRoleArn": {
+          "Fn::GetAtt": [
             "lambdacdkplaygroundlambdaapiCloudWatchRole4B1F446E",
             "Arn",
           ],
@@ -1178,28 +1161,28 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       "Type": "AWS::ApiGateway::Account",
       "UpdateReplacePolicy": "Retain",
     },
-    "lambdacdkplaygroundlambdaapiCloudWatchRole4B1F446E": Object {
+    "lambdacdkplaygroundlambdaapiCloudWatchRole4B1F446E": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "apigateway.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
@@ -1207,24 +1190,24 @@ dpkg -i /cdk-playground/cdk-playground.deb",
             ],
           },
         ],
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "cdk-playground-lambda",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "playground",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "PROD",
           },
@@ -1233,50 +1216,50 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "lambdacdkplaygroundlambdaapiDeployment157471B23507d885fa4f6f2bfbd1011b60b24ca1": Object {
-      "DependsOn": Array [
+    "lambdacdkplaygroundlambdaapiDeployment157471B23507d885fa4f6f2bfbd1011b60b24ca1": {
+      "DependsOn": [
         "lambdacdkplaygroundlambdaapiproxyANYDB984CB2",
         "lambdacdkplaygroundlambdaapiproxyFA4DE6D2",
         "lambdacdkplaygroundlambdaapiANY46D7365E",
       ],
-      "Properties": Object {
+      "Properties": {
         "Description": "cdk-playground-lambda",
-        "RestApiId": Object {
+        "RestApiId": {
           "Ref": "lambdacdkplaygroundlambdaapi061BB942",
         },
       },
       "Type": "AWS::ApiGateway::Deployment",
     },
-    "lambdacdkplaygroundlambdaapiDeploymentStageprod4C07895E": Object {
-      "DependsOn": Array [
+    "lambdacdkplaygroundlambdaapiDeploymentStageprod4C07895E": {
+      "DependsOn": [
         "lambdacdkplaygroundlambdaapiAccount6891AB06",
       ],
-      "Properties": Object {
-        "DeploymentId": Object {
+      "Properties": {
+        "DeploymentId": {
           "Ref": "lambdacdkplaygroundlambdaapiDeployment157471B23507d885fa4f6f2bfbd1011b60b24ca1",
         },
-        "RestApiId": Object {
+        "RestApiId": {
           "Ref": "lambdacdkplaygroundlambdaapi061BB942",
         },
         "StageName": "prod",
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "cdk-playground-lambda",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "playground",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "PROD",
           },
@@ -1284,35 +1267,35 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "AWS::ApiGateway::Stage",
     },
-    "lambdacdkplaygroundlambdaapidomainD1A8D46F": Object {
-      "Properties": Object {
+    "lambdacdkplaygroundlambdaapidomainD1A8D46F": {
+      "Properties": {
         "DomainName": "cdk-playground-lambda.gutools.co.uk",
-        "EndpointConfiguration": Object {
-          "Types": Array [
+        "EndpointConfiguration": {
+          "Types": [
             "REGIONAL",
           ],
         },
-        "RegionalCertificateArn": Object {
+        "RegionalCertificateArn": {
           "Ref": "CertificateCdkplaygroundlambda82D0BE4D",
         },
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "cdk-playground-lambda",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "playground",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "PROD",
           },
@@ -1320,48 +1303,48 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "AWS::ApiGateway::DomainName",
     },
-    "lambdacdkplaygroundlambdaapidomainMapCdkPlaygroundlambdacdkplaygroundlambdaapiF2456CACD98B11F8": Object {
-      "Properties": Object {
-        "DomainName": Object {
+    "lambdacdkplaygroundlambdaapidomainMapCdkPlaygroundlambdacdkplaygroundlambdaapiF2456CACD98B11F8": {
+      "Properties": {
+        "DomainName": {
           "Ref": "lambdacdkplaygroundlambdaapidomainD1A8D46F",
         },
-        "RestApiId": Object {
+        "RestApiId": {
           "Ref": "lambdacdkplaygroundlambdaapi061BB942",
         },
-        "Stage": Object {
+        "Stage": {
           "Ref": "lambdacdkplaygroundlambdaapiDeploymentStageprod4C07895E",
         },
       },
       "Type": "AWS::ApiGateway::BasePathMapping",
     },
-    "lambdacdkplaygroundlambdaapiproxyANYApiPermissionCdkPlaygroundlambdacdkplaygroundlambdaapiF2456CACANYproxy2AA0C051": Object {
-      "Properties": Object {
+    "lambdacdkplaygroundlambdaapiproxyANYApiPermissionCdkPlaygroundlambdacdkplaygroundlambdaapiF2456CACANYproxy2AA0C051": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "lambda8B5974B5",
             "Arn",
           ],
         },
         "Principal": "apigateway.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::Join": Array [
+        "SourceArn": {
+          "Fn::Join": [
             "",
-            Array [
+            [
               "arn:",
-              Object {
+              {
                 "Ref": "AWS::Partition",
               },
               ":execute-api:eu-west-1:",
-              Object {
+              {
                 "Ref": "AWS::AccountId",
               },
               ":",
-              Object {
+              {
                 "Ref": "lambdacdkplaygroundlambdaapi061BB942",
               },
               "/",
-              Object {
+              {
                 "Ref": "lambdacdkplaygroundlambdaapiDeploymentStageprod4C07895E",
               },
               "/*/*",
@@ -1371,30 +1354,30 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "lambdacdkplaygroundlambdaapiproxyANYApiPermissionTestCdkPlaygroundlambdacdkplaygroundlambdaapiF2456CACANYproxy5773F0A4": Object {
-      "Properties": Object {
+    "lambdacdkplaygroundlambdaapiproxyANYApiPermissionTestCdkPlaygroundlambdacdkplaygroundlambdaapiF2456CACANYproxy5773F0A4": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "lambda8B5974B5",
             "Arn",
           ],
         },
         "Principal": "apigateway.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::Join": Array [
+        "SourceArn": {
+          "Fn::Join": [
             "",
-            Array [
+            [
               "arn:",
-              Object {
+              {
                 "Ref": "AWS::Partition",
               },
               ":execute-api:eu-west-1:",
-              Object {
+              {
                 "Ref": "AWS::AccountId",
               },
               ":",
-              Object {
+              {
                 "Ref": "lambdacdkplaygroundlambdaapi061BB942",
               },
               "/test-invoke-stage/*/*",
@@ -1404,24 +1387,24 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "lambdacdkplaygroundlambdaapiproxyANYDB984CB2": Object {
-      "Properties": Object {
+    "lambdacdkplaygroundlambdaapiproxyANYDB984CB2": {
+      "Properties": {
         "AuthorizationType": "NONE",
         "HttpMethod": "ANY",
-        "Integration": Object {
+        "Integration": {
           "IntegrationHttpMethod": "POST",
           "Type": "AWS_PROXY",
-          "Uri": Object {
-            "Fn::Join": Array [
+          "Uri": {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":apigateway:eu-west-1:lambda:path/2015-03-31/functions/",
-                Object {
-                  "Fn::GetAtt": Array [
+                {
+                  "Fn::GetAtt": [
                     "lambda8B5974B5",
                     "Arn",
                   ],
@@ -1431,25 +1414,25 @@ dpkg -i /cdk-playground/cdk-playground.deb",
             ],
           },
         },
-        "ResourceId": Object {
+        "ResourceId": {
           "Ref": "lambdacdkplaygroundlambdaapiproxyFA4DE6D2",
         },
-        "RestApiId": Object {
+        "RestApiId": {
           "Ref": "lambdacdkplaygroundlambdaapi061BB942",
         },
       },
       "Type": "AWS::ApiGateway::Method",
     },
-    "lambdacdkplaygroundlambdaapiproxyFA4DE6D2": Object {
-      "Properties": Object {
-        "ParentId": Object {
-          "Fn::GetAtt": Array [
+    "lambdacdkplaygroundlambdaapiproxyFA4DE6D2": {
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
             "lambdacdkplaygroundlambdaapi061BB942",
             "RootResourceId",
           ],
         },
         "PathPart": "{proxy+}",
-        "RestApiId": Object {
+        "RestApiId": {
           "Ref": "lambdacdkplaygroundlambdaapi061BB942",
         },
       },
