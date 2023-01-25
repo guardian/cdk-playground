@@ -6,9 +6,10 @@ Object {
     "gu:cdk:constructs": Array [
       "GuVpcParameter",
       "GuSubnetListParameter",
+      "GuSubnetListParameter",
+      "GuPlayApp",
       "GuCertificate",
       "GuInstanceRole",
-      "GuSSMRunCommandPolicy",
       "GuDescribeEC2Policy",
       "GuLoggingStreamNameParameter",
       "GuLogShippingPolicy",
@@ -19,12 +20,13 @@ Object {
       "GuHttpsEgressSecurityGroup",
       "GuAutoScalingGroup",
       "GuWazuhAccess",
-      "GuSubnetListParameter",
       "GuApplicationLoadBalancer",
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
+      "GuCname",
       "GuApiLambda",
       "GuCertificate",
+      "GuCname",
     ],
     "gu:cdk:version": "TEST",
   },
@@ -107,11 +109,6 @@ Object {
             "Key": "App",
             "PropagateAtLaunch": true,
             "Value": "cdk-playground",
-          },
-          Object {
-            "Key": "gu:cdk:pattern-name",
-            "PropagateAtLaunch": true,
-            "Value": "GuPlayApp",
           },
           Object {
             "Key": "gu:cdk:version",
@@ -239,6 +236,10 @@ dpkg -i /cdk-playground/cdk-playground.deb",
             "Value": "guardian/cdk-playground",
           },
           Object {
+            "Key": "Name",
+            "Value": "CdkPlayground/CertificateCdkplayground",
+          },
+          Object {
             "Key": "Stack",
             "Value": "playground",
           },
@@ -268,6 +269,10 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           Object {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "CdkPlayground/CertificateCdkplaygroundlambda",
           },
           Object {
             "Key": "Stack",
@@ -471,6 +476,20 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonSSMManagedInstanceCore",
+              ],
+            ],
+          },
+        ],
         "Path": "/",
         "Tags": Array [
           Object {
@@ -689,42 +708,6 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           "Version": "2012-10-17",
         },
         "PolicyName": "parameter-store-read-policy",
-        "Roles": Array [
-          Object {
-            "Ref": "InstanceRoleCdkplaygroundC280027A",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "SSMRunCommandPolicy244E1613": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "ec2messages:AcknowledgeMessage",
-                "ec2messages:DeleteMessage",
-                "ec2messages:FailMessage",
-                "ec2messages:GetEndpoint",
-                "ec2messages:GetMessages",
-                "ec2messages:SendReply",
-                "ssm:UpdateInstanceInformation",
-                "ssm:ListInstanceAssociations",
-                "ssm:DescribeInstanceProperties",
-                "ssm:DescribeDocumentParameters",
-                "ssmmessages:CreateControlChannel",
-                "ssmmessages:CreateDataChannel",
-                "ssmmessages:OpenControlChannel",
-                "ssmmessages:OpenDataChannel",
-              ],
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "ssm-run-command-policy",
         "Roles": Array [
           Object {
             "Ref": "InstanceRoleCdkplaygroundC280027A",
