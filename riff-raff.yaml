@@ -39,6 +39,7 @@ deployments:
     parameters:
       templateStagePaths:
         PROD: CdkPlayground.template.json
+      amiEncrypted: true
       amiParametersToTags:
         AMICdkplayground:
           BuiltBy: amigo
