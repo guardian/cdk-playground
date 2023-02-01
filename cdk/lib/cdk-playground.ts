@@ -6,7 +6,9 @@ import { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import type { App } from 'aws-cdk-lib';
 import { Duration, Tags } from 'aws-cdk-lib';
+import {CfnCertificate} from "aws-cdk-lib/aws-certificatemanager";
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
+import {ListenerAction, ListenerCondition} from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
 export class CdkPlayground extends GuStack {
@@ -25,7 +27,7 @@ export class CdkPlayground extends GuStack {
 		const ec2App = 'cdk-playground';
 		const ec2AppDomainName = 'cdk-playground.gutools.co.uk';
 
-		const { autoScalingGroup, loadBalancer } = new GuPlayApp(this, {
+		const { autoScalingGroup, loadBalancer, listener } = new GuPlayApp(this, {
 			app: ec2App,
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
 			access: { scope: AccessScope.PUBLIC },
@@ -55,6 +57,35 @@ export class CdkPlayground extends GuStack {
 			domainName: ec2AppDomainName,
 			resourceRecord: loadBalancer.loadBalancerDnsName,
 		});
+
+    const betaDomain = 'beta.cdk-playground.gutools.co.uk';
+
+    const certificate = this.node
+      .findAll()
+      .find((_) => _ instanceof CfnCertificate) as CfnCertificate;
+
+    certificate.subjectAlternativeNames = [
+      ...(certificate.subjectAlternativeNames ?? []),
+      betaDomain,
+    ];
+
+    new GuCname(this, 'RedirectCname', {
+      app: ec2App,
+      ttl: Duration.hours(1),
+      domainName: betaDomain,
+      resourceRecord: loadBalancer.loadBalancerDnsName,
+    });
+
+    listener.addAction('redirect', {
+      action: ListenerAction.redirect({
+        permanent: true,
+        host: ec2AppDomainName,
+      }),
+      conditions: [
+        ListenerCondition.hostHeaders([betaDomain]),
+      ],
+      priority: 1
+    });
 
 		const lambdaApp = 'cdk-playground-lambda';
 		const lambdaDomainName = 'cdk-playground-lambda.gutools.co.uk';

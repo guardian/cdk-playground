@@ -24,6 +24,7 @@ Object {
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
       "GuCname",
+      "GuCname",
       "GuApiLambda",
       "GuCertificate",
       "GuCname",
@@ -222,6 +223,9 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       "DeletionPolicy": "Retain",
       "Properties": Object {
         "DomainName": "cdk-playground.gutools.co.uk",
+        "SubjectAlternativeNames": Array [
+          "beta.cdk-playground.gutools.co.uk",
+        ],
         "Tags": Array [
           Object {
             "Key": "App",
@@ -558,6 +562,34 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "AWS::ElasticLoadBalancingV2::Listener",
     },
+    "ListenerCdkplaygroundredirectRule84A30122": Object {
+      "Properties": Object {
+        "Actions": Array [
+          Object {
+            "RedirectConfig": Object {
+              "Host": "cdk-playground.gutools.co.uk",
+              "StatusCode": "HTTP_301",
+            },
+            "Type": "redirect",
+          },
+        ],
+        "Conditions": Array [
+          Object {
+            "Field": "host-header",
+            "HostHeaderConfig": Object {
+              "Values": Array [
+                "beta.cdk-playground.gutools.co.uk",
+              ],
+            },
+          },
+        ],
+        "ListenerArn": Object {
+          "Ref": "ListenerCdkplaygroundA8D9CA6F",
+        },
+        "Priority": 1,
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::ListenerRule",
+    },
     "LoadBalancerCdkplayground7C6B4D97": Object {
       "Properties": Object {
         "LoadBalancerAttributes": Array [
@@ -715,6 +747,23 @@ dpkg -i /cdk-playground/cdk-playground.deb",
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "RedirectCname": Object {
+      "Properties": Object {
+        "Name": "beta.cdk-playground.gutools.co.uk",
+        "RecordType": "CNAME",
+        "ResourceRecords": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "LoadBalancerCdkplayground7C6B4D97",
+              "DNSName",
+            ],
+          },
+        ],
+        "Stage": "PROD",
+        "TTL": 3600,
+      },
+      "Type": "Guardian::DNS::RecordSet",
     },
     "TargetGroupCdkplayground7A453FC2": Object {
       "Properties": Object {
