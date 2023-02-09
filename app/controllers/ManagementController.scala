@@ -16,6 +16,6 @@ class ManagementController (override val controllerComponents: ControllerCompone
 
   def healthCheck: Action[AnyContent] = Action {
     logger.info("hello from the health check")
-    Ok("OK")
+    Ok("OK").withHeaders(CONNECTION -> "keep-alive", "Keep-Alive" -> "timeout=72")
   }
 }
