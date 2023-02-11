@@ -36,7 +36,7 @@ jobs:
       - uses: guardian/actions-riff-raff@v2
         with:
           projectName: devx::cdk-playground
-          configPath: cdk/cdk.out/riff-raff.yaml
+          configPath: riff-raff.yaml
           contentDirectories: |
             cdk.out:
               - cdk/cdk.out
