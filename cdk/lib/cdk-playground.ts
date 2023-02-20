@@ -43,7 +43,7 @@ export class CdkPlayground extends GuStack {
 				minimumInstances: 1,
 				maximumInstances: 2,
 			},
-			imageRecipe: 'arm64-bionic-java11-deploy-infrastructure',
+			imageRecipe: 'developerPlayground-arm64-java11',
 		});
 
 		// Get devx-logs to ship EC2 application logs to Central ELK
