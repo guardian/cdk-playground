@@ -18,8 +18,8 @@ Object {
       "GuParameterStoreReadPolicy",
       "GuAmiParameter",
       "GuHttpsEgressSecurityGroup",
-      "GuAutoScalingGroup",
       "GuWazuhAccess",
+      "GuAutoScalingGroup",
       "GuApplicationLoadBalancer",
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
@@ -99,8 +99,16 @@ Object {
       "Properties": Object {
         "HealthCheckGracePeriod": 120,
         "HealthCheckType": "ELB",
-        "LaunchConfigurationName": Object {
-          "Ref": "AutoScalingGroupCdkplaygroundLaunchConfigFAE27BB8",
+        "LaunchTemplate": Object {
+          "LaunchTemplateId": Object {
+            "Ref": "playgroundPRODcdkplayground7B64111F",
+          },
+          "Version": Object {
+            "Fn::GetAtt": Array [
+              "playgroundPRODcdkplayground7B64111F",
+              "LatestVersionNumber",
+            ],
+          },
         },
         "MaxSize": "2",
         "MinSize": "1",
@@ -128,11 +136,6 @@ Object {
             },
           },
           Object {
-            "Key": "Name",
-            "PropagateAtLaunch": true,
-            "Value": "CdkPlayground/AutoScalingGroupCdkplayground",
-          },
-          Object {
             "Key": "Stack",
             "PropagateAtLaunch": true,
             "Value": "playground",
@@ -158,65 +161,6 @@ Object {
         },
       },
       "Type": "AWS::AutoScaling::AutoScalingGroup",
-    },
-    "AutoScalingGroupCdkplaygroundInstanceProfileE118C4BB": Object {
-      "Properties": Object {
-        "Roles": Array [
-          Object {
-            "Ref": "InstanceRoleCdkplaygroundC280027A",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::InstanceProfile",
-    },
-    "AutoScalingGroupCdkplaygroundLaunchConfigFAE27BB8": Object {
-      "DependsOn": Array [
-        "InstanceRoleCdkplaygroundC280027A",
-      ],
-      "Properties": Object {
-        "IamInstanceProfile": Object {
-          "Ref": "AutoScalingGroupCdkplaygroundInstanceProfileE118C4BB",
-        },
-        "ImageId": Object {
-          "Ref": "AMICdkplayground",
-        },
-        "InstanceType": "t4g.micro",
-        "MetadataOptions": Object {
-          "HttpTokens": "required",
-        },
-        "SecurityGroups": Array [
-          Object {
-            "Fn::GetAtt": Array [
-              "GuHttpsEgressSecurityGroupCdkplaygroundAF9827C8",
-              "GroupId",
-            ],
-          },
-          Object {
-            "Fn::GetAtt": Array [
-              "WazuhSecurityGroup",
-              "GroupId",
-            ],
-          },
-        ],
-        "UserData": Object {
-          "Fn::Base64": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "#!/bin/bash
-mkdir -p $(dirname '/cdk-playground/cdk-playground.deb')
-aws s3 cp 's3://",
-                Object {
-                  "Ref": "DistributionBucketName",
-                },
-                "/playground/PROD/cdk-playground/cdk-playground.deb' '/cdk-playground/cdk-playground.deb'
-dpkg -i /cdk-playground/cdk-playground.deb",
-              ],
-            ],
-          },
-        },
-      },
-      "Type": "AWS::AutoScaling::LaunchConfiguration",
     },
     "CertificateCdkplayground47FCF7D9": Object {
       "DeletionPolicy": "Retain",
@@ -665,6 +609,27 @@ dpkg -i /cdk-playground/cdk-playground.deb",
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
     },
+    "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundWazuhSecurityGroupBE1C2E039000E0905CDC": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "WazuhSecurityGroup",
+            "GroupId",
+          ],
+        },
+        "FromPort": 9000,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 9000,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
     "ParameterStoreReadCdkplaygroundF78958B9": Object {
       "Properties": Object {
         "PolicyDocument": Object {
@@ -807,6 +772,27 @@ dpkg -i /cdk-playground/cdk-playground.deb",
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
+    },
+    "WazuhSecurityGroupfromCdkPlaygroundLoadBalancerCdkplaygroundSecurityGroupE52E5B3890001018F1AF": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "FromPort": 9000,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "WazuhSecurityGroup",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+            "GroupId",
+          ],
+        },
+        "ToPort": 9000,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
     },
     "lambda8B5974B5": Object {
       "DependsOn": Array [
@@ -1437,6 +1423,148 @@ dpkg -i /cdk-playground/cdk-playground.deb",
         },
       },
       "Type": "AWS::ApiGateway::Resource",
+    },
+    "playgroundPRODcdkplayground7B64111F": Object {
+      "Properties": Object {
+        "LaunchTemplateData": Object {
+          "IamInstanceProfile": Object {
+            "Arn": Object {
+              "Fn::GetAtt": Array [
+                "playgroundPRODcdkplaygroundProfile617BB4EE",
+                "Arn",
+              ],
+            },
+          },
+          "ImageId": Object {
+            "Ref": "AMICdkplayground",
+          },
+          "InstanceType": "t4g.micro",
+          "MetadataOptions": Object {
+            "HttpTokens": "required",
+          },
+          "SecurityGroupIds": Array [
+            Object {
+              "Fn::GetAtt": Array [
+                "GuHttpsEgressSecurityGroupCdkplaygroundAF9827C8",
+                "GroupId",
+              ],
+            },
+            Object {
+              "Fn::GetAtt": Array [
+                "WazuhSecurityGroup",
+                "GroupId",
+              ],
+            },
+          ],
+          "TagSpecifications": Array [
+            Object {
+              "ResourceType": "instance",
+              "Tags": Array [
+                Object {
+                  "Key": "gu:cdk:version",
+                  "Value": "TEST",
+                },
+                Object {
+                  "Key": "gu:repo",
+                  "Value": "guardian/cdk-playground",
+                },
+                Object {
+                  "Key": "Name",
+                  "Value": "CdkPlayground/playground-PROD-cdk-playground",
+                },
+                Object {
+                  "Key": "Stack",
+                  "Value": "playground",
+                },
+                Object {
+                  "Key": "Stage",
+                  "Value": "PROD",
+                },
+              ],
+            },
+            Object {
+              "ResourceType": "volume",
+              "Tags": Array [
+                Object {
+                  "Key": "gu:cdk:version",
+                  "Value": "TEST",
+                },
+                Object {
+                  "Key": "gu:repo",
+                  "Value": "guardian/cdk-playground",
+                },
+                Object {
+                  "Key": "Name",
+                  "Value": "CdkPlayground/playground-PROD-cdk-playground",
+                },
+                Object {
+                  "Key": "Stack",
+                  "Value": "playground",
+                },
+                Object {
+                  "Key": "Stage",
+                  "Value": "PROD",
+                },
+              ],
+            },
+          ],
+          "UserData": Object {
+            "Fn::Base64": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "#!/bin/bash
+mkdir -p $(dirname '/cdk-playground/cdk-playground.deb')
+aws s3 cp 's3://",
+                  Object {
+                    "Ref": "DistributionBucketName",
+                  },
+                  "/playground/PROD/cdk-playground/cdk-playground.deb' '/cdk-playground/cdk-playground.deb'
+dpkg -i /cdk-playground/cdk-playground.deb",
+                ],
+              ],
+            },
+          },
+        },
+        "TagSpecifications": Array [
+          Object {
+            "ResourceType": "launch-template",
+            "Tags": Array [
+              Object {
+                "Key": "gu:cdk:version",
+                "Value": "TEST",
+              },
+              Object {
+                "Key": "gu:repo",
+                "Value": "guardian/cdk-playground",
+              },
+              Object {
+                "Key": "Name",
+                "Value": "CdkPlayground/playground-PROD-cdk-playground",
+              },
+              Object {
+                "Key": "Stack",
+                "Value": "playground",
+              },
+              Object {
+                "Key": "Stage",
+                "Value": "PROD",
+              },
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::EC2::LaunchTemplate",
+    },
+    "playgroundPRODcdkplaygroundProfile617BB4EE": Object {
+      "Properties": Object {
+        "Roles": Array [
+          Object {
+            "Ref": "InstanceRoleCdkplaygroundC280027A",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::InstanceProfile",
     },
   },
 }
