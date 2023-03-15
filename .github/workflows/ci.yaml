@@ -33,6 +33,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'corretto'
+          cache: 'sbt'
 
       # Build CDK and Play (in sequence)
       - run: ./script/ci
