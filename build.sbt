@@ -1,17 +1,11 @@
 // https://github.com/orgs/playframework/discussions/11222
-val jacksonVersion         = "2.13.2"
-val jacksonDatabindVersion = "2.13.2.2"
+val jacksonVersion         = "2.14.2"
+val jacksonDatabindVersion = "2.14.2"
 
 val jacksonOverrides = Seq(
-  "com.fasterxml.jackson.core"     % "jackson-core",
-  "com.fasterxml.jackson.core"     % "jackson-annotations",
   "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8",
   "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310"
 ).map(_ % jacksonVersion)
-
-val jacksonDatabindOverrides = Seq(
-  "com.fasterxml.jackson.core" % "jackson-databind" % jacksonDatabindVersion
-)
 
 val akkaSerializationJacksonOverrides = Seq(
   "com.fasterxml.jackson.dataformat" % "jackson-dataformat-cbor",
@@ -26,7 +20,7 @@ lazy val root = (project in file("."))
   .settings(
     name := """cdk-playground""",
     version := "1.0-SNAPSHOT",
-    scalaVersion := "2.13.5",
+    scalaVersion := "2.13.10",
     scalacOptions ++= List(
       "-encoding", "utf8",
       "-deprecation",
@@ -40,11 +34,10 @@ lazy val root = (project in file("."))
       s"-J-Xloggc:/var/log/${packageName.value}/gc.log",
     ),
 
-    libraryDependencies ++= jacksonDatabindOverrides
-      ++ jacksonOverrides
+    libraryDependencies ++= jacksonOverrides
       ++ akkaSerializationJacksonOverrides
       ++ Seq(
-        "net.logstash.logback" % "logstash-logback-encoder" % "7.1.1"
+        "net.logstash.logback" % "logstash-logback-encoder" % "7.3"
       ),
 
     buildInfoKeys ++= Seq[BuildInfoKey](
