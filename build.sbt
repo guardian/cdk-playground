@@ -27,11 +27,18 @@ lazy val root = (project in file("."))
       "-unchecked",
       "-Xfatal-warnings"
     ),
-    Universal / javaOptions ++= Seq(
-      s"-Dpidfile.path=/dev/null",
-      s"-J-Dlogs.home=/var/log/${packageName.value}",
-      s"-J-Xloggc:/var/log/${packageName.value}/gc.log",
-    ),
+//    Universal / javaOptions ++= Seq(
+//      s"-Dpidfile.path=/dev/null",
+//      s"-J-Dlogs.home=/var/log/${packageName.value}",
+//      s"-J-Xloggc:/var/log/${packageName.value}/gc.log",
+//    ),
+
+    assemblyMergeStrategy := {
+        case PathList("META-INF", _*) => MergeStrategy.discard
+        case referenceOverrides if referenceOverrides.contains("reference-overrides.conf") =>
+          MergeStrategy.concat
+        case _                        => MergeStrategy.first
+    },
 
     libraryDependencies ++= jacksonOverrides
       ++ akkaSerializationJacksonOverrides
