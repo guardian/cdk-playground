@@ -1,14 +1,13 @@
-name: Simple Snyk monitor container images
-#Todo make this run only after publish.yml has run
+name: Monitor container image
 
+#This action should run only after publish.yml has run
 on:
-    push:
-        branches:
-            - main
-            - docker
-
+    workflow_run:
+        workflows: ["Publish Docker image"]
+        types:
+            - completed
     workflow_dispatch:
-    workflow_call:
+            
 
 jobs:
     security:
@@ -23,9 +22,9 @@ jobs:
               run: |
                 projectTags="commit=${GITHUB_SHA}"
 
-                snyk container monitor ghcr.io/guardian/cdk-playground:docker \
+                snyk container monitor ghcr.io/guardian/cdk-playground:latest \
                   --org="guardian-test" \
                   -d \
-                  --project-tags=${projectTags} --
+                  --project-tags=${projectTags}
               env:
                   SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
