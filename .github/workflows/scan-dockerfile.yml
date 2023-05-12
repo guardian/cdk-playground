@@ -1,4 +1,5 @@
-name: Simple Snyk monitor for SBT + Node + Python
+name: Simple Snyk monitor container images
+#Todo make this run only after publish.yml has run
 
 on:
     push:
