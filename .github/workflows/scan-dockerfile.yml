@@ -22,7 +22,7 @@ jobs:
               run: |
                 projectTags="commit=${GITHUB_SHA}"
 
-                snyk container monitor ghcr.io/cdk-playground:docker \
+                snyk container monitor ghcr.io/guardian/cdk-playground:docker \
                   --org="guardian-test" \
                   --project-tags=${projectTags} --
               env:
