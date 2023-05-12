@@ -25,6 +25,7 @@ jobs:
 
                 snyk container monitor ghcr.io/guardian/cdk-playground:docker \
                   --org="guardian-test" \
+                  -d \
                   --project-tags=${projectTags} --
               env:
                   SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
