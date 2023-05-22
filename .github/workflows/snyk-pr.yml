@@ -1,0 +1,16 @@
+name: Snyk PR
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '**/package.json'
+
+jobs:
+  security:
+    uses: guardian/.github/.github/workflows/sbt-node-snyk-pr.yml@main
+    with:
+      ORG: guardian-test
+      SEVERITY_THRESHOLD: high
+    secrets:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
