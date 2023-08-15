@@ -17,12 +17,7 @@ class ManagementController (override val controllerComponents: ControllerCompone
   }
 
   def serveError: Action[AnyContent] = Action {
-    val number = Random.nextInt(50)
-    if (number == 13) {
-      Ok("Failed to show correct page")
-    } else {
-      Ok("OK")
-    }
+    InternalServerError
   }
 
   def healthCheck: Action[AnyContent] = Action {
