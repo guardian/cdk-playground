@@ -35,6 +35,8 @@ jobs:
           distribution: 'corretto'
           cache: 'sbt'
 
+      - run: printenv
+
       # Build CDK and Play (in sequence)
       - run: ./script/ci
 
