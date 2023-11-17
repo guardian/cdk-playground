@@ -1,6 +1,6 @@
 # CDK Playground
 
-A simple Scala Play app running in EC2 using infrastructure provided by [@guardian/cdk](https://github.com/guardian/cdk) (aka GuCDK).
+A Scala Play app running in EC2 using infrastructure provided by [@guardian/cdk](https://github.com/guardian/cdk) (aka GuCDK).
 
 The purpose of this repository is to offer a "real life" application to test GuCDK on that is isolated from in use production applications.
 
