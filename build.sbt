@@ -36,7 +36,7 @@ lazy val root = (project in file("."))
     libraryDependencies ++= jacksonOverrides
       ++ akkaSerializationJacksonOverrides
       ++ Seq(
-        "net.logstash.logback" % "logstash-logback-encoder" % "7.3",
+        "net.logstash.logback" % "logstash-logback-encoder" % "7.4",
         // Transient dependency of Play. No newer version of Play 2.9 or Play 3.0 with this vulnerability fixed.
         "ch.qos.logback" % "logback-classic" % "1.4.14",
       ),
