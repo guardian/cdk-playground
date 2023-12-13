@@ -1,5 +1,5 @@
 // https://github.com/orgs/playframework/discussions/11222
-val jacksonVersion         = "2.14.2"
+val jacksonVersion         = "2.16.0"
 
 val jacksonOverrides = Seq(
   "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8",
@@ -19,7 +19,7 @@ lazy val root = (project in file("."))
   .settings(
     name := """cdk-playground""",
     version := "1.0-SNAPSHOT",
-    scalaVersion := "2.13.10",
+    scalaVersion := "2.13.12",
     scalacOptions ++= List(
       "-encoding", "utf8",
       "-deprecation",
@@ -36,9 +36,9 @@ lazy val root = (project in file("."))
     libraryDependencies ++= jacksonOverrides
       ++ akkaSerializationJacksonOverrides
       ++ Seq(
-        "net.logstash.logback" % "logstash-logback-encoder" % "7.3",
+        "net.logstash.logback" % "logstash-logback-encoder" % "7.4",
         // Transient dependency of Play. No newer version of Play 2.9 or Play 3.0 with this vulnerability fixed.
-        "ch.qos.logback" % "logback-classic" % "1.2.13",
+        "ch.qos.logback" % "logback-classic" % "1.4.14",
       ),
 
     buildInfoKeys ++= Seq[BuildInfoKey](
