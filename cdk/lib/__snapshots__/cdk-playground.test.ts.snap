@@ -27,6 +27,7 @@ Object {
       "GuApiLambda",
       "GuCertificate",
       "GuCname",
+      "GuCname",
     ],
     "gu:cdk:version": "TEST",
   },
@@ -231,6 +232,23 @@ Object {
       },
       "Type": "AWS::CertificateManager::Certificate",
       "UpdateReplacePolicy": "Retain",
+    },
+    "DemoDNS": Object {
+      "Properties": Object {
+        "Name": "lambda.cdk-playground.gutools.co.uk",
+        "RecordType": "CNAME",
+        "ResourceRecords": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "lambdacdkplaygroundlambdaapidomainD1A8D46F",
+              "RegionalDomainName",
+            ],
+          },
+        ],
+        "Stage": "PROD",
+        "TTL": 3600,
+      },
+      "Type": "Guardian::DNS::RecordSet",
     },
     "DescribeEC2PolicyFF5F9295": Object {
       "Properties": Object {

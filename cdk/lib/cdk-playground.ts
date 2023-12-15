@@ -88,5 +88,12 @@ export class CdkPlayground extends GuStack {
 			domainName: lambdaDomainName,
 			resourceRecord: domain.domainNameAliasDomainName,
 		});
+
+    new GuCname(this, 'DemoDNS', {
+      app: lambdaApp,
+      ttl: Duration.hours(1),
+      domainName: 'lambda.cdk-playground.gutools.co.uk',
+      resourceRecord: domain.domainNameAliasDomainName,
+    });
 	}
 }
