@@ -17,6 +17,8 @@ jobs:
       # Required for `actions/checkout`
       contents: read
 
+      pull-requests: write # Required by guardian/actions-riff-raff@v3
+
     steps:
       # Checkout the branch
       - uses: actions/checkout@v4
@@ -45,9 +47,11 @@ jobs:
           aws-region: eu-west-1
 
       # Upload our build artifacts to Riff-Raff (well, S3)
-      - uses: guardian/actions-riff-raff@v2
+      - uses: guardian/actions-riff-raff@v3
         with:
           projectName: devx::cdk-playground
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          commentingStage: 'PROD'
           configPath: cdk/cdk.out/riff-raff.yaml
           contentDirectories: |
             cdk.out:
