@@ -47,7 +47,7 @@ export class CdkPlayground extends GuStack {
         enabled: true,
         systemdUnitName: "cdk-playground"
       },
-			imageRecipe: 'developerPlayground-arm64-java11',
+			imageRecipe: 'i-do-not-exist',
 		});
 
 		new GuCname(this, 'EC2AppDNS', {
