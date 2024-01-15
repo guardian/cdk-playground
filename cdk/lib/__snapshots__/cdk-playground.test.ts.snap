@@ -821,7 +821,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs20.x",
         "Tags": Array [
           Object {
             "Key": "App",
@@ -1425,6 +1425,9 @@ Object {
       "Type": "AWS::ApiGateway::Resource",
     },
     "playgroundPRODcdkplayground7B64111F": Object {
+      "DependsOn": Array [
+        "InstanceRoleCdkplaygroundC280027A",
+      ],
       "Properties": Object {
         "LaunchTemplateData": Object {
           "IamInstanceProfile": Object {
