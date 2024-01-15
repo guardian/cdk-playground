@@ -63,7 +63,7 @@ export class CdkPlayground extends GuStack {
 		const lambda = new GuApiLambda(this, 'lambda', {
 			fileName: `cdk-playground-lambda.zip`,
 			handler: 'handler.main',
-			runtime: Runtime.NODEJS_16_X,
+			runtime: Runtime.NODEJS_20_X,
 			monitoringConfiguration: {
 				noMonitoring: true,
 			},
