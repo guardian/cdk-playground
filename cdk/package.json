@@ -13,7 +13,7 @@
   "devDependencies": {
     "@guardian/cdk": "53.0.0",
     "@guardian/eslint-config-typescript": "5.0.0",
-    "@guardian/prettier": "7.0.0",
+    "@guardian/prettier": "8.0.0",
     "@types/jest": "^28.1.6",
     "@types/node": "20.11.1",
     "aws-cdk": "2.114.1",
