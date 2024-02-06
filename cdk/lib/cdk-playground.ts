@@ -7,6 +7,7 @@ import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
+import type {CfnRole} from "aws-cdk-lib/aws-iam";
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
 export class CdkPlayground extends GuStack {
@@ -25,7 +26,7 @@ export class CdkPlayground extends GuStack {
 		const ec2App = 'cdk-playground';
 		const ec2AppDomainName = 'cdk-playground.gutools.co.uk';
 
-		const { loadBalancer } = new GuPlayApp(this, {
+		const { loadBalancer, autoScalingGroup } = new GuPlayApp(this, {
 			app: ec2App,
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
 			access: { scope: AccessScope.PUBLIC },
@@ -48,9 +49,18 @@ export class CdkPlayground extends GuStack {
         systemdUnitName: "cdk-playground"
       },
 			imageRecipe: 'developerPlayground-arm64-java11',
+      roleConfiguration: {
+        additionalPolicies: [
+          // tightly scoped alternative to AmazonSSMManagedInstanceCore
+        ]
+      }
 		});
 
-		new GuCname(this, 'EC2AppDNS', {
+    // Remove managed policies (only AmazonSSMManagedInstanceCore right now) added by GuCDK, as they're not least privilege
+    const role = autoScalingGroup.role.node.defaultChild as CfnRole;
+    role.managedPolicyArns = [];
+
+    new GuCname(this, 'EC2AppDNS', {
 			app: ec2App,
 			ttl: Duration.hours(1),
 			domainName: ec2AppDomainName,
