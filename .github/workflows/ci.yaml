@@ -10,14 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      # Allow GitHub to request an OIDC JWT ID token, for exchange with `aws-actions/configure-aws-credentials`
-      # See https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services#updating-your-github-actions-workflow
-      id-token: write
-
-      # Required for `actions/checkout`
       contents: read
 
-      pull-requests: write # Required by guardian/actions-riff-raff@v3
+      # These permissions are required by guardian/actions-riff-raff...
+      id-token: write # ...to exchange an OIDC JWT ID token for AWS credentials
+      pull-requests: write #...to comment on PRs
 
     steps:
       # Checkout the branch
@@ -40,17 +37,12 @@ jobs:
       # Build CDK and Play (in sequence)
       - run: ./script/ci
 
-      # Fetch AWS credentials, allowing us to upload to Riff-Raff (well, S3)
-      - uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
-          aws-region: eu-west-1
-
       # Upload our build artifacts to Riff-Raff (well, S3)
-      - uses: guardian/actions-riff-raff@v3
+      - uses: guardian/actions-riff-raff@v4
         with:
           projectName: devx::cdk-playground
           githubToken: ${{ secrets.GITHUB_TOKEN }}
+          roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
           commentingStage: 'PROD'
           configPath: cdk/cdk.out/riff-raff.yaml
           contentDirectories: |
