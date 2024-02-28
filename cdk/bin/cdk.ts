@@ -1,6 +1,6 @@
 import 'source-map-support/register';
-import { GuRootExperimental } from '@guardian/cdk/lib/experimental/constructs/root';
+import { GuRoot } from '@guardian/cdk/lib/constructs/root';
 import { CdkPlayground } from '../lib/cdk-playground';
 
-const app = new GuRootExperimental();
+const app = new GuRoot();
 new CdkPlayground(app, 'CdkPlayground');

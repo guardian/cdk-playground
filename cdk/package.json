@@ -11,7 +11,7 @@
     "diff": "cdk diff --path-metadata false --version-reporting false"
   },
   "devDependencies": {
-    "@guardian/cdk": "50.3.0",
+    "@guardian/cdk": "github:guardian/cdk#ash/AddCognitoStage",
     "@guardian/eslint-config-typescript": "5.0.0",
     "@guardian/prettier": "5.0.0",
     "@types/jest": "^28.1.6",
