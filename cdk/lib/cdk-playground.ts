@@ -48,6 +48,10 @@ export class CdkPlayground extends GuStack {
         systemdUnitName: "cdk-playground"
       },
 			imageRecipe: 'developerPlayground-arm64-java11',
+      googleAuth: {
+        enabled: true,
+        domain: ec2AppDomainName
+      }
 		});
 
 		new GuCname(this, 'EC2AppDNS', {

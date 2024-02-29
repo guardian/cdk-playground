@@ -10,7 +10,6 @@ Object {
       "GuPlayApp",
       "GuCertificate",
       "GuInstanceRole",
-      "GuSsmSshPolicy",
       "GuDescribeEC2Policy",
       "GuLoggingStreamNameParameter",
       "GuLogShippingPolicy",
@@ -24,6 +23,8 @@ Object {
       "GuApplicationLoadBalancer",
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
+      "GuLambdaFunction",
+      "GuHttpsEgressSecurityGroup",
       "GuCname",
       "GuApiLambda",
       "GuCertificate",
@@ -84,6 +85,10 @@ Object {
       "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
+    "bucketoverrideParameter": Object {
+      "Default": "/organisation/services/artifact.bucket",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
     "cdkplaygroundPrivateSubnets": Object {
       "Default": "/account/vpc/primary/subnets/private",
       "Description": "A list of private subnets",
@@ -93,6 +98,10 @@ Object {
       "Default": "/account/vpc/primary/subnets/public",
       "Description": "A list of public subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
+    },
+    "deploytoolsaccountidparameterParameter": Object {
+      "Default": "/organisation/accounts/deployTools",
+      "Type": "AWS::SSM::Parameter::Value<String>",
     },
   },
   "Resources": Object {
@@ -369,6 +378,27 @@ Object {
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
+    "GuHttpsEgressSecurityGroupCdkplaygroundfromCdkPlaygroundldpaccessCdkplayground143725279000E1190A2B": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "FromPort": 9000,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "GuHttpsEgressSecurityGroupCdkplaygroundAF9827C8",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "ldpaccessCdkplayground138EFB42",
+            "GroupId",
+          ],
+        },
+        "ToPort": 9000,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
     "GuLogShippingPolicy981BFE5A": Object {
       "Properties": Object {
         "PolicyDocument": Object {
@@ -421,6 +451,20 @@ Object {
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonSSMManagedInstanceCore",
+              ],
+            ],
+          },
+        ],
         "Path": "/",
         "Tags": Array [
           Object {
@@ -475,6 +519,26 @@ Object {
         ],
         "DefaultActions": Array [
           Object {
+            "AuthenticateCognitoConfig": Object {
+              "SessionTimeout": "900",
+              "UserPoolArn": Object {
+                "Fn::GetAtt": Array [
+                  "cdkplaygrounduserpoolC6D0CFA6",
+                  "Arn",
+                ],
+              },
+              "UserPoolClientId": Object {
+                "Ref": "cdkplaygrounduserpoolalbclientD7D8A84F",
+              },
+              "UserPoolDomain": Object {
+                "Ref": "cdkplaygrounduserpooldomain9ED71BF5",
+              },
+            },
+            "Order": 1,
+            "Type": "authenticate-cognito",
+          },
+          Object {
+            "Order": 2,
             "TargetGroupArn": Object {
               "Ref": "TargetGroupCdkplayground7A453FC2",
             },
@@ -502,6 +566,12 @@ Object {
           Object {
             "Fn::GetAtt": Array [
               "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+              "GroupId",
+            ],
+          },
+          Object {
+            "Fn::GetAtt": Array [
+              "ldpaccessCdkplayground138EFB42",
               "GroupId",
             ],
           },
@@ -538,6 +608,15 @@ Object {
     "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05": Object {
       "Properties": Object {
         "GroupDescription": "Automatically created Security Group for ELB CdkPlaygroundLoadBalancerCdkplayground0F8432FC",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow to IdP endpoint",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
         "SecurityGroupIngress": Array [
           Object {
             "CidrIp": "0.0.0.0/0",
@@ -668,42 +747,6 @@ Object {
       },
       "Type": "AWS::IAM::Policy",
     },
-    "SsmSshPolicy4CFC977E": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "ec2messages:AcknowledgeMessage",
-                "ec2messages:DeleteMessage",
-                "ec2messages:FailMessage",
-                "ec2messages:GetEndpoint",
-                "ec2messages:GetMessages",
-                "ec2messages:SendReply",
-                "ssm:UpdateInstanceInformation",
-                "ssm:ListInstanceAssociations",
-                "ssm:DescribeInstanceProperties",
-                "ssm:DescribeDocumentParameters",
-                "ssmmessages:CreateControlChannel",
-                "ssmmessages:CreateDataChannel",
-                "ssmmessages:OpenControlChannel",
-                "ssmmessages:OpenDataChannel",
-              ],
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "ssm-ssh-policy",
-        "Roles": Array [
-          Object {
-            "Ref": "InstanceRoleCdkplaygroundC280027A",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "TargetGroupCdkplayground7A453FC2": Object {
       "Properties": Object {
         "HealthCheckIntervalSeconds": 10,
@@ -816,6 +859,416 @@ Object {
         "ToPort": 9000,
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "WazuhSecurityGroupfromCdkPlaygroundldpaccessCdkplayground143725279000CA7FCC04": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "FromPort": 9000,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "WazuhSecurityGroup",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "ldpaccessCdkplayground138EFB42",
+            "GroupId",
+          ],
+        },
+        "ToPort": 9000,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "authlambda5AE8A89F": Object {
+      "DependsOn": Array [
+        "authlambdaServiceRoleDefaultPolicy4F870132",
+        "authlambdaServiceRole39F49DB1",
+      ],
+      "Properties": Object {
+        "Architectures": Array [
+          "x86_64",
+        ],
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "bucketoverrideParameter",
+          },
+          "S3Key": "deploy/PROD/cognito-lambda/devx-cognito-lambda-amd64-v2.zip",
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "ALLOWED_GROUPS": "engineering@guardian.co.uk",
+            "APP": "cdk-playground",
+            "GATEKEEPER_FUNCTION_ARN": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "arn:aws:lambda:eu-west-1:",
+                  Object {
+                    "Ref": "deploytoolsaccountidparameterParameter",
+                  },
+                  ":function:deploy-PROD-gatekeeper-lambda",
+                ],
+              ],
+            },
+            "STACK": "playground",
+            "STAGE": "PROD",
+          },
+        },
+        "Handler": "bootstrap",
+        "MemorySize": 128,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "authlambdaServiceRole39F49DB1",
+            "Arn",
+          ],
+        },
+        "Runtime": "provided.al2",
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "Timeout": 30,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "authlambdaServiceRole39F49DB1": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "authlambdaServiceRoleDefaultPolicy4F870132": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      Object {
+                        "Ref": "bucketoverrideParameter",
+                      },
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      Object {
+                        "Ref": "bucketoverrideParameter",
+                      },
+                      "/deploy/PROD/cognito-lambda/devx-cognito-lambda-amd64-v2.zip",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": "ssm:GetParametersByPath",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:ssm:eu-west-1:",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/PROD/playground/cdk-playground",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:ssm:eu-west-1:",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/PROD/playground/cdk-playground/*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:lambda:eu-west-1:",
+                    Object {
+                      "Ref": "deploytoolsaccountidparameterParameter",
+                    },
+                    ":function:deploy-PROD-gatekeeper-lambda",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "authlambdaServiceRoleDefaultPolicy4F870132",
+        "Roles": Array [
+          Object {
+            "Ref": "authlambdaServiceRole39F49DB1",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "cdkplaygrounduserpoolC6D0CFA6": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "AccountRecoverySetting": Object {
+          "RecoveryMechanisms": Array [
+            Object {
+              "Name": "verified_phone_number",
+              "Priority": 1,
+            },
+            Object {
+              "Name": "verified_email",
+              "Priority": 2,
+            },
+          ],
+        },
+        "AdminCreateUserConfig": Object {
+          "AllowAdminCreateUserOnly": true,
+        },
+        "EmailVerificationMessage": "The verification code to your new account is {####}",
+        "EmailVerificationSubject": "Verify your new account",
+        "LambdaConfig": Object {
+          "PreAuthentication": Object {
+            "Fn::GetAtt": Array [
+              "authlambda5AE8A89F",
+              "Arn",
+            ],
+          },
+          "PreSignUp": Object {
+            "Fn::GetAtt": Array [
+              "authlambda5AE8A89F",
+              "Arn",
+            ],
+          },
+        },
+        "SmsVerificationMessage": "The verification code to your new account is {####}",
+        "UserPoolTags": Object {
+          "Stack": "playground",
+          "Stage": "PROD",
+          "gu:cdk:version": "TEST",
+          "gu:repo": "guardian/cdk-playground",
+        },
+        "VerificationMessageTemplate": Object {
+          "DefaultEmailOption": "CONFIRM_WITH_CODE",
+          "EmailMessage": "The verification code to your new account is {####}",
+          "EmailSubject": "Verify your new account",
+          "SmsMessage": "The verification code to your new account is {####}",
+        },
+      },
+      "Type": "AWS::Cognito::UserPool",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "cdkplaygrounduserpoolPreAuthenticationCognitoE9084C35": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "authlambda5AE8A89F",
+            "Arn",
+          ],
+        },
+        "Principal": "cognito-idp.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::GetAtt": Array [
+            "cdkplaygrounduserpoolC6D0CFA6",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "cdkplaygrounduserpoolPreSignUpCognito288E67BB": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "authlambda5AE8A89F",
+            "Arn",
+          ],
+        },
+        "Principal": "cognito-idp.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::GetAtt": Array [
+            "cdkplaygrounduserpoolC6D0CFA6",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "cdkplaygrounduserpoolalbclientD7D8A84F": Object {
+      "DependsOn": Array [
+        "googleidp5A744057",
+      ],
+      "Properties": Object {
+        "AccessTokenValidity": 60,
+        "AllowedOAuthFlows": Array [
+          "implicit",
+          "code",
+        ],
+        "AllowedOAuthFlowsUserPoolClient": true,
+        "AllowedOAuthScopes": Array [
+          "profile",
+          "phone",
+          "email",
+          "openid",
+          "aws.cognito.signin.user.admin",
+        ],
+        "CallbackURLs": Array [
+          "https://cdk-playground.gutools.co.uk/oauth2/idpresponse",
+        ],
+        "GenerateSecret": true,
+        "IdTokenValidity": 60,
+        "RefreshTokenValidity": 10080,
+        "SupportedIdentityProviders": Array [
+          "Google",
+        ],
+        "TokenValidityUnits": Object {
+          "AccessToken": "minutes",
+          "IdToken": "minutes",
+          "RefreshToken": "minutes",
+        },
+        "UserPoolId": Object {
+          "Ref": "cdkplaygrounduserpoolC6D0CFA6",
+        },
+      },
+      "Type": "AWS::Cognito::UserPoolClient",
+    },
+    "cdkplaygrounduserpooldomain9ED71BF5": Object {
+      "Properties": Object {
+        "Domain": "com-gu-cdk-playground-prod-a093017f250472474a2968c2c4b41f38",
+        "UserPoolId": Object {
+          "Ref": "cdkplaygrounduserpoolC6D0CFA6",
+        },
+      },
+      "Type": "AWS::Cognito::UserPoolDomain",
+    },
+    "googleidp5A744057": Object {
+      "Properties": Object {
+        "AttributeMapping": Object {
+          "email": "email",
+          "family_name": "family_name",
+          "given_name": "given_name",
+          "name": "name",
+          "picture": "picture",
+        },
+        "ProviderDetails": Object {
+          "authorize_scopes": "openid email profile",
+          "client_id": "{{resolve:secretsmanager:/PROD/playground/cdk-playground/google-auth-credentials:SecretString:clientId::}}",
+          "client_secret": "{{resolve:secretsmanager:/PROD/playground/cdk-playground/google-auth-credentials:SecretString:clientSecret::}}",
+        },
+        "ProviderName": "Google",
+        "ProviderType": "Google",
+        "UserPoolId": Object {
+          "Ref": "cdkplaygrounduserpoolC6D0CFA6",
+        },
+      },
+      "Type": "AWS::Cognito::UserPoolIdentityProvider",
     },
     "lambda8B5974B5": Object {
       "DependsOn": Array [
@@ -1447,7 +1900,92 @@ Object {
       },
       "Type": "AWS::ApiGateway::Resource",
     },
+    "ldpaccessCdkplayground138EFB42": Object {
+      "Properties": Object {
+        "GroupDescription": "Allow all outbound HTTPS traffic",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound HTTPS traffic",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "ldpaccessCdkplaygroundtoCdkPlaygroundGuHttpsEgressSecurityGroupCdkplaygroundFCB890AC90006C87988F": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "GuHttpsEgressSecurityGroupCdkplaygroundAF9827C8",
+            "GroupId",
+          ],
+        },
+        "FromPort": 9000,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "ldpaccessCdkplayground138EFB42",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 9000,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
+    "ldpaccessCdkplaygroundtoCdkPlaygroundWazuhSecurityGroupBE1C2E039000F11930C5": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "WazuhSecurityGroup",
+            "GroupId",
+          ],
+        },
+        "FromPort": 9000,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "ldpaccessCdkplayground138EFB42",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 9000,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
     "playgroundPRODcdkplayground7B64111F": Object {
+      "DependsOn": Array [
+        "InstanceRoleCdkplaygroundC280027A",
+      ],
       "Properties": Object {
         "LaunchTemplateData": Object {
           "IamInstanceProfile": Object {
