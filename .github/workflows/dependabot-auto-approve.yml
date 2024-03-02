@@ -1,7 +1,14 @@
+# In this project, CI passing is a strong enough signal that the PR is safe to merge
+
 name: Dependabot auto-approve
 on: pull_request
 
 permissions:
+  # Dependabot requires those who comment "@dependabot merge" have push access to the repository:
+  # > Sorry, only users with push access can use that command.
+  contents: write
+
+  # Allow commenting on PRs
   pull-requests: write
 
 jobs:
@@ -15,7 +22,6 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      # In this project, CI passing is a strong enough signal that the PR is safe to merge
       - name: Approve a PR
         run: gh pr review --approve --body "@dependabot merge" "$PR_URL"
         env:
