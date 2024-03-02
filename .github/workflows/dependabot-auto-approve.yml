@@ -17,7 +17,7 @@ jobs:
 
       # In this project, CI passing is a strong enough signal that the PR is safe to merge
       - name: Approve a PR
-        run: gh pr review --comment "@dependabot merge" --approve "$PR_URL"
+        run: gh pr review --approve --body "@dependabot merge" "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
