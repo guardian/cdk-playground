@@ -17,6 +17,17 @@ jobs:
       pull-requests: write #...to comment on PRs
 
     steps:
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.GU_RIFF_RAFF_HACKDAY_ROLE_ARN }}
+          aws-region: eu-west-1
+
+      # This should pass
+      - run: aws s3 cp README.md s3://riffraff-artifact-bucket/hackday::cdk-playground/README.md
+
+      # This should fail
+      - run: aws s3 cp README.md s3://riffraff-artifact-bucket/devx::cdk-playground/README.md
+
       # Checkout the branch
       - uses: actions/checkout@v4
 
