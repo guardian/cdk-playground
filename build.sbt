@@ -1,5 +1,5 @@
 // https://github.com/orgs/playframework/discussions/11222
-val jacksonVersion         = "2.16.2"
+val jacksonVersion         = "2.17.0"
 
 val jacksonOverrides = Seq(
   "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8",
