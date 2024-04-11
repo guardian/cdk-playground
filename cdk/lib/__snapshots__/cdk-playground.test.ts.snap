@@ -24,6 +24,7 @@ Object {
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
       "GuCname",
+      "GuCname",
       "GuApiLambda",
       "GuCertificate",
       "GuCname",
@@ -261,6 +262,23 @@ Object {
     "EC2AppDNS": Object {
       "Properties": Object {
         "Name": "cdk-playground.gutools.co.uk",
+        "RecordType": "CNAME",
+        "ResourceRecords": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "LoadBalancerCdkplayground7C6B4D97",
+              "DNSName",
+            ],
+          },
+        ],
+        "Stage": "PROD",
+        "TTL": 3600,
+      },
+      "Type": "Guardian::DNS::RecordSet",
+    },
+    "FastlyDRTestDNS": Object {
+      "Properties": Object {
+        "Name": "cdk-status-resources.guim.co.uk",
         "RecordType": "CNAME",
         "ResourceRecords": Array [
           Object {
