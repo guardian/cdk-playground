@@ -281,12 +281,7 @@ Object {
         "Name": "cdk-status-resources.guardianapis.com",
         "RecordType": "CNAME",
         "ResourceRecords": Array [
-          Object {
-            "Fn::GetAtt": Array [
-              "LoadBalancerCdkplayground7C6B4D97",
-              "DNSName",
-            ],
-          },
+          "dualstack.guardian.map.fastly.net",
         ],
         "Stage": "PROD",
         "TTL": 3600,

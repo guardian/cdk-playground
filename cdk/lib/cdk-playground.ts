@@ -60,7 +60,7 @@ export class CdkPlayground extends GuStack {
       app: ec2App,
       ttl: Duration.hours(1),
       domainName: fastlyDRTestDomainName,
-      resourceRecord: loadBalancer.loadBalancerDnsName,
+      resourceRecord: 'dualstack.guardian.map.fastly.net',
     });
 
 		new GuCname(this, 'EC2AppDNS', {
