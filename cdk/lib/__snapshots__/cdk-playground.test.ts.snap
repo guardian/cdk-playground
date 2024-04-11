@@ -278,7 +278,7 @@ Object {
     },
     "FastlyDRTestDNS": Object {
       "Properties": Object {
-        "Name": "cdk-status-resources.guim.co.uk",
+        "Name": "cdk-status-resources.guardianapis.com",
         "RecordType": "CNAME",
         "ResourceRecords": Array [
           Object {

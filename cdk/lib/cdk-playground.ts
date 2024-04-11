@@ -26,7 +26,7 @@ export class CdkPlayground extends GuStack {
 		const ec2AppDomainName = 'cdk-playground.gutools.co.uk';
     //New domain added for Fastly disaster recovery testing. Will be deleted after this testing is complete
     //todo - delete fastlyTestDomainName once the Fastly disaster recovery testing is complete.
-    const fastlyDRTestDomainName = 'cdk-status-resources.guim.co.uk';
+    const fastlyDRTestDomainName = 'cdk-status-resources.guardianapis.com';
 
 		const { loadBalancer } = new GuPlayApp(this, {
 			app: ec2App,
