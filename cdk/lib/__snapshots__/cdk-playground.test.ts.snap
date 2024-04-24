@@ -24,7 +24,6 @@ Object {
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
       "GuCname",
-      "GuCname",
       "GuApiLambda",
       "GuCertificate",
       "GuCname",
@@ -270,18 +269,6 @@ Object {
               "DNSName",
             ],
           },
-        ],
-        "Stage": "PROD",
-        "TTL": 3600,
-      },
-      "Type": "Guardian::DNS::RecordSet",
-    },
-    "FastlyDRTestDNS": Object {
-      "Properties": Object {
-        "Name": "cdk-status-resources.guardianapis.com",
-        "RecordType": "CNAME",
-        "ResourceRecords": Array [
-          "dualstack.guardian.map.fastly.net",
         ],
         "Stage": "PROD",
         "TTL": 3600,
