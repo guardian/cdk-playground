@@ -18,31 +18,13 @@ dockerExposedPorts ++= Seq(9000)
 
 dockerBaseImage := "amazoncorretto:11"
 
-Docker / packageName := packageName.value
-
-Docker / version := version.value
-
 dockerRepository := Some("dockeruser")
 
-//dockerExposedVolumes := Seq("/opt/docker/logs")
+dockerExposedVolumes := Seq("/opt/docker/logs")
 
 Docker / daemonUserUid := None
 Docker / daemonGroupGid := None
 Docker / daemonUser := "daemon"
-
-/**
- * 1. how to put these elsewhere in the dockerfile? (e.g. earlier)
- * 2. is there a better way to create the files and assign permissions?
- * 3. what's the difference between Cmd and ExecCmd? (seems like the same output)
- * 4. does the JVM process run as the daemonUser? what does this look like?
- */
-dockerCommands ++= Seq(
-  Cmd("USER", "root"),
-  ExecCmd("RUN", "mkdir", "-p", s"/opt/docker/logs/${packageName.value}"),
-  ExecCmd("RUN", "touch", s"/opt/docker/logs/${packageName.value}/gc.log"),
-  ExecCmd("RUN", "chmod", "777", s"/opt/docker/logs/${packageName.value}/gc.log"),
-  Cmd("USER", (Docker / daemonUser).value)
-)
 
 
 def env(propName: String): Option[String] = sys.env.get(propName).filter(_.trim.nonEmpty)
@@ -51,7 +33,7 @@ lazy val root = (project in file("."))
   .enablePlugins(PlayScala, BuildInfoPlugin, JDebPackaging, SystemdPlugin, DockerPlugin)
   .settings(
     name := """cdk-playground""",
-    version := "1.0-SNAPSHOT",
+    version := "1.3-SNAPSHOT",
     scalaVersion := "2.13.13",
     scalacOptions ++= List(
       "-encoding", "utf8",
@@ -62,8 +44,8 @@ lazy val root = (project in file("."))
     ),
     Universal / javaOptions ++= Seq(
       s"-Dpidfile.path=/dev/null",
-      s"-J-Dlogs.home=/opt/docker/logs/${packageName.value}",
-      s"-J-Xloggc:/opt/docker/logs/${packageName.value}/gc.log",
+//      s"-J-Dlogs.home=/opt/docker/logs/${packageName.value}",
+//      s"-J-Xloggc:/opt/docker/logs/${packageName.value}/gc.log",
     ),
 
     libraryDependencies ++= jacksonOverrides
