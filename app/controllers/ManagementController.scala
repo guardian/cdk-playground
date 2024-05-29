@@ -5,6 +5,10 @@ import play.api.Logging
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
 
+object Testing {
+  var failureCount = 0
+}
+
 class ManagementController (override val controllerComponents: ControllerComponents) extends BaseController with Logging {
   def manifest: Action[AnyContent] = Action {
     Ok(Json.parse(BuildInfo.toJson))
@@ -15,6 +19,11 @@ class ManagementController (override val controllerComponents: ControllerCompone
   }
 
   def healthCheck: Action[AnyContent] = Action {
-    InternalServerError
+    if (Testing.failureCount < 20) {
+      Testing.failureCount += 1
+      InternalServerError
+    } else {
+      Ok
+    }
   }
 }
