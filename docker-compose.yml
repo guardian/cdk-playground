@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  localstack:
+    image: localstack/localstack:latest
+    container_name: cdk-playground-localstack
+    environment:
+      - SERVICES=dynamodb,sns,sqs,kinesis
+      - DATA_DIR=/tmp/localstack/data
+      - EDGE_PORT=4566
+    ports:
+      - "4566:4566" # DynamoDB port
+    volumes:
+      - ./localstack:/etc/localstack/init/ready.d
+      - "/tmp/localstack:/var/lib/localstack"
+      - ./cdk/cdk.out:/cdk/cdk.out
