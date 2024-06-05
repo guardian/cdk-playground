@@ -4,10 +4,15 @@ import { GuCertificate } from '@guardian/cdk/lib/constructs/acm';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
+import { GuLambdaFunction } from '@guardian/cdk/lib/constructs/lambda';
 import type { App } from 'aws-cdk-lib';
-import { Duration } from 'aws-cdk-lib';
+import { Duration, RemovalPolicy, Tags } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
+import type { CfnRole } from 'aws-cdk-lib/aws-iam';
+import { Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import type { CfnFunction } from 'aws-cdk-lib/aws-lambda';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { LogGroup } from 'aws-cdk-lib/aws-logs';
 
 export class CdkPlayground extends GuStack {
 	constructor(
@@ -43,10 +48,10 @@ export class CdkPlayground extends GuStack {
 				minimumInstances: 1,
 				maximumInstances: 2,
 			},
-      applicationLogging: {
-        enabled: true,
-        systemdUnitName: "cdk-playground"
-      },
+			applicationLogging: {
+				enabled: true,
+				systemdUnitName: 'cdk-playground',
+			},
 			imageRecipe: 'developerPlayground-arm64-java11',
 		});
 
@@ -73,6 +78,31 @@ export class CdkPlayground extends GuStack {
 				description: lambdaApp,
 			},
 		});
+
+		const { stage, stack } = this;
+		const testLambdaApp = 'cdk-playground-lambda-test';
+
+		const logGroup = new LogGroup(this, `${testLambdaApp}-log-group`, {
+			logGroupName: `/aws/lambda/${stage}/${stack}/${testLambdaApp}`,
+			retention: 14,
+			removalPolicy: RemovalPolicy.DESTROY,
+		});
+		Tags.of(logGroup).add('App', testLambdaApp);
+
+		const testLambda = new GuLambdaFunction(this, 'test-lambda', {
+			app: testLambdaApp,
+			fileName: `${testLambdaApp}.zip`,
+			handler: 'handler.main',
+			runtime: Runtime.NODEJS_20_X,
+			logGroup,
+		});
+
+		logGroup.grantWrite(testLambda);
+
+		const { role } = testLambda;
+		if (role) {
+			(role.node.defaultChild as CfnRole).managedPolicyArns = [];
+		}
 
 		const domain = lambda.api.addDomainName('domain', {
 			domainName: lambdaDomainName,

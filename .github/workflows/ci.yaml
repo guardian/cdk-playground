@@ -52,3 +52,5 @@ jobs:
               - target/cdk-playground.deb
             cdk-playground-lambda:
               - lambda/cdk-playground-lambda.zip
+            cdk-playground-lambda-test:
+              - lambda/cdk-playground-lambda-test.zip
