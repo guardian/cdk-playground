@@ -79,11 +79,11 @@ export class CdkPlayground extends GuStack {
 			},
 		});
 
-		const { stage, stack } = this;
+		// const { stage, stack } = this;
 		const testLambdaApp = 'cdk-playground-lambda-test';
 
 		const logGroup = new LogGroup(this, `${testLambdaApp}-log-group`, {
-			logGroupName: `/aws/lambda/${stage}/${stack}/${testLambdaApp}`,
+			// logGroupName: `/aws/lambda/${stage}/${stack}/${testLambdaApp}`,
 			retention: 14,
 			removalPolicy: RemovalPolicy.DESTROY,
 		});
