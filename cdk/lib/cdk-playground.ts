@@ -79,30 +79,25 @@ export class CdkPlayground extends GuStack {
 			},
 		});
 
-		// const { stage, stack } = this;
+		const { stack, stage } = this;
+
 		const testLambdaApp = 'cdk-playground-lambda-test';
 
-		const logGroup = new LogGroup(this, `${testLambdaApp}-log-group`, {
-			// logGroupName: `/aws/lambda/${stage}/${stack}/${testLambdaApp}`,
-			retention: 14,
-			removalPolicy: RemovalPolicy.DESTROY,
-		});
-		Tags.of(logGroup).add('App', testLambdaApp);
-
-		const testLambda = new GuLambdaFunction(this, 'test-lambda', {
+		new GuLambdaFunction(this, 'test-lambda', {
 			app: testLambdaApp,
 			fileName: `${testLambdaApp}.zip`,
 			handler: 'handler.main',
 			runtime: Runtime.NODEJS_20_X,
-			logGroup,
+			functionName: [stage, stack, testLambdaApp].join('-'),
 		});
 
-		logGroup.grantWrite(testLambda);
-
-		const { role } = testLambda;
-		if (role) {
-			(role.node.defaultChild as CfnRole).managedPolicyArns = [];
-		}
+		new GuLambdaFunction(this, 'test-lambda-2', {
+			app: testLambdaApp,
+			fileName: `${testLambdaApp}.zip`,
+			handler: 'handler.main',
+			runtime: Runtime.NODEJS_20_X,
+			functionName: [stage, stack, testLambdaApp].join('-'),
+		});
 
 		const domain = lambda.api.addDomainName('domain', {
 			domainName: lambdaDomainName,
