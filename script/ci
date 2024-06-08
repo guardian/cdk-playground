@@ -13,6 +13,7 @@ set -e
 (
   cd lambda
   zip cdk-playground-lambda.zip handler.js
+  zip cdk-playground-lambda-test.zip handler.js
 )
 
 sbt clean compile test debian:packageBin
