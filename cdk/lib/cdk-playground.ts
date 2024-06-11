@@ -62,7 +62,7 @@ export class CdkPlayground extends GuStack {
     new GuCname(this, 'FastlyDNS', {
       app: ec2App,
       ttl: Duration.hours(1),
-      domainName: 'cdn-playground.gutools.co.uk',
+      domainName: 'cdn-playground.code.dev-guardianapis.com',
       resourceRecord: 'dualstack.guardian.map.fastly.net',
     });
 
