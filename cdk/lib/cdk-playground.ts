@@ -1,9 +1,10 @@
 import { GuApiLambda, GuPlayApp } from '@guardian/cdk';
 import { AccessScope } from '@guardian/cdk/lib/constants/access';
 import { GuCertificate } from '@guardian/cdk/lib/constructs/acm';
-import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
-import { GuStack } from '@guardian/cdk/lib/constructs/core';
+import type {GuStackProps} from '@guardian/cdk/lib/constructs/core';
+import { GuStack, GuStringParameter } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
+import { GuFastlyLogsIamRole } from "@guardian/cdk/lib/constructs/iam";
 import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
@@ -64,6 +65,17 @@ export class CdkPlayground extends GuStack {
       ttl: Duration.hours(1),
       domainName: 'cdn-playground.code.dev-guardianapis.com',
       resourceRecord: 'dualstack.guardian.map.fastly.net',
+    });
+
+    // Similarly, we are creating this role to support log shipping from Fastly.
+    // It will also be removed once testing is complete.
+    const fastlyBucketParameterKey = `/${this.stage}/${this.stack}/${ec2App}/fastly-logs-bucket`
+    new GuFastlyLogsIamRole(this, {
+      bucketName: new GuStringParameter(this, 'FastlyBucket', {
+        fromSSM: true,
+        allowedValues: [fastlyBucketParameterKey],
+        default: fastlyBucketParameterKey,
+      }).valueAsString
     });
 
 		const lambdaApp = 'cdk-playground-lambda';
