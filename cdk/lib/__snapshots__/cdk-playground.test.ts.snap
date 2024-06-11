@@ -24,6 +24,7 @@ Object {
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
       "GuCname",
+      "GuCname",
       "GuApiLambda",
       "GuCertificate",
       "GuCname",
@@ -269,6 +270,18 @@ Object {
               "DNSName",
             ],
           },
+        ],
+        "Stage": "PROD",
+        "TTL": 3600,
+      },
+      "Type": "Guardian::DNS::RecordSet",
+    },
+    "FastlyDNS": Object {
+      "Properties": Object {
+        "Name": "cdn-playground.gutools.co.uk",
+        "RecordType": "CNAME",
+        "ResourceRecords": Array [
+          "dualstack.guardian.map.fastly.net",
         ],
         "Stage": "PROD",
         "TTL": 3600,

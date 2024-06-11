@@ -57,6 +57,15 @@ export class CdkPlayground extends GuStack {
 			resourceRecord: loadBalancer.loadBalancerDnsName,
 		});
 
+    // This is a temporary domain name to support testing with a Fastly service.
+    // It will be removed when testing is complete.
+    new GuCname(this, 'FastlyDNS', {
+      app: ec2App,
+      ttl: Duration.hours(1),
+      domainName: 'cdn-playground.gutools.co.uk',
+      resourceRecord: 'dualstack.guardian.map.fastly.net',
+    });
+
 		const lambdaApp = 'cdk-playground-lambda';
 		const lambdaDomainName = 'cdk-playground-lambda.gutools.co.uk';
 
