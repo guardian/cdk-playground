@@ -278,7 +278,7 @@ Object {
     },
     "FastlyDNS": Object {
       "Properties": Object {
-        "Name": "cdn-playground.gutools.co.uk",
+        "Name": "cdn-playground.code.dev-guardianapis.com",
         "RecordType": "CNAME",
         "ResourceRecords": Array [
           "dualstack.guardian.map.fastly.net",
