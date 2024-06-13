@@ -18,4 +18,17 @@ class ManagementController (override val controllerComponents: ControllerCompone
     logger.info("hello from the health check")
     Ok("OK")
   }
+
+  def movedPermanently: Action[AnyContent] = Action {
+    MovedPermanently("https://www.theguardian.com/uk")
+  }
+
+  def badRequest: Action[AnyContent] = Action {
+    BadRequest
+  }
+
+  def error: Action[AnyContent] = Action {
+    InternalServerError
+  }
+
 }
