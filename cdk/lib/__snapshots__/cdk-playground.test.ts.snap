@@ -928,6 +928,9 @@ Object {
           },
         },
         "Handler": "handler.main",
+        "LoggingConfig": Object {
+          "LogFormat": "JSON",
+        },
         "MemorySize": 512,
         "Role": Object {
           "Fn::GetAtt": Array [
