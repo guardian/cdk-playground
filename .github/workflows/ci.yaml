@@ -49,6 +49,6 @@ jobs:
             cdk.out:
               - cdk/cdk.out
             cdk-playground:
-              - target/cdk-playground.deb
+              - dist/cdk-playground
             cdk-playground-lambda:
               - lambda/cdk-playground-lambda.zip

@@ -12,10 +12,10 @@ import type {
 	CfnUpdatePolicy,
 } from 'aws-cdk-lib';
 import { Duration, Tags } from 'aws-cdk-lib';
-import { CfnAutoScalingGroup, UpdatePolicy } from 'aws-cdk-lib/aws-autoscaling';
+import type { CfnAutoScalingGroup } from 'aws-cdk-lib/aws-autoscaling';
+import { AutoScalingGroup, UpdatePolicy } from 'aws-cdk-lib/aws-autoscaling';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
-import { AutoScalingGroup } from 'aws-cdk-lib/aws-autoscaling';
 
 export class CdkPlayground extends GuStack {
 	constructor(
@@ -36,14 +36,16 @@ export class CdkPlayground extends GuStack {
 		const ec2App = 'cdk-playground';
 		const ec2AppDomainName = 'cdk-playground.gutools.co.uk';
 
+		const buildNumber = process.env.GITHUB_RUN_NUMBER ?? 'DEV';
+
 		const { loadBalancer, autoScalingGroup } = new GuPlayApp(this, {
 			app: ec2App,
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
 			access: { scope: AccessScope.PUBLIC },
 			userData: {
 				distributable: {
-					fileName: `${ec2App}.deb`,
-					executionStatement: `dpkg -i /${ec2App}/${ec2App}.deb`,
+					fileName: `${ec2App}-${buildNumber}.deb`,
+					executionStatement: `dpkg -i /${ec2App}/${ec2App}-${buildNumber}.deb`,
 				},
 			},
 			certificateProps: {
@@ -67,7 +69,7 @@ export class CdkPlayground extends GuStack {
 				willReplace: true,
 			} as CfnAutoScalingReplacingUpdate,
 		};
-		let asg = autoScalingGroup.node.defaultChild as CfnAutoScalingGroup;
+		const asg = autoScalingGroup.node.defaultChild as CfnAutoScalingGroup;
 		// asg.desiredCapacity = '3';
 		asg.cfnOptions.updatePolicy = updatePolicy;
 
