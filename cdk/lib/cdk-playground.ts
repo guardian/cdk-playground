@@ -8,6 +8,7 @@ import { GuFastlyLogsIamRole } from '@guardian/cdk/lib/constructs/iam';
 import type {
 	App,
 	CfnAutoScalingReplacingUpdate,
+	CfnCreationPolicy,
 	CfnStack,
 	CfnUpdatePolicy,
 } from 'aws-cdk-lib';
@@ -64,14 +65,14 @@ export class CdkPlayground extends GuStack {
 			updatePolicy: UpdatePolicy.replacingUpdate(),
 		});
 
-		const updatePolicy: CfnUpdatePolicy = {
-			autoScalingReplacingUpdate: {
-				willReplace: true,
-			} as CfnAutoScalingReplacingUpdate,
+		const createPolicy: CfnCreationPolicy = {
+			autoScalingCreationPolicy: {
+				minSuccessfulInstancesPercent: 100,
+			},
 		};
+
 		const asg = autoScalingGroup.node.defaultChild as CfnAutoScalingGroup;
-		// asg.desiredCapacity = '3';
-		asg.cfnOptions.updatePolicy = updatePolicy;
+		asg.cfnOptions.creationPolicy = createPolicy;
 
 		new GuCname(this, 'EC2AppDNS', {
 			app: ec2App,

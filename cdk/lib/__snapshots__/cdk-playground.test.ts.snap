@@ -114,6 +114,11 @@ Object {
   },
   "Resources": Object {
     "AutoScalingGroupCdkplaygroundASGD6E49F0F": Object {
+      "CreationPolicy": Object {
+        "AutoScalingCreationPolicy": Object {
+          "MinSuccessfulInstancesPercent": 100,
+        },
+      },
       "Properties": Object {
         "HealthCheckGracePeriod": 120,
         "HealthCheckType": "ELB",
@@ -191,6 +196,9 @@ Object {
       "UpdatePolicy": Object {
         "AutoScalingReplacingUpdate": Object {
           "WillReplace": true,
+        },
+        "AutoScalingScheduledAction": Object {
+          "IgnoreUnmodifiedGroupSizeProperties": true,
         },
       },
     },
