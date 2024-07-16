@@ -49,43 +49,46 @@ export class CdkPlayground extends GuStack {
 
 		const buildNumber = process.env.GITHUB_RUN_NUMBER ?? 'DEV';
 
-		const { loadBalancer, autoScalingGroup } = new GuPlayApp(this, {
-			app: ec2App,
-			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
-			access: { scope: AccessScope.PUBLIC },
-			userData: {
-				distributable: {
-					fileName: `${ec2App}-${buildNumber}.deb`,
-					executionStatement: `dpkg -i /${ec2App}/${ec2App}-${buildNumber}.deb`,
+		const { loadBalancer, autoScalingGroup, targetGroup } = new GuPlayApp(
+			this,
+			{
+				app: ec2App,
+				instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
+				access: { scope: AccessScope.PUBLIC },
+				userData: {
+					distributable: {
+						fileName: `${ec2App}-${buildNumber}.deb`,
+						executionStatement: `dpkg -i /${ec2App}/${ec2App}-${buildNumber}.deb`,
+					},
+				},
+				certificateProps: {
+					domainName: ec2AppDomainName,
+				},
+				monitoringConfiguration: { noMonitoring: true },
+				scaling: {
+					minimumInstances: 2,
+					maximumInstances: 4,
+				},
+				applicationLogging: {
+					enabled: true,
+					systemdUnitName: 'cdk-playground',
+				},
+				imageRecipe: 'developerPlayground-arm64-java11',
+				updatePolicy: UpdatePolicy.replacingUpdate(),
+				roleConfiguration: {
+					additionalPolicies: [
+						new GuAllowPolicy(this, 'SignalResourePolicy', {
+							actions: ['cloudformation:SignalResource'],
+							resources: ['*'],
+						}),
+						new GuAllowPolicy(this, 'DescribeInstanceHealthPolicy', {
+							actions: ['elasticloadbalancing:DescribeTargetHealth'],
+							resources: ['*'],
+						}),
+					],
 				},
 			},
-			certificateProps: {
-				domainName: ec2AppDomainName,
-			},
-			monitoringConfiguration: { noMonitoring: true },
-			scaling: {
-				minimumInstances: 2,
-				maximumInstances: 4,
-			},
-			applicationLogging: {
-				enabled: true,
-				systemdUnitName: 'cdk-playground',
-			},
-			imageRecipe: 'developerPlayground-arm64-java11',
-			updatePolicy: UpdatePolicy.replacingUpdate(),
-			roleConfiguration: {
-				additionalPolicies: [
-					new GuAllowPolicy(this, 'SignalResourePolicy', {
-						actions: ['cloudformation:SignalResource'],
-						resources: ['*'],
-					}),
-					new GuAllowPolicy(this, 'DescribeInstanceHealthPolicy', {
-						actions: ['elasticloadbalancing:DescribeInstanceHealth'],
-						resources: ['*'],
-					}),
-				],
-			},
-		});
+		);
 
 		const createPolicy: CfnCreationPolicy = {
 			autoScalingCreationPolicy: {
@@ -96,14 +99,19 @@ export class CdkPlayground extends GuStack {
 				timeout: 'PT15M',
 			},
 		};
-
+		// aws elbv2 describe-target-health  --targets Id=i-03bd1b162e8ef3187,Port=9000
 		autoScalingGroup.userData.addCommands(
 			`
-        until [ "$state" == "\\"InService\\"" ]; do
-          state=$(aws --region ${this.region} elb describe-instance-health \
-                      --load-balancer-name ${loadBalancer.loadBalancerName} \
-                      --instances $(curl -s http://169.254.169.254/latest/meta-data/instance-id) \
-                      --query InstanceStates[0].State);
+			  TOKEN=$(curl -X PUT http://169.254.169.254/latest/api/token -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+        INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id -H "X-aws-ec2-metadata-token: $TOKEN")
+
+        until [ "$state" == "\\"healthy\\"" ]; do
+          state=$(aws elbv2 describe-target-health \
+                      --target-group-arn ${targetGroup.targetGroupArn} \
+                      --region ${this.region} \
+                      --targets Id=$INSTANCE_ID,Port=9000 \
+                      --query "TargetHealthDescriptions[0].TargetHealth.State");
+          echo "Current state $state. Sleeping for 10 seconds...";
           sleep 10;
         done
       `,

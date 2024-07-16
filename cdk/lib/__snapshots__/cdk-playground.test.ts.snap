@@ -309,7 +309,7 @@ Object {
         "PolicyDocument": Object {
           "Statement": Array [
             Object {
-              "Action": "elasticloadbalancing:DescribeInstanceHealth",
+              "Action": "elasticloadbalancing:DescribeTargetHealth",
               "Effect": "Allow",
               "Resource": "*",
             },
@@ -1765,15 +1765,16 @@ aws s3 cp 's3://",
                   "/playground/PROD/cdk-playground/cdk-playground-TEST.deb' '/cdk-playground/cdk-playground-TEST.deb'
 dpkg -i /cdk-playground/cdk-playground-TEST.deb
 
-        until [ \\"$state\\" == \\"\\\\\\"InService\\\\\\"\\" ]; do
-          state=$(aws --region eu-west-1 elb describe-instance-health                       --load-balancer-name ",
+			  TOKEN=$(curl -X PUT http://169.254.169.254/latest/api/token -H \\"X-aws-ec2-metadata-token-ttl-seconds: 21600\\")
+        INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id -H \\"X-aws-ec2-metadata-token: $TOKEN\\")
+
+        until [ \\"$state\\" == \\"\\\\\\"healthy\\\\\\"\\" ]; do
+          state=$(aws elbv2 describe-target-health                       --target-group-arn ",
                   Object {
-                    "Fn::GetAtt": Array [
-                      "LoadBalancerCdkplayground7C6B4D97",
-                      "LoadBalancerName",
-                    ],
+                    "Ref": "TargetGroupCdkplayground7A453FC2",
                   },
-                  "                       --instances $(curl -s http://169.254.169.254/latest/meta-data/instance-id)                       --query InstanceStates[0].State);
+                  "                       --region eu-west-1                       --targets Id=$INSTANCE_ID,Port=9000                       --query \\"TargetHealthDescriptions[0].TargetHealth.State\\");
+          echo \\"Current state $state. Sleeping for 10 seconds...\\";
           sleep 10;
         done
       ",
