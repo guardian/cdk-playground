@@ -118,6 +118,26 @@ Object {
         "AutoScalingCreationPolicy": Object {
           "MinSuccessfulInstancesPercent": 100,
         },
+        "ResourceSignal": Object {
+          "Count": 2,
+          "Timeout": "PT15M",
+        },
+      },
+      "Metadata": Object {
+        "AWS::CloudFormation::Init": Object {
+          "config": Object {
+            "commands": Object {
+              "000": Object {
+                "command": "echo \\"Hello, World!\\" > /tmp/hello.txt",
+              },
+            },
+          },
+          "configSets": Object {
+            "default": Array [
+              "config",
+            ],
+          },
+        },
       },
       "Properties": Object {
         "HealthCheckGracePeriod": 120,
@@ -586,6 +606,32 @@ Object {
         ],
       },
       "Type": "AWS::IAM::Role",
+    },
+    "InstanceRoleCdkplaygroundDefaultPolicy7D8FF52F": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "cloudformation:DescribeStackResource",
+                "cloudformation:SignalResource",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "AWS::StackId",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "InstanceRoleCdkplaygroundDefaultPolicy7D8FF52F",
+        "Roles": Array [
+          Object {
+            "Ref": "InstanceRoleCdkplaygroundC280027A",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
     },
     "LambdaDNS": Object {
       "Properties": Object {
@@ -1605,6 +1651,7 @@ Object {
     },
     "playgroundPRODcdkplayground7B64111F": Object {
       "DependsOn": Array [
+        "InstanceRoleCdkplaygroundDefaultPolicy7D8FF52F",
         "InstanceRoleCdkplaygroundC280027A",
       ],
       "Properties": Object {
@@ -1710,7 +1757,30 @@ aws s3 cp 's3://",
                     "Ref": "DistributionBucketName",
                   },
                   "/playground/PROD/cdk-playground/cdk-playground-TEST.deb' '/cdk-playground/cdk-playground-TEST.deb'
-dpkg -i /cdk-playground/cdk-playground-TEST.deb",
+dpkg -i /cdk-playground/cdk-playground-TEST.deb
+# fingerprint: e9324f4a83cf71be
+(
+  set +e
+  /opt/aws/bin/cfn-init -v --region ",
+                  Object {
+                    "Ref": "AWS::Region",
+                  },
+                  " --stack ",
+                  Object {
+                    "Ref": "AWS::StackName",
+                  },
+                  " --resource AutoScalingGroupCdkplaygroundASGD6E49F0F -c default
+  /opt/aws/bin/cfn-signal -e $? --region ",
+                  Object {
+                    "Ref": "AWS::Region",
+                  },
+                  " --stack ",
+                  Object {
+                    "Ref": "AWS::StackName",
+                  },
+                  " --resource AutoScalingGroupCdkplaygroundASGD6E49F0F
+  cat /var/log/cfn-init.log >&2
+)",
                 ],
               ],
             },

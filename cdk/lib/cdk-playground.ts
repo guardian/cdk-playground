@@ -15,7 +15,13 @@ import type {
 import { Duration, Tags } from 'aws-cdk-lib';
 import type { CfnAutoScalingGroup } from 'aws-cdk-lib/aws-autoscaling';
 import { AutoScalingGroup, UpdatePolicy } from 'aws-cdk-lib/aws-autoscaling';
-import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
+import {
+	CloudFormationInit,
+	InitCommand,
+	InstanceClass,
+	InstanceSize,
+	InstanceType,
+} from 'aws-cdk-lib/aws-ec2';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
 export class CdkPlayground extends GuStack {
@@ -69,10 +75,20 @@ export class CdkPlayground extends GuStack {
 			autoScalingCreationPolicy: {
 				minSuccessfulInstancesPercent: 100,
 			},
+			resourceSignal: {
+				count: 2,
+				timeout: 'PT15M',
+			},
 		};
 
 		const asg = autoScalingGroup.node.defaultChild as CfnAutoScalingGroup;
 		asg.cfnOptions.creationPolicy = createPolicy;
+
+		const init = CloudFormationInit.fromElements(
+			InitCommand.shellCommand('echo "Hello, World!" > /tmp/hello.txt'),
+		);
+
+		autoScalingGroup.applyCloudFormationInit(init);
 
 		new GuCname(this, 'EC2AppDNS', {
 			app: ec2App,
