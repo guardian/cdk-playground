@@ -4,7 +4,11 @@ import { GuCertificate } from '@guardian/cdk/lib/constructs/acm';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuStack, GuStringParameter } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
-import { GuFastlyLogsIamRole } from '@guardian/cdk/lib/constructs/iam';
+import {
+	GuAllowPolicy,
+	GuFastlyLogsIamRole,
+	GuPolicy,
+} from '@guardian/cdk/lib/constructs/iam';
 import type {
 	App,
 	CfnAutoScalingReplacingUpdate,
@@ -69,6 +73,18 @@ export class CdkPlayground extends GuStack {
 			},
 			imageRecipe: 'developerPlayground-arm64-java11',
 			updatePolicy: UpdatePolicy.replacingUpdate(),
+			roleConfiguration: {
+				additionalPolicies: [
+					new GuAllowPolicy(this, 'SignalResourePolicy', {
+						actions: ['cloudformation:SignalResource'],
+						resources: ['*'],
+					}),
+					new GuAllowPolicy(this, 'DescribeInstanceHealthPolicy', {
+						actions: ['elasticloadbalancing:DescribeInstanceHealth'],
+						resources: ['*'],
+					}),
+				],
+			},
 		});
 
 		const createPolicy: CfnCreationPolicy = {
@@ -81,14 +97,21 @@ export class CdkPlayground extends GuStack {
 			},
 		};
 
+		autoScalingGroup.userData.addCommands(
+			`
+        until [ "$state" == "\\"InService\\"" ]; do
+          state=$(aws --region ${this.region} elb describe-instance-health \
+                      --load-balancer-name ${loadBalancer.loadBalancerName} \
+                      --instances $(curl -s http://169.254.169.254/latest/meta-data/instance-id) \
+                      --query InstanceStates[0].State);
+          sleep 10;
+        done
+      `,
+		);
+		autoScalingGroup.userData.addSignalOnExitCommand(autoScalingGroup);
+
 		const asg = autoScalingGroup.node.defaultChild as CfnAutoScalingGroup;
 		asg.cfnOptions.creationPolicy = createPolicy;
-
-		const init = CloudFormationInit.fromElements(
-			InitCommand.shellCommand('echo "Hello, World!" > /tmp/hello.txt'),
-		);
-
-		autoScalingGroup.applyCloudFormationInit(init);
 
 		new GuCname(this, 'EC2AppDNS', {
 			app: ec2App,

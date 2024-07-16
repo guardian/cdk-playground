@@ -4,6 +4,8 @@ exports[`The Deploy stack matches the snapshot 1`] = `
 Object {
   "Metadata": Object {
     "gu:cdk:constructs": Array [
+      "GuAllowPolicy",
+      "GuAllowPolicy",
       "GuVpcParameter",
       "GuSubnetListParameter",
       "GuSubnetListParameter",
@@ -121,22 +123,6 @@ Object {
         "ResourceSignal": Object {
           "Count": 2,
           "Timeout": "PT15M",
-        },
-      },
-      "Metadata": Object {
-        "AWS::CloudFormation::Init": Object {
-          "config": Object {
-            "commands": Object {
-              "000": Object {
-                "command": "echo \\"Hello, World!\\" > /tmp/hello.txt",
-              },
-            },
-          },
-          "configSets": Object {
-            "default": Array [
-              "config",
-            ],
-          },
         },
       },
       "Properties": Object {
@@ -310,6 +296,27 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "describe-ec2-policy",
+        "Roles": Array [
+          Object {
+            "Ref": "InstanceRoleCdkplaygroundC280027A",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "DescribeInstanceHealthPolicy48A60A85": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "elasticloadbalancing:DescribeInstanceHealth",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "DescribeInstanceHealthPolicy48A60A85",
         "Roles": Array [
           Object {
             "Ref": "InstanceRoleCdkplaygroundC280027A",
@@ -607,32 +614,6 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "InstanceRoleCdkplaygroundDefaultPolicy7D8FF52F": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "cloudformation:DescribeStackResource",
-                "cloudformation:SignalResource",
-              ],
-              "Effect": "Allow",
-              "Resource": Object {
-                "Ref": "AWS::StackId",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "InstanceRoleCdkplaygroundDefaultPolicy7D8FF52F",
-        "Roles": Array [
-          Object {
-            "Ref": "InstanceRoleCdkplaygroundC280027A",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "LambdaDNS": Object {
       "Properties": Object {
         "Name": "cdk-playground-lambda.gutools.co.uk",
@@ -855,6 +836,27 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "parameter-store-read-policy",
+        "Roles": Array [
+          Object {
+            "Ref": "InstanceRoleCdkplaygroundC280027A",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "SignalResourePolicy715B276A": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "cloudformation:SignalResource",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "SignalResourePolicy715B276A",
         "Roles": Array [
           Object {
             "Ref": "InstanceRoleCdkplaygroundC280027A",
@@ -1651,7 +1653,6 @@ Object {
     },
     "playgroundPRODcdkplayground7B64111F": Object {
       "DependsOn": Array [
-        "InstanceRoleCdkplaygroundDefaultPolicy7D8FF52F",
         "InstanceRoleCdkplaygroundC280027A",
       ],
       "Properties": Object {
@@ -1751,6 +1752,11 @@ Object {
                 "",
                 Array [
                   "#!/bin/bash
+function exitTrap(){
+exitCode=$?
+/opt/aws/bin/cfn-signal --stack CdkPlayground --resource AutoScalingGroupCdkplaygroundASGD6E49F0F --region eu-west-1 -e $exitCode || echo 'Failed to send Cloudformation Signal'
+}
+trap exitTrap EXIT
 mkdir -p $(dirname '/cdk-playground/cdk-playground-TEST.deb')
 aws s3 cp 's3://",
                   Object {
@@ -1758,29 +1764,19 @@ aws s3 cp 's3://",
                   },
                   "/playground/PROD/cdk-playground/cdk-playground-TEST.deb' '/cdk-playground/cdk-playground-TEST.deb'
 dpkg -i /cdk-playground/cdk-playground-TEST.deb
-# fingerprint: e9324f4a83cf71be
-(
-  set +e
-  /opt/aws/bin/cfn-init -v --region ",
+
+        until [ \\"$state\\" == \\"\\\\\\"InService\\\\\\"\\" ]; do
+          state=$(aws --region eu-west-1 elb describe-instance-health                       --load-balancer-name ",
                   Object {
-                    "Ref": "AWS::Region",
+                    "Fn::GetAtt": Array [
+                      "LoadBalancerCdkplayground7C6B4D97",
+                      "LoadBalancerName",
+                    ],
                   },
-                  " --stack ",
-                  Object {
-                    "Ref": "AWS::StackName",
-                  },
-                  " --resource AutoScalingGroupCdkplaygroundASGD6E49F0F -c default
-  /opt/aws/bin/cfn-signal -e $? --region ",
-                  Object {
-                    "Ref": "AWS::Region",
-                  },
-                  " --stack ",
-                  Object {
-                    "Ref": "AWS::StackName",
-                  },
-                  " --resource AutoScalingGroupCdkplaygroundASGD6E49F0F
-  cat /var/log/cfn-init.log >&2
-)",
+                  "                       --instances $(curl -s http://169.254.169.254/latest/meta-data/instance-id)                       --query InstanceStates[0].State);
+          sleep 10;
+        done
+      ",
                 ],
               ],
             },
