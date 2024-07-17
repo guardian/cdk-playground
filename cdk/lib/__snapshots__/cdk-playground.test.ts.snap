@@ -208,6 +208,266 @@ Object {
         },
       },
     },
+    "AutoScalingGroupCdkplaygroundScaleToCPULowerAlarm7AE753F3": Object {
+      "Properties": Object {
+        "AlarmActions": Array [
+          Object {
+            "Ref": "AutoScalingGroupCdkplaygroundScaleToCPULowerPolicyCA3FCA21",
+          },
+        ],
+        "AlarmDescription": "Lower threshold scaling alarm",
+        "ComparisonOperator": "LessThanOrEqualToThreshold",
+        "DatapointsToAlarm": 5,
+        "Dimensions": Array [
+          Object {
+            "Name": "LoadBalancer",
+            "Value": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  Object {
+                    "Fn::Select": Array [
+                      1,
+                      Object {
+                        "Fn::Split": Array [
+                          "/",
+                          Object {
+                            "Ref": "ListenerCdkplaygroundA8D9CA6F",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  "/",
+                  Object {
+                    "Fn::Select": Array [
+                      2,
+                      Object {
+                        "Fn::Split": Array [
+                          "/",
+                          Object {
+                            "Ref": "ListenerCdkplaygroundA8D9CA6F",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  "/",
+                  Object {
+                    "Fn::Select": Array [
+                      3,
+                      Object {
+                        "Fn::Split": Array [
+                          "/",
+                          Object {
+                            "Ref": "ListenerCdkplaygroundA8D9CA6F",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              ],
+            },
+          },
+          Object {
+            "Name": "TargetGroup",
+            "Value": Object {
+              "Fn::GetAtt": Array [
+                "TargetGroupCdkplayground7A453FC2",
+                "TargetGroupFullName",
+              ],
+            },
+          },
+        ],
+        "EvaluationPeriods": 10,
+        "MetricName": "HTTPCode_Target_3XX_Count",
+        "Namespace": "AWS/ApplicationELB",
+        "Period": 300,
+        "Statistic": "Sum",
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          Object {
+            "Key": "LogKinesisStreamName",
+            "Value": Object {
+              "Ref": "LoggingStreamName",
+            },
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+          Object {
+            "Key": "SystemdUnit",
+            "Value": "cdk-playground.service",
+          },
+        ],
+        "Threshold": 5,
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "AutoScalingGroupCdkplaygroundScaleToCPULowerPolicyCA3FCA21": Object {
+      "Properties": Object {
+        "AdjustmentType": "ChangeInCapacity",
+        "AutoScalingGroupName": Object {
+          "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        },
+        "MetricAggregationType": "Average",
+        "PolicyType": "StepScaling",
+        "StepAdjustments": Array [
+          Object {
+            "MetricIntervalUpperBound": 0,
+            "ScalingAdjustment": -1,
+          },
+        ],
+      },
+      "Type": "AWS::AutoScaling::ScalingPolicy",
+    },
+    "AutoScalingGroupCdkplaygroundScaleToCPUUpperAlarmDA42ED71": Object {
+      "Properties": Object {
+        "AlarmActions": Array [
+          Object {
+            "Ref": "AutoScalingGroupCdkplaygroundScaleToCPUUpperPolicyD6FC0693",
+          },
+        ],
+        "AlarmDescription": "Upper threshold scaling alarm",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "DatapointsToAlarm": 5,
+        "Dimensions": Array [
+          Object {
+            "Name": "LoadBalancer",
+            "Value": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  Object {
+                    "Fn::Select": Array [
+                      1,
+                      Object {
+                        "Fn::Split": Array [
+                          "/",
+                          Object {
+                            "Ref": "ListenerCdkplaygroundA8D9CA6F",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  "/",
+                  Object {
+                    "Fn::Select": Array [
+                      2,
+                      Object {
+                        "Fn::Split": Array [
+                          "/",
+                          Object {
+                            "Ref": "ListenerCdkplaygroundA8D9CA6F",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  "/",
+                  Object {
+                    "Fn::Select": Array [
+                      3,
+                      Object {
+                        "Fn::Split": Array [
+                          "/",
+                          Object {
+                            "Ref": "ListenerCdkplaygroundA8D9CA6F",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              ],
+            },
+          },
+          Object {
+            "Name": "TargetGroup",
+            "Value": Object {
+              "Fn::GetAtt": Array [
+                "TargetGroupCdkplayground7A453FC2",
+                "TargetGroupFullName",
+              ],
+            },
+          },
+        ],
+        "EvaluationPeriods": 10,
+        "MetricName": "HTTPCode_Target_3XX_Count",
+        "Namespace": "AWS/ApplicationELB",
+        "Period": 300,
+        "Statistic": "Sum",
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          Object {
+            "Key": "LogKinesisStreamName",
+            "Value": Object {
+              "Ref": "LoggingStreamName",
+            },
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+          Object {
+            "Key": "SystemdUnit",
+            "Value": "cdk-playground.service",
+          },
+        ],
+        "Threshold": 5,
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "AutoScalingGroupCdkplaygroundScaleToCPUUpperPolicyD6FC0693": Object {
+      "Properties": Object {
+        "AdjustmentType": "ChangeInCapacity",
+        "AutoScalingGroupName": Object {
+          "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        },
+        "MetricAggregationType": "Average",
+        "PolicyType": "StepScaling",
+        "StepAdjustments": Array [
+          Object {
+            "MetricIntervalLowerBound": 0,
+            "ScalingAdjustment": 1,
+          },
+        ],
+      },
+      "Type": "AWS::AutoScaling::ScalingPolicy",
+    },
     "CertificateCdkplayground47FCF7D9": Object {
       "DeletionPolicy": "Retain",
       "Properties": Object {

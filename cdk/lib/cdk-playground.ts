@@ -7,26 +7,13 @@ import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import {
 	GuAllowPolicy,
 	GuFastlyLogsIamRole,
-	GuPolicy,
 } from '@guardian/cdk/lib/constructs/iam';
-import type {
-	App,
-	CfnAutoScalingReplacingUpdate,
-	CfnCreationPolicy,
-	CfnStack,
-	CfnUpdatePolicy,
-} from 'aws-cdk-lib';
+import type { App, CfnCreationPolicy } from 'aws-cdk-lib';
 import { Duration, Tags } from 'aws-cdk-lib';
 import type { CfnAutoScalingGroup } from 'aws-cdk-lib/aws-autoscaling';
-import { AutoScalingGroup, UpdatePolicy } from 'aws-cdk-lib/aws-autoscaling';
-import {
-	CloudFormationInit,
-	InitCommand,
-	InstanceClass,
-	InstanceSize,
-	InstanceType,
-	UserData,
-} from 'aws-cdk-lib/aws-ec2';
+import { AdjustmentType, UpdatePolicy } from 'aws-cdk-lib/aws-autoscaling';
+import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
+import { HttpCodeTarget } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
 export class CdkPlayground extends GuStack {
@@ -135,6 +122,26 @@ export class CdkPlayground extends GuStack {
 		);
 
 		asg.cfnOptions.creationPolicy = createPolicy;
+
+		autoScalingGroup.scaleOnMetric('ScaleToCPU', {
+			metric: targetGroup.metrics.httpCodeTarget(
+				HttpCodeTarget.TARGET_3XX_COUNT,
+				{ statistic: 'sum' },
+			),
+			scalingSteps: [
+				// less than 5? Scale down
+				{ upper: 5, change: -1 },
+
+				// more than 5? Scale up
+				{ lower: 5, change: +1 },
+			],
+			evaluationPeriods: 10,
+			datapointsToAlarm: 5,
+
+			// Change this to AdjustmentType.PERCENT_CHANGE_IN_CAPACITY to interpret the
+			// 'change' numbers before as percentages instead of capacity counts.
+			adjustmentType: AdjustmentType.CHANGE_IN_CAPACITY,
+		});
 
 		new GuCname(this, 'EC2AppDNS', {
 			app: ec2App,
