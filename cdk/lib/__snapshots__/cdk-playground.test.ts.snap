@@ -8,12 +8,13 @@ Object {
       "GuSubnetListParameter",
       "GuSubnetListParameter",
       "GuPlayApp",
+      "GuDistributionBucketParameter",
       "GuCertificate",
       "GuInstanceRole",
+      "GuSsmSshPolicy",
       "GuDescribeEC2Policy",
       "GuLoggingStreamNameParameter",
       "GuLogShippingPolicy",
-      "GuDistributionBucketParameter",
       "GuGetDistributablePolicy",
       "GuParameterStoreReadPolicy",
       "GuAmiParameter",
@@ -128,6 +129,15 @@ Object {
           },
         },
         "MaxSize": "2",
+        "MetricsCollection": Array [
+          Object {
+            "Granularity": "1Minute",
+            "Metrics": Array [
+              "GroupTotalInstances",
+              "GroupInServiceInstances",
+            ],
+          },
+        ],
         "MinSize": "1",
         "Tags": Array [
           Object {
@@ -534,20 +544,6 @@ Object {
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AmazonSSMManagedInstanceCore",
-              ],
-            ],
-          },
-        ],
         "Path": "/",
         "Tags": Array [
           Object {
@@ -613,6 +609,7 @@ Object {
         },
         "Port": 443,
         "Protocol": "HTTPS",
+        "SslPolicy": "ELBSecurityPolicy-TLS13-1-2-2021-06",
       },
       "Type": "AWS::ElasticLoadBalancingV2::Listener",
     },
@@ -621,6 +618,14 @@ Object {
         "LoadBalancerAttributes": Array [
           Object {
             "Key": "deletion_protection.enabled",
+            "Value": "true",
+          },
+          Object {
+            "Key": "routing.http.x_amzn_tls_version_and_cipher_suite.enabled",
+            "Value": "true",
+          },
+          Object {
+            "Key": "routing.http.drop_invalid_header_fields.enabled",
             "Value": "true",
           },
         ],
@@ -795,6 +800,42 @@ Object {
       },
       "Type": "AWS::IAM::Policy",
     },
+    "SsmSshPolicy4CFC977E": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ec2messages:AcknowledgeMessage",
+                "ec2messages:DeleteMessage",
+                "ec2messages:FailMessage",
+                "ec2messages:GetEndpoint",
+                "ec2messages:GetMessages",
+                "ec2messages:SendReply",
+                "ssm:UpdateInstanceInformation",
+                "ssm:ListInstanceAssociations",
+                "ssm:DescribeInstanceProperties",
+                "ssm:DescribeDocumentParameters",
+                "ssmmessages:CreateControlChannel",
+                "ssmmessages:CreateDataChannel",
+                "ssmmessages:OpenControlChannel",
+                "ssmmessages:OpenDataChannel",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ssm-ssh-policy",
+        "Roles": Array [
+          Object {
+            "Ref": "InstanceRoleCdkplaygroundC280027A",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "TargetGroupCdkplayground7A453FC2": Object {
       "Properties": Object {
         "HealthCheckIntervalSeconds": 10,
@@ -928,6 +969,9 @@ Object {
           },
         },
         "Handler": "handler.main",
+        "LoggingConfig": Object {
+          "LogFormat": "JSON",
+        },
         "MemorySize": 512,
         "Role": Object {
           "Fn::GetAtt": Array [
@@ -1578,6 +1622,10 @@ Object {
               "ResourceType": "instance",
               "Tags": Array [
                 Object {
+                  "Key": "App",
+                  "Value": "cdk-playground",
+                },
+                Object {
                   "Key": "gu:cdk:version",
                   "Value": "TEST",
                 },
@@ -1602,6 +1650,10 @@ Object {
             Object {
               "ResourceType": "volume",
               "Tags": Array [
+                Object {
+                  "Key": "App",
+                  "Value": "cdk-playground",
+                },
                 Object {
                   "Key": "gu:cdk:version",
                   "Value": "TEST",
@@ -1647,6 +1699,10 @@ dpkg -i /cdk-playground/cdk-playground.deb",
           Object {
             "ResourceType": "launch-template",
             "Tags": Array [
+              Object {
+                "Key": "App",
+                "Value": "cdk-playground",
+              },
               Object {
                 "Key": "gu:cdk:version",
                 "Value": "TEST",
