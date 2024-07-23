@@ -27,6 +27,8 @@ export class CdkPlayground extends GuStack {
 		const ec2App = 'cdk-playground';
 		const ec2AppDomainName = 'cdk-playground.gutools.co.uk';
 
+		const buildNumber = process.env.GITHUB_RUN_NUMBER ?? 'DEV';
+
 		const { loadBalancer } = new GuEc2AppExperimental(this, {
 			applicationPort: 9000,
 			app: ec2App,
@@ -34,8 +36,8 @@ export class CdkPlayground extends GuStack {
 			access: { scope: AccessScope.PUBLIC },
 			userData: {
 				distributable: {
-					fileName: `${ec2App}.deb`,
-					executionStatement: `dpkg -i /${ec2App}/${ec2App}.deb`,
+					fileName: `${ec2App}-${buildNumber}.deb`,
+					executionStatement: `dpkg -i /${ec2App}/${ec2App}-${buildNumber}.deb`,
 				},
 			},
 			certificateProps: {
