@@ -9,12 +9,7 @@ import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
 import type { CfnAutoScalingGroup } from 'aws-cdk-lib/aws-autoscaling';
 import { UpdatePolicy } from 'aws-cdk-lib/aws-autoscaling';
-import {
-	InstanceClass,
-	InstanceSize,
-	InstanceType,
-	UserData,
-} from 'aws-cdk-lib/aws-ec2';
+import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Effect, Policy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
@@ -36,6 +31,8 @@ export class CdkPlayground extends GuStack {
 
 		const minimumInstances = 1;
 
+		const buildNumber = process.env.GITHUB_RUN_NUMBER ?? 'DEV';
+
 		const { loadBalancer, autoScalingGroup, targetGroup } = new GuPlayApp(
 			this,
 			{
@@ -44,8 +41,8 @@ export class CdkPlayground extends GuStack {
 				access: { scope: AccessScope.PUBLIC },
 				userData: {
 					distributable: {
-						fileName: `${ec2App}.deb`,
-						executionStatement: `dpkg -i /${ec2App}/${ec2App}.deb`,
+						fileName: `${ec2App}-${buildNumber}.deb`,
+						executionStatement: `dpkg -i /${ec2App}/${ec2App}-${buildNumber}.deb`,
 					},
 				},
 				certificateProps: {
