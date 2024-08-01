@@ -29,7 +29,7 @@ export class CdkPlayground extends GuStack {
 
 		const buildNumber = process.env.GITHUB_RUN_NUMBER ?? 'DEV';
 
-		const { loadBalancer } = new GuEc2AppExperimental(this, {
+		const { loadBalancer, autoScalingGroup } = new GuEc2AppExperimental(this, {
 			applicationPort: 9000,
 			app: ec2App,
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
@@ -54,6 +54,10 @@ export class CdkPlayground extends GuStack {
 			},
 			imageRecipe: 'developerPlayground-arm64-java11',
 		});
+
+    autoScalingGroup.scaleOnRequestCount("ScaleOnHighRequests", {
+      targetRequestsPerMinute: 10,
+    })
 
 		new GuCname(this, 'EC2AppDNS', {
 			app: ec2App,
