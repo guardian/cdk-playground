@@ -147,7 +147,7 @@ Object {
           "MinSuccessfulInstancesPercent": 100,
         },
         "ResourceSignal": Object {
-          "Count": 1,
+          "Count": 3,
           "Timeout": "PT5M",
         },
       },
@@ -165,7 +165,7 @@ Object {
             ],
           },
         },
-        "MaxSize": "2",
+        "MaxSize": "12",
         "MetricsCollection": Array [
           Object {
             "Granularity": "1Minute",
@@ -175,7 +175,7 @@ Object {
             ],
           },
         ],
-        "MinSize": "1",
+        "MinSize": "3",
         "Tags": Array [
           Object {
             "Key": "App",

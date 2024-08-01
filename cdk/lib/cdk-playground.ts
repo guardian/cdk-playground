@@ -45,8 +45,8 @@ export class CdkPlayground extends GuStack {
 			},
 			monitoringConfiguration: { noMonitoring: true },
 			scaling: {
-				minimumInstances: 1,
-				maximumInstances: 2,
+				minimumInstances: 3,
+				maximumInstances: 12,
 			},
 			applicationLogging: {
 				enabled: true,
