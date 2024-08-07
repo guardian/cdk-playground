@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -e
+
+watch "curl --silent https://cdk-playground.gutools.co.uk | jq ."

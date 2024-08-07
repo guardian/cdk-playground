@@ -26,7 +26,7 @@ export class CdkPlayground extends GuStack {
 		const ec2App = 'cdk-playground';
 		const ec2AppDomainName = 'cdk-playground.gutools.co.uk';
 
-		const { loadBalancer } = new GuPlayApp(this, {
+		const { loadBalancer, autoScalingGroup } = new GuPlayApp(this, {
 			app: ec2App,
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
 			access: { scope: AccessScope.PUBLIC },
@@ -49,6 +49,11 @@ export class CdkPlayground extends GuStack {
 				systemdUnitName: 'cdk-playground',
 			},
 			imageRecipe: 'developerPlayground-arm64-java11',
+		});
+
+		autoScalingGroup.scaleOnRequestCount('ScaleOutOnRequests', {
+			targetRequestsPerMinute: 5,
+			// estimatedInstanceWarmup?: Duration;
 		});
 
 		new GuCname(this, 'EC2AppDNS', {
