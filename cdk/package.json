@@ -11,7 +11,7 @@
     "diff": "cdk diff --path-metadata false --version-reporting false"
   },
   "devDependencies": {
-    "@guardian/cdk": "59.2.2",
+    "@guardian/cdk": "59.2.3",
     "@guardian/eslint-config-typescript": "5.0.0",
     "@guardian/prettier": "8.0.1",
     "@types/jest": "^28.1.6",
