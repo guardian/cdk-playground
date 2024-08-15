@@ -145,6 +145,10 @@ Object {
       "Properties": Object {
         "HealthCheckGracePeriod": 120,
         "HealthCheckType": "ELB",
+        "InstanceMaintenancePolicy": Object {
+          "MaxHealthyPercentage": 200,
+          "MinHealthyPercentage": 100,
+        },
         "LaunchTemplate": Object {
           "LaunchTemplateId": Object {
             "Ref": "playgroundPRODcdkplayground7B64111F",

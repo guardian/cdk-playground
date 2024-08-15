@@ -131,6 +131,20 @@ export class CdkPlayground extends GuStack {
 			targetRequestsPerMinute: 5,
 		});
 
+		/*
+		Alas, this has no impact:
+
+	    > Amazon EC2 Auto Scaling features such as instance maintenance policies, termination policies,
+	    > and scale-in protection are not available for use with CloudFormation rolling updates.
+	    > Plan your rolling updates accordingly.
+
+	   See https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatepolicy.html#cfn-attributes-updatepolicy-rollingupdate.
+		 */
+		cfnAsg.instanceMaintenancePolicy = {
+			minHealthyPercentage: 100,
+			maxHealthyPercentage: 200,
+		};
+
 		new GuCname(this, 'EC2AppDNS', {
 			app: ec2App,
 			ttl: Duration.hours(1),
