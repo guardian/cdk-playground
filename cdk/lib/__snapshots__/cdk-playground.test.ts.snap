@@ -113,6 +113,34 @@ Object {
     },
   },
   "Resources": Object {
+    "AsgRollingUpdatePolicy2A1DDC6F": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "cloudformation:SignalResource",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "AWS::StackId",
+              },
+            },
+            Object {
+              "Action": "elasticloadbalancing:DescribeTargetHealth",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "AsgRollingUpdatePolicy2A1DDC6F",
+        "Roles": Array [
+          Object {
+            "Ref": "InstanceRoleCdkplaygroundC280027A",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "AutoScalingGroupCdkplaygroundASGD6E49F0F": Object {
       "Properties": Object {
         "HealthCheckGracePeriod": 120,
@@ -188,6 +216,18 @@ Object {
         },
       },
       "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "UpdatePolicy": Object {
+        "AutoScalingRollingUpdate": Object {
+          "MaxBatchSize": 1,
+          "MinInstancesInService": 1,
+          "MinSuccessfulInstancesPercent": 100,
+          "SuspendProcesses": Array [],
+          "WaitOnResourceSignals": true,
+        },
+        "AutoScalingScheduledAction": Object {
+          "IgnoreUnmodifiedGroupSizeProperties": true,
+        },
+      },
     },
     "CertificateCdkplayground47FCF7D9": Object {
       "DeletionPolicy": "Retain",
@@ -1683,13 +1723,43 @@ Object {
                 "",
                 Array [
                   "#!/bin/bash
+function exitTrap(){
+exitCode=$?
+
+        cfn-signal --stack ",
+                  Object {
+                    "Ref": "AWS::StackId",
+                  },
+                  "           --resource AutoScalingGroupCdkplaygroundASGD6E49F0F           --region eu-west-1           --exit-code $exitCode || echo 'Failed to send Cloudformation Signal'
+        
+}
+trap exitTrap EXIT
 mkdir -p $(dirname '/cdk-playground/cdk-playground.deb')
 aws s3 cp 's3://",
                   Object {
                     "Ref": "DistributionBucketName",
                   },
                   "/playground/PROD/cdk-playground/cdk-playground.deb' '/cdk-playground/cdk-playground.deb'
-dpkg -i /cdk-playground/cdk-playground.deb",
+dpkg -i /cdk-playground/cdk-playground.deb
+
+      INSTANCE_ID=$(ec2metadata --instance-id)
+
+      STATE=$(aws elbv2 describe-target-health         --target-group-arn ",
+                  Object {
+                    "Ref": "TargetGroupCdkplayground7A453FC2",
+                  },
+                  "         --region eu-west-1         --targets Id=$INSTANCE_ID,Port=9000         --query \\"TargetHealthDescriptions[0].TargetHealth.State\\")
+
+      until [ \\"$STATE\\" == \\"\\\\\\"healthy\\\\\\"\\" ]; do
+        echo \\"Instance not yet healthy within target group. Current state $STATE. Sleeping...\\"
+        sleep 5
+        STATE=$(aws elbv2 describe-target-health           --target-group-arn ",
+                  Object {
+                    "Ref": "TargetGroupCdkplayground7A453FC2",
+                  },
+                  "           --region eu-west-1           --targets Id=$INSTANCE_ID,Port=9000           --query \\"TargetHealthDescriptions[0].TargetHealth.State\\")
+      done
+      ",
                 ],
               ],
             },
