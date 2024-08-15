@@ -29,7 +29,7 @@ export class CdkPlayground extends GuStack {
 		const ec2App = 'cdk-playground';
 		const ec2AppDomainName = 'cdk-playground.gutools.co.uk';
 
-		const minimumInstances = 1;
+		const minimumInstances = 3;
 
 		const buildNumber = process.env.GITHUB_RUN_NUMBER ?? 'DEV';
 

@@ -156,7 +156,7 @@ Object {
             ],
           },
         },
-        "MaxSize": "2",
+        "MaxSize": "6",
         "MetricsCollection": Array [
           Object {
             "Granularity": "1Minute",
@@ -166,7 +166,7 @@ Object {
             ],
           },
         ],
-        "MinSize": "1",
+        "MinSize": "3",
         "Tags": Array [
           Object {
             "Key": "App",
@@ -218,8 +218,8 @@ Object {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "UpdatePolicy": Object {
         "AutoScalingRollingUpdate": Object {
-          "MaxBatchSize": 1,
-          "MinInstancesInService": 1,
+          "MaxBatchSize": 3,
+          "MinInstancesInService": 3,
           "MinSuccessfulInstancesPercent": 100,
           "SuspendProcesses": Array [],
           "WaitOnResourceSignals": true,
