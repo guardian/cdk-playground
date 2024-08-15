@@ -225,9 +225,7 @@ Object {
           "MaxBatchSize": 3,
           "MinInstancesInService": 3,
           "MinSuccessfulInstancesPercent": 100,
-          "SuspendProcesses": Array [
-            "ReplaceUnhealthy",
-          ],
+          "SuspendProcesses": Array [],
           "WaitOnResourceSignals": true,
         },
         "AutoScalingScheduledAction": Object {
