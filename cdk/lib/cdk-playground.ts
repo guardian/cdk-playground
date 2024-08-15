@@ -8,7 +8,7 @@ import { GuFastlyLogsIamRole } from '@guardian/cdk/lib/constructs/iam';
 import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
 import type { CfnAutoScalingGroup } from 'aws-cdk-lib/aws-autoscaling';
-import { UpdatePolicy } from 'aws-cdk-lib/aws-autoscaling';
+import { ScalingProcess, UpdatePolicy } from 'aws-cdk-lib/aws-autoscaling';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Effect, Policy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
@@ -62,7 +62,7 @@ export class CdkPlayground extends GuStack {
 					minInstancesInService: minimumInstances,
 					minSuccessPercentage: 100,
 					waitOnResourceSignals: true,
-					suspendProcesses: [],
+					suspendProcesses: [ScalingProcess.REPLACE_UNHEALTHY],
 				}),
 			},
 		);
