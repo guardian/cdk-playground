@@ -125,6 +125,10 @@ export class CdkPlayground extends GuStack {
         `,
 		);
 
+		autoScalingGroup.scaleOnRequestCount('ScaleOutOnRequests', {
+			targetRequestsPerMinute: 5,
+		});
+
 		new GuCname(this, 'EC2AppDNS', {
 			app: ec2App,
 			ttl: Duration.hours(1),
