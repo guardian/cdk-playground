@@ -47,9 +47,9 @@ lazy val root = (project in file("."))
       sbtVersion,
 
       // copied from https://github.com/guardian/sbt-riffraff-artifact/blob/e6f5e62d8f776b1004f72ed1ea415328fa43ed31/src/main/scala/com/gu/riffraff/artifact/BuildInfo.scala
-      BuildInfoKey.sbtbuildinfoConstantEntry("buildNumber", env("GITHUB_RUN_NUMBER")),
+      BuildInfoKey.sbtbuildinfoConstantEntry("buildNumber", env("GITHUB_RUN_NUMBER").orElse(Some("DEV")).get),
       BuildInfoKey.sbtbuildinfoConstantEntry("buildTime", System.currentTimeMillis),
-      BuildInfoKey.sbtbuildinfoConstantEntry("gitCommitId", env("GITHUB_SHA")),
+      BuildInfoKey.sbtbuildinfoConstantEntry("gitCommitId", env("GITHUB_SHA").orElse(Some("DEV")).get),
 
       BuildInfoKey.sbtbuildinfoConstantEntry(
         "branch",

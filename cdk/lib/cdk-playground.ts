@@ -17,12 +17,13 @@ export class CdkPlayground extends GuStack {
 	constructor(
 		scope: App,
 		id: string,
-		props?: Omit<GuStackProps, 'stack' | 'stage'>,
+		props?: Omit<GuStackProps, 'stack' | 'stage' | 'app'>,
 	) {
 		super(scope, id, {
 			...props,
 			stack: 'playground',
 			stage: 'PROD',
+			app: 'cdk-playground',
 			env: { region: 'eu-west-1' },
 		});
 
@@ -140,10 +141,10 @@ export class CdkPlayground extends GuStack {
 
 	   See https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatepolicy.html#cfn-attributes-updatepolicy-rollingupdate.
 		 */
-		cfnAsg.instanceMaintenancePolicy = {
-			minHealthyPercentage: 100,
-			maxHealthyPercentage: 200,
-		};
+		// cfnAsg.instanceMaintenancePolicy = {
+		// 	minHealthyPercentage: 100,
+		// 	maxHealthyPercentage: 200,
+		// };
 
 		new GuCname(this, 'EC2AppDNS', {
 			app: ec2App,
