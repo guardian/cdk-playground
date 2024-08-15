@@ -94,6 +94,8 @@ export class CdkPlayground extends GuStack {
 
 		userData.addCommands(
 			`
+			echo "Build number: ${buildNumber}"
+
       INSTANCE_ID=$(ec2metadata --instance-id)
 
       STATE=$(aws elbv2 describe-target-health \
