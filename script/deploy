@@ -4,33 +4,49 @@ set -e
 
 export GITHUB_RUN_NUMBER=$1
 
-(
-  cd lambda
-  rm -rf cdk-playground-lambda.zip
-  zip cdk-playground-lambda.zip handler.js
-)
+clean() {
+  rm -rf lambda/cdk-playground-lambda.zip
+  rm -rf dist
+  rm -rf target
+}
 
-sbt clean compile test debian:packageBin
+build() {
+  (
+    cd lambda
+    rm -rf cdk-playground-lambda.zip
+    zip cdk-playground-lambda.zip handler.js
+  )
 
-mkdir -p dist/cdk-playground
-mv target/cdk-playground_1.0-SNAPSHOT_all.deb "dist/cdk-playground/cdk-playground-$GITHUB_RUN_NUMBER.deb"
+  sbt clean compile test debian:packageBin
+  mkdir -p dist/cdk-playground
+  mv target/cdk-playground_1.0-SNAPSHOT_all.deb "dist/cdk-playground/cdk-playground-$GITHUB_RUN_NUMBER.deb"
+}
 
-BUCKET_NAME=$(
-  aws ssm get-parameter --name /account/services/artifact.bucket \
+upload() {
+  BUCKET_NAME=$(
+    aws ssm get-parameter --name /account/services/artifact.bucket \
+      --profile developerPlayground \
+      --region eu-west-1 | \
+      jq -r '.Parameter.Value'
+  )
+
+  aws s3 cp lambda/cdk-playground-lambda.zip "s3://$BUCKET_NAME/playground/PROD/cdk-playground-lambda/cdk-playground-lambda.zip" \
     --profile developerPlayground \
-    --region eu-west-1 | \
-    jq -r '.Parameter.Value'
-)
+    --region eu-west-1
 
-aws s3 cp lambda/cdk-playground-lambda.zip "s3://$BUCKET_NAME/playground/PROD/cdk-playground-lambda/cdk-playground-lambda.zip" \
-  --profile developerPlayground \
-  --region eu-west-1
+  aws s3 cp "dist/cdk-playground/cdk-playground-$GITHUB_RUN_NUMBER.deb" "s3://$BUCKET_NAME/playground/PROD/cdk-playground/cdk-playground-$GITHUB_RUN_NUMBER.deb" \
+    --profile developerPlayground \
+    --region eu-west-1
+}
 
-aws s3 cp "dist/cdk-playground/cdk-playground-$GITHUB_RUN_NUMBER.deb" "s3://$BUCKET_NAME/playground/PROD/cdk-playground/cdk-playground-$GITHUB_RUN_NUMBER.deb" \
-  --profile developerPlayground \
-  --region eu-west-1
+deploy() {
+  (
+    cd cdk
+    npm run deploy
+  )
+}
 
-(
-  cd cdk
-  npm run deploy
-)
+clean
+build
+upload
+deploy
