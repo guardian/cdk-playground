@@ -145,10 +145,6 @@ Object {
       "Properties": Object {
         "HealthCheckGracePeriod": 120,
         "HealthCheckType": "ELB",
-        "InstanceMaintenancePolicy": Object {
-          "MaxHealthyPercentage": 200,
-          "MinHealthyPercentage": 100,
-        },
         "LaunchTemplate": Object {
           "LaunchTemplateId": Object {
             "Ref": "playgroundPRODcdkplayground7B64111F",
@@ -160,7 +156,7 @@ Object {
             ],
           },
         },
-        "MaxSize": "6",
+        "MaxSize": "10",
         "MetricsCollection": Array [
           Object {
             "Granularity": "1Minute",
@@ -170,7 +166,7 @@ Object {
             ],
           },
         ],
-        "MinSize": "3",
+        "MinSize": "1",
         "Tags": Array [
           Object {
             "Key": "App",
@@ -222,8 +218,8 @@ Object {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "UpdatePolicy": Object {
         "AutoScalingRollingUpdate": Object {
-          "MaxBatchSize": 3,
-          "MinInstancesInService": 3,
+          "MaxBatchSize": 2,
+          "MinInstancesInService": 1,
           "MinSuccessfulInstancesPercent": 100,
           "SuspendProcesses": Array [],
           "WaitOnResourceSignals": true,
@@ -301,7 +297,7 @@ Object {
               ],
             },
           },
-          "TargetValue": 5,
+          "TargetValue": 1,
         },
       },
       "Type": "AWS::AutoScaling::ScalingPolicy",
@@ -496,6 +492,10 @@ Object {
           "Version": "2012-10-17",
         },
         "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
           Object {
             "Key": "gu:cdk:version",
             "Value": "TEST",
@@ -1022,6 +1022,10 @@ Object {
           },
         ],
         "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
           Object {
             "Key": "gu:cdk:version",
             "Value": "TEST",

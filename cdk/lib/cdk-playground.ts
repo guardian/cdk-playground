@@ -30,7 +30,8 @@ export class CdkPlayground extends GuStack {
 		const ec2App = 'cdk-playground';
 		const ec2AppDomainName = 'cdk-playground.gutools.co.uk';
 
-		const minimumInstances = 3;
+		const minimumInstances = 1;
+		const maximumInstances = minimumInstances * 2;
 
 		const buildNumber = process.env.GITHUB_RUN_NUMBER ?? 'DEV';
 
@@ -52,6 +53,7 @@ export class CdkPlayground extends GuStack {
 				monitoringConfiguration: { noMonitoring: true },
 				scaling: {
 					minimumInstances,
+					maximumInstances: 10,
 				},
 				applicationLogging: {
 					enabled: true,
@@ -59,7 +61,7 @@ export class CdkPlayground extends GuStack {
 				},
 				imageRecipe: 'developerPlayground-arm64-java11',
 				updatePolicy: UpdatePolicy.rollingUpdate({
-					maxBatchSize: minimumInstances,
+					maxBatchSize: maximumInstances,
 					minInstancesInService: minimumInstances,
 					minSuccessPercentage: 100,
 					waitOnResourceSignals: true,
@@ -129,22 +131,8 @@ export class CdkPlayground extends GuStack {
 		);
 
 		autoScalingGroup.scaleOnRequestCount('ScaleOutOnRequests', {
-			targetRequestsPerMinute: 5,
+			targetRequestsPerMinute: 1,
 		});
-
-		/*
-		Alas, this has no impact:
-
-	    > Amazon EC2 Auto Scaling features such as instance maintenance policies, termination policies,
-	    > and scale-in protection are not available for use with CloudFormation rolling updates.
-	    > Plan your rolling updates accordingly.
-
-	   See https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatepolicy.html#cfn-attributes-updatepolicy-rollingupdate.
-		 */
-		// cfnAsg.instanceMaintenancePolicy = {
-		// 	minHealthyPercentage: 100,
-		// 	maxHealthyPercentage: 200,
-		// };
 
 		new GuCname(this, 'EC2AppDNS', {
 			app: ec2App,
