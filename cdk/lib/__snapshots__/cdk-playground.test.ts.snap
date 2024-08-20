@@ -235,6 +235,79 @@ Object {
         },
       },
     },
+    "AutoScalingGroupCdkplaygroundScalingPolicyScaleOutOnRequestsBC0AAB1D": Object {
+      "DependsOn": Array [
+        "ListenerCdkplaygroundA8D9CA6F",
+      ],
+      "Properties": Object {
+        "AutoScalingGroupName": Object {
+          "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        },
+        "PolicyType": "TargetTrackingScaling",
+        "TargetTrackingConfiguration": Object {
+          "PredefinedMetricSpecification": Object {
+            "PredefinedMetricType": "ALBRequestCountPerTarget",
+            "ResourceLabel": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  Object {
+                    "Fn::Select": Array [
+                      1,
+                      Object {
+                        "Fn::Split": Array [
+                          "/",
+                          Object {
+                            "Ref": "ListenerCdkplaygroundA8D9CA6F",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  "/",
+                  Object {
+                    "Fn::Select": Array [
+                      2,
+                      Object {
+                        "Fn::Split": Array [
+                          "/",
+                          Object {
+                            "Ref": "ListenerCdkplaygroundA8D9CA6F",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  "/",
+                  Object {
+                    "Fn::Select": Array [
+                      3,
+                      Object {
+                        "Fn::Split": Array [
+                          "/",
+                          Object {
+                            "Ref": "ListenerCdkplaygroundA8D9CA6F",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  "/",
+                  Object {
+                    "Fn::GetAtt": Array [
+                      "TargetGroupCdkplayground7A453FC2",
+                      "TargetGroupFullName",
+                    ],
+                  },
+                ],
+              ],
+            },
+          },
+          "TargetValue": 5,
+        },
+      },
+      "Type": "AWS::AutoScaling::ScalingPolicy",
+    },
     "CertificateCdkplayground47FCF7D9": Object {
       "DeletionPolicy": "Retain",
       "Properties": Object {
