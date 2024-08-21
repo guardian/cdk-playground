@@ -147,12 +147,11 @@ Object {
           "MinSuccessfulInstancesPercent": 100,
         },
         "ResourceSignal": Object {
-          "Count": 5,
+          "Count": 3,
           "Timeout": "PT5M",
         },
       },
       "Properties": Object {
-        "DesiredCapacity": "5",
         "HealthCheckGracePeriod": 120,
         "HealthCheckType": "ELB",
         "LaunchTemplate": Object {
@@ -166,13 +165,13 @@ Object {
             ],
           },
         },
-        "MaxSize": "10",
+        "MaxSize": "9",
         "MetricsCollection": Array [
           Object {
             "Granularity": "1Minute",
           },
         ],
-        "MinSize": "5",
+        "MinSize": "3",
         "Tags": Array [
           Object {
             "Key": "App",
@@ -224,8 +223,8 @@ Object {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "UpdatePolicy": Object {
         "AutoScalingRollingUpdate": Object {
-          "MaxBatchSize": 10,
-          "MinInstancesInService": 5,
+          "MaxBatchSize": 9,
+          "MinInstancesInService": 3,
           "MinSuccessfulInstancesPercent": 100,
           "SuspendProcesses": Array [],
           "WaitOnResourceSignals": true,

@@ -8,6 +8,7 @@ import { GuFastlyLogsIamRole } from '@guardian/cdk/lib/constructs/iam';
 import { GuEc2AppExperimental } from '@guardian/cdk/lib/experimental/patterns/ec2-app';
 import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
+import type {CfnAutoScalingGroup} from "aws-cdk-lib/aws-autoscaling";
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
@@ -45,7 +46,8 @@ export class CdkPlayground extends GuStack {
 			},
 			monitoringConfiguration: { noMonitoring: true },
 			scaling: {
-				minimumInstances: 5,
+				minimumInstances: 3,
+        maximumInstances: 9,
 			},
 			applicationLogging: {
 				enabled: true,
@@ -57,6 +59,10 @@ export class CdkPlayground extends GuStack {
 		autoScalingGroup.scaleOnRequestCount('ScaleOutOnRequests', {
 			targetRequestsPerMinute: 5,
 		});
+
+    const cfnAutoScalingGroup = autoScalingGroup.node.defaultChild as CfnAutoScalingGroup;
+    // Clear this for now for testing purposes
+    cfnAutoScalingGroup.desiredCapacity = undefined;
 
 		new GuCname(this, 'EC2AppDNS', {
 			app: ec2App,
