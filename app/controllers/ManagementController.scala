@@ -15,7 +15,7 @@ class ManagementController (override val controllerComponents: ControllerCompone
   }
 
   def healthCheck: Action[AnyContent] = Action {
-    logger.info("hello from the health check")
+    logger.info("hello from the updated health check")
     Ok("OK")
   }
 
