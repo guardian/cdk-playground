@@ -1,4 +1,5 @@
 GET     /                           controllers.ManagementController.manifest
+GET     /tags                       controllers.ManagementController.tags
 GET     /healthcheck                controllers.ManagementController.healthCheck
 GET     /moved-permanently          controllers.ManagementController.movedPermanently
 GET     /bad-request                controllers.ManagementController.badRequest
