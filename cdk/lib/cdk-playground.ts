@@ -6,7 +6,7 @@ import { GuStack, GuStringParameter } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuFastlyLogsIamRole } from '@guardian/cdk/lib/constructs/iam';
 import type { App } from 'aws-cdk-lib';
-import { Duration } from 'aws-cdk-lib';
+import { Duration, Tags } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
@@ -26,7 +26,7 @@ export class CdkPlayground extends GuStack {
 		const ec2App = 'cdk-playground';
 		const ec2AppDomainName = 'cdk-playground.gutools.co.uk';
 
-		const { loadBalancer } = new GuPlayApp(this, {
+		const { loadBalancer, autoScalingGroup } = new GuPlayApp(this, {
 			app: ec2App,
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
 			access: { scope: AccessScope.PUBLIC },
@@ -109,5 +109,14 @@ export class CdkPlayground extends GuStack {
 			domainName: lambdaDomainName,
 			resourceRecord: domain.domainNameAliasDomainName,
 		});
+
+		const { GITHUB_RUN_NUMBER = 'unknown', GITHUB_SHA = 'unknown' } =
+			process.env;
+
+		this.addMetadata('gu:build:number', GITHUB_RUN_NUMBER);
+		this.addMetadata('gu:build:sha', GITHUB_SHA);
+
+		Tags.of(autoScalingGroup).add('gu:build:number', GITHUB_RUN_NUMBER);
+		Tags.of(autoScalingGroup).add('gu:build:sha', GITHUB_SHA);
 	}
 }
