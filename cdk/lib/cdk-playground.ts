@@ -58,26 +58,6 @@ export class CdkPlayground extends GuStack {
 			resourceRecord: loadBalancer.loadBalancerDnsName,
 		});
 
-		// This is a temporary domain name to support testing with a Fastly service.
-		// It will be removed when testing is complete.
-		new GuCname(this, 'FastlyDNS', {
-			app: ec2App,
-			ttl: Duration.hours(1),
-			domainName: 'cdn-playground.code.dev-guardianapis.com',
-			resourceRecord: 'dualstack.guardian.map.fastly.net',
-		});
-
-		// Similarly, we are creating this role to support log shipping from Fastly.
-		// It will also be removed once testing is complete.
-		const fastlyBucketParameterKey = `/${this.stage}/${this.stack}/${ec2App}/fastly-logs-bucket`;
-		new GuFastlyLogsIamRole(this, {
-			bucketName: new GuStringParameter(this, 'FastlyBucket', {
-				fromSSM: true,
-				allowedValues: [fastlyBucketParameterKey],
-				default: fastlyBucketParameterKey,
-			}).valueAsString,
-		});
-
 		const lambdaApp = 'cdk-playground-lambda';
 		const lambdaDomainName = 'cdk-playground-lambda.gutools.co.uk';
 
