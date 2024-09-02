@@ -698,6 +698,28 @@ Object {
       },
       "Type": "AWS::IAM::Policy",
     },
+    "ScaleIn": Object {
+      "Properties": Object {
+        "AdjustmentType": "ChangeInCapacity",
+        "AutoScalingGroupName": Object {
+          "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        },
+        "PolicyType": "SimpleScaling",
+        "ScalingAdjustment": -1,
+      },
+      "Type": "AWS::AutoScaling::ScalingPolicy",
+    },
+    "ScaleOut": Object {
+      "Properties": Object {
+        "AdjustmentType": "ChangeInCapacity",
+        "AutoScalingGroupName": Object {
+          "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        },
+        "PolicyType": "SimpleScaling",
+        "ScalingAdjustment": 1,
+      },
+      "Type": "AWS::AutoScaling::ScalingPolicy",
+    },
     "SsmSshPolicy4CFC977E": Object {
       "Properties": Object {
         "PolicyDocument": Object {
