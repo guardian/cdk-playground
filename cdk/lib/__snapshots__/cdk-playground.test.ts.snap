@@ -1500,6 +1500,7 @@ Object {
           "InstanceType": "t4g.micro",
           "MetadataOptions": Object {
             "HttpTokens": "required",
+            "InstanceMetadataTags": "enabled",
           },
           "SecurityGroupIds": Array [
             Object {
