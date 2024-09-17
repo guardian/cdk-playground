@@ -117,10 +117,6 @@ Object {
         "MetricsCollection": Array [
           Object {
             "Granularity": "1Minute",
-            "Metrics": Array [
-              "GroupTotalInstances",
-              "GroupInServiceInstances",
-            ],
           },
         ],
         "MinSize": "1",
