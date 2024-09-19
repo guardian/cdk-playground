@@ -6,16 +6,23 @@ import { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuEc2AppExperimental } from '@guardian/cdk/lib/experimental/patterns/ec2-app';
 import type { App } from 'aws-cdk-lib';
-import { Duration, Tags } from 'aws-cdk-lib';
+import { Duration } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
+interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
+	/**
+	 * Which application build to run.
+	 * This will typically match the build number provided by CI.
+	 *
+	 * @example
+	 * process.env.GITHUB_RUN_NUMBER
+	 */
+	buildIdentifier: string;
+}
+
 export class CdkPlayground extends GuStack {
-	constructor(
-		scope: App,
-		id: string,
-		props?: Omit<GuStackProps, 'stack' | 'stage'>,
-	) {
+	constructor(scope: App, id: string, props: CdkPlaygroundProps) {
 		super(scope, id, {
 			...props,
 			stack: 'playground',
@@ -23,20 +30,20 @@ export class CdkPlayground extends GuStack {
 			env: { region: 'eu-west-1' },
 		});
 
+		const { buildIdentifier } = props;
+
 		const ec2App = 'cdk-playground';
 		const ec2AppDomainName = 'cdk-playground.gutools.co.uk';
 
-    const buildNumber = process.env.GITHUB_RUN_NUMBER ?? 'DEV';
-
-		const { loadBalancer, autoScalingGroup } = new GuEc2AppExperimental(this, {
+		const { loadBalancer } = new GuEc2AppExperimental(this, {
 			applicationPort: 9000,
 			app: ec2App,
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
 			access: { scope: AccessScope.PUBLIC },
 			userData: {
 				distributable: {
-					fileName: `${ec2App}-${buildNumber}.deb`,
-					executionStatement: `dpkg -i /${ec2App}/${ec2App}-${buildNumber}.deb`,
+					fileName: `${ec2App}-${buildIdentifier}.deb`,
+					executionStatement: `dpkg -i /${ec2App}/${ec2App}-${buildIdentifier}.deb`,
 				},
 			},
 			certificateProps: {
@@ -92,14 +99,5 @@ export class CdkPlayground extends GuStack {
 			domainName: lambdaDomainName,
 			resourceRecord: domain.domainNameAliasDomainName,
 		});
-
-		const { GITHUB_RUN_NUMBER = 'unknown', GITHUB_SHA = 'unknown' } =
-			process.env;
-
-		this.addMetadata('gu:build:number', GITHUB_RUN_NUMBER);
-		this.addMetadata('gu:build:sha', GITHUB_SHA);
-
-		Tags.of(autoScalingGroup).add('gu:build:number', GITHUB_RUN_NUMBER);
-		Tags.of(autoScalingGroup).add('gu:build:sha', GITHUB_SHA);
 	}
 }

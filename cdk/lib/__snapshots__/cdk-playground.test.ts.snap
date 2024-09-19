@@ -3,8 +3,6 @@
 exports[`The Deploy stack matches the snapshot 1`] = `
 Object {
   "Metadata": Object {
-    "gu:build:number": "TEST",
-    "gu:build:sha": "TEST",
     "gu:cdk:constructs": Array [
       "GuVpcParameter",
       "GuSubnetListParameter",
@@ -163,16 +161,6 @@ Object {
             "Key": "App",
             "PropagateAtLaunch": true,
             "Value": "cdk-playground",
-          },
-          Object {
-            "Key": "gu:build:number",
-            "PropagateAtLaunch": true,
-            "Value": "TEST",
-          },
-          Object {
-            "Key": "gu:build:sha",
-            "PropagateAtLaunch": true,
-            "Value": "TEST",
           },
           Object {
             "Key": "gu:cdk:version",
