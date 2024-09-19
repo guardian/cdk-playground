@@ -5,7 +5,9 @@ import { CdkPlayground } from './cdk-playground';
 describe('The Deploy stack', () => {
 	it('matches the snapshot', () => {
 		const app = new App({ outdir: '/tmp/cdk.out' });
-		const stack = new CdkPlayground(app, 'CdkPlayground');
+		const stack = new CdkPlayground(app, 'CdkPlayground', {
+			buildIdentifier: 'TEST',
+		});
 		expect(Template.fromStack(stack).toJSON()).toMatchSnapshot();
 	});
 });
