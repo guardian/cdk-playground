@@ -134,6 +134,9 @@ Object {
           "Timeout": "PT3M",
         },
       },
+      "DependsOn": Array [
+        "AsgRollingUpdatePolicy2A1DDC6F",
+      ],
       "Properties": Object {
         "DesiredCapacity": "1",
         "HealthCheckGracePeriod": 120,
@@ -1559,6 +1562,10 @@ Object {
                   "Value": "cdk-playground",
                 },
                 Object {
+                  "Key": "gu:build-identifier",
+                  "Value": "TEST",
+                },
+                Object {
                   "Key": "gu:cdk:version",
                   "Value": "TEST",
                 },
@@ -1586,6 +1593,10 @@ Object {
                 Object {
                   "Key": "App",
                   "Value": "cdk-playground",
+                },
+                Object {
+                  "Key": "gu:build-identifier",
+                  "Value": "TEST",
                 },
                 Object {
                   "Key": "gu:cdk:version",
@@ -1646,7 +1657,7 @@ dpkg -i /cdk-playground/cdk-playground-TEST.deb
                   "         --region eu-west-1         --targets Id=$INSTANCE_ID,Port=9000         --query \\"TargetHealthDescriptions[0].TargetHealth.State\\")
 
       until [ \\"$STATE\\" == \\"\\\\\\"healthy\\\\\\"\\" ]; do
-        echo \\"Instance not yet healthy within target group. Current state $STATE. Sleeping...\\"
+        echo \\"Instance running build TEST not yet healthy within target group. Current state $STATE. Sleeping...\\"
         sleep 5
         STATE=$(aws elbv2 describe-target-health           --target-group-arn ",
                   Object {
@@ -1655,7 +1666,7 @@ dpkg -i /cdk-playground/cdk-playground-TEST.deb
                   "           --region eu-west-1           --targets Id=$INSTANCE_ID,Port=9000           --query \\"TargetHealthDescriptions[0].TargetHealth.State\\")
       done
 
-      echo \\"Instance is healthy in target group.\\"
+      echo \\"Instance running build TEST is healthy in target group.\\"
       
 # GuEc2AppExperimental UserData End",
                 ],
@@ -1670,6 +1681,10 @@ dpkg -i /cdk-playground/cdk-playground-TEST.deb
               Object {
                 "Key": "App",
                 "Value": "cdk-playground",
+              },
+              Object {
+                "Key": "gu:build-identifier",
+                "Value": "TEST",
               },
               Object {
                 "Key": "gu:cdk:version",

@@ -36,6 +36,7 @@ export class CdkPlayground extends GuStack {
 		const ec2AppDomainName = 'cdk-playground.gutools.co.uk';
 
 		const { loadBalancer } = new GuEc2AppExperimental(this, {
+			buildIdentifier,
 			applicationPort: 9000,
 			app: ec2App,
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
