@@ -130,7 +130,7 @@ Object {
           "MinSuccessfulInstancesPercent": 100,
         },
         "ResourceSignal": Object {
-          "Count": 3,
+          "Count": 1,
           "Timeout": "PT3M",
         },
       },
@@ -138,7 +138,7 @@ Object {
         "AsgRollingUpdatePolicy2A1DDC6F",
       ],
       "Properties": Object {
-        "DesiredCapacity": "3",
+        "DesiredCapacity": "1",
         "HealthCheckGracePeriod": 120,
         "HealthCheckType": "ELB",
         "LaunchTemplate": Object {
@@ -152,13 +152,13 @@ Object {
             ],
           },
         },
-        "MaxSize": "6",
+        "MaxSize": "2",
         "MetricsCollection": Array [
           Object {
             "Granularity": "1Minute",
           },
         ],
-        "MinSize": "3",
+        "MinSize": "1",
         "Tags": Array [
           Object {
             "Key": "App",
@@ -210,8 +210,8 @@ Object {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "UpdatePolicy": Object {
         "AutoScalingRollingUpdate": Object {
-          "MaxBatchSize": 6,
-          "MinInstancesInService": 3,
+          "MaxBatchSize": 2,
+          "MinInstancesInService": 1,
           "MinSuccessfulInstancesPercent": 100,
           "PauseTime": "PT3M",
           "SuspendProcesses": Array [
