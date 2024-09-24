@@ -52,3 +52,5 @@ jobs:
               - dist/cdk-playground
             cdk-playground-lambda:
               - lambda/cdk-playground-lambda.zip
+            event-forwarder:
+              - cdk/dist/event-forwarder.zip

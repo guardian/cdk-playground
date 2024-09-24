@@ -1,0 +1,339 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`The EventForwarder stack matches the snapshot 1`] = `
+Object {
+  "Metadata": Object {
+    "gu:cdk:constructs": Array [
+      "GuDistributionBucketParameter",
+      "GuLambdaFunction",
+    ],
+    "gu:cdk:version": "TEST",
+  },
+  "Parameters": Object {
+    "DistributionBucketName": Object {
+      "Default": "/account/services/artifact.bucket",
+      "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": Object {
+    "AutoscalingGroupEventForwarderRuleAllowEventRuleEventForwarderEventForwarderLambda8BE949E1FC259E1D": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "EventForwarderLambda9F6516CF",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::GetAtt": Array [
+            "AutoscalingGroupEventForwarderRuleE7A6B6BF",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "AutoscalingGroupEventForwarderRuleE7A6B6BF": Object {
+      "Properties": Object {
+        "EventPattern": Object {
+          "detail": Object {
+            "AutoScalingGroupName": Array [
+              Object {
+                "wildcard": "playground-PROD-cdk-playground-*",
+              },
+            ],
+          },
+          "source": Array [
+            "aws.autoscaling",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": Array [
+          Object {
+            "Arn": Object {
+              "Fn::GetAtt": Array [
+                "EventForwarderLambda9F6516CF",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "CloudformationEventForwarderRuleAllowEventRuleEventForwarderEventForwarderLambda8BE949E112AE976F": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "EventForwarderLambda9F6516CF",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::GetAtt": Array [
+            "CloudformationEventForwarderRuleD95AAF62",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "CloudformationEventForwarderRuleD95AAF62": Object {
+      "Properties": Object {
+        "EventPattern": Object {
+          "detail": Object {
+            "stack-id": Array [
+              Object {
+                "wildcard": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:aws:cloudformation:eu-west-1:",
+                      Object {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":stack/playground-PROD-cdk-playground",
+                    ],
+                  ],
+                },
+              },
+            ],
+          },
+          "detail-type": Array [
+            "CloudFormation Resource Status Change",
+          ],
+          "source": Array [
+            "aws.cloudformation",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": Array [
+          Object {
+            "Arn": Object {
+              "Fn::GetAtt": Array [
+                "EventForwarderLambda9F6516CF",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "EventForwarderLambda9F6516CF": Object {
+      "DependsOn": Array [
+        "EventForwarderLambdaServiceRoleDefaultPolicy5D01F634",
+        "EventForwarderLambdaServiceRole25D27763",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "DistributionBucketName",
+          },
+          "S3Key": "playground/PROD/event-forwarder/event-forwarder.zip",
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "APP": "event-forwarder",
+            "STACK": "playground",
+            "STAGE": "PROD",
+          },
+        },
+        "Handler": "index.main",
+        "LoggingConfig": Object {
+          "LogFormat": "Text",
+        },
+        "MemorySize": 512,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "EventForwarderLambdaServiceRole25D27763",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs20.x",
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "event-forwarder",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "Timeout": 30,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "EventForwarderLambdaServiceRole25D27763": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "event-forwarder",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "EventForwarderLambdaServiceRoleDefaultPolicy5D01F634": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      Object {
+                        "Ref": "DistributionBucketName",
+                      },
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      Object {
+                        "Ref": "DistributionBucketName",
+                      },
+                      "/playground/PROD/event-forwarder/event-forwarder.zip",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": "ssm:GetParametersByPath",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:ssm:eu-west-1:",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/PROD/playground/event-forwarder",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:ssm:eu-west-1:",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/PROD/playground/event-forwarder/*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "autoscaling:DescribeAutoScalingGroups",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "EventForwarderLambdaServiceRoleDefaultPolicy5D01F634",
+        "Roles": Array [
+          Object {
+            "Ref": "EventForwarderLambdaServiceRole25D27763",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+  },
+}
+`;

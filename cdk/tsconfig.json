@@ -27,7 +27,7 @@
     "typeRoots": ["./node_modules/@types"],
     "outDir": "dist"
   },
-  "include": ["lib/**/*", "bin/**/*"],
+  "include": ["lib/**/*", "bin/**/*", "event-forwarder/**/*"],
   "exclude": [
     "node_modules",
     "cdk.out",
