@@ -98,7 +98,7 @@ Object {
                       Object {
                         "Ref": "AWS::AccountId",
                       },
-                      ":stack/playground-PROD-cdk-playground",
+                      ":stack/playground-PROD-cdk-playground*",
                     ],
                   ],
                 },

@@ -63,7 +63,7 @@ export class EventForwarder extends GuStack {
 								region,
 								account,
 								resource: 'stack',
-								resourceName: 'playground-PROD-cdk-playground',
+								resourceName: 'playground-PROD-cdk-playground*',
 							}),
 						},
 					],
