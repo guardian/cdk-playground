@@ -82,6 +82,9 @@ deployments:
     parameters:
       templateStagePaths:
         PROD: CdkPlayground.template.json
+      minInstancesInServiceParameters:
+        MinInstancesInServiceForcdkplayground:
+          App: cdk-playground
       amiParametersToTags:
         AMICdkplayground:
           BuiltBy: amigo
