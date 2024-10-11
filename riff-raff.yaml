@@ -35,5 +35,8 @@ deployments:
           AmigoStage: PROD
           Recipe: developerPlayground-arm64-java11
           Encrypted: 'true'
+      minInstancesInServiceParameters:
+        MinInstancesInServiceForcdkplayground:
+          App: cdk-playground
     dependencies:
       - asg-upload-eu-west-1-playground-cdk-playground
