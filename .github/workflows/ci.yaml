@@ -44,7 +44,7 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
           commentingStage: 'PROD'
-          configPath: cdk/cdk.out/riff-raff.yaml
+          configPath: riff-raff.yaml
           contentDirectories: |
             cdk.out:
               - cdk/cdk.out
