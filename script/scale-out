@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+set -e
+
+CLOUDFORMATION_STACK_NAME=playground-CODE-scaling-asg-rolling-update
+
+POLICY_ARN=$(
+  aws cloudformation describe-stacks \
+      --stack-name "$CLOUDFORMATION_STACK_NAME" \
+      --profile developerPlayground \
+      --region eu-west-1 \
+      --no-cli-pager | \
+      jq -r '.Stacks[].Outputs[] | select( [.OutputKey | contains("ScaleOutArn") ] | any) | .OutputValue'
+)
+
+ASG_NAME=$(
+  aws cloudformation describe-stacks \
+      --stack-name "$CLOUDFORMATION_STACK_NAME" \
+      --profile developerPlayground \
+      --region eu-west-1 \
+      --no-cli-pager | \
+      jq -r '.Stacks[].Outputs[] | select( [.OutputKey | contains("AutoscalingGroupName") ] | any) | .OutputValue'
+)
+
+CURRENT_DESIRED_CAPACITY=$(
+  aws autoscaling describe-auto-scaling-groups \
+    --auto-scaling-group-names "$ASG_NAME" \
+    --profile developerPlayground \
+    --region eu-west-1 | \
+    jq -r '.AutoScalingGroups[].DesiredCapacity'
+)
+
+aws autoscaling execute-policy \
+  --policy-name "$POLICY_ARN" \
+  --profile developerPlayground \
+  --region eu-west-1
+
+NEW_DESIRED_CAPACITY=$(
+  aws autoscaling describe-auto-scaling-groups \
+    --auto-scaling-group-names "$ASG_NAME" \
+    --profile developerPlayground \
+    --region eu-west-1 | \
+    jq -r '.AutoScalingGroups[].DesiredCapacity'
+)
+
+echo "Desired capacity has been updated from $CURRENT_DESIRED_CAPACITY to $NEW_DESIRED_CAPACITY"

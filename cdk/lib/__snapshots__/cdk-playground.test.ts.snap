@@ -32,12 +32,33 @@ Object {
     "gu:cdk:version": "TEST",
   },
   "Outputs": Object {
+    "AutoscalingGroupName": Object {
+      "Value": Object {
+        "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+      },
+    },
     "LoadBalancerCdkplaygroundDnsName": Object {
       "Description": "DNS entry for LoadBalancerCdkplayground",
       "Value": Object {
         "Fn::GetAtt": Array [
           "LoadBalancerCdkplayground7C6B4D97",
           "DNSName",
+        ],
+      },
+    },
+    "ScaleInArn": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "AutoScalingGroupCdkplaygroundScaleIn24F0C6B8",
+          "Arn",
+        ],
+      },
+    },
+    "ScaleOutArn": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "AutoScalingGroupCdkplaygroundScaleOutA06BF2EE",
+          "Arn",
         ],
       },
     },
@@ -78,6 +99,11 @@ Object {
       "Default": "/account/services/logging.stream.name",
       "Description": "SSM parameter containing the Name (not ARN) on the kinesis stream",
       "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "MinInstancesInServiceForcdkplayground": Object {
+      "Default": 1,
+      "MaxValue": 9,
+      "Type": "Number",
     },
     "VpcId": Object {
       "Default": "/account/vpc/primary/id",
@@ -138,7 +164,6 @@ Object {
         "AsgRollingUpdatePolicy2A1DDC6F",
       ],
       "Properties": Object {
-        "DesiredCapacity": "1",
         "HealthCheckGracePeriod": 120,
         "HealthCheckType": "ELB",
         "LaunchTemplate": Object {
@@ -152,7 +177,7 @@ Object {
             ],
           },
         },
-        "MaxSize": "2",
+        "MaxSize": "10",
         "MetricsCollection": Array [
           Object {
             "Granularity": "1Minute",
@@ -210,8 +235,10 @@ Object {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "UpdatePolicy": Object {
         "AutoScalingRollingUpdate": Object {
-          "MaxBatchSize": 2,
-          "MinInstancesInService": 1,
+          "MaxBatchSize": 10,
+          "MinInstancesInService": Object {
+            "Ref": "MinInstancesInServiceForcdkplayground",
+          },
           "MinSuccessfulInstancesPercent": 100,
           "PauseTime": "PT3M",
           "SuspendProcesses": Array [
@@ -220,6 +247,28 @@ Object {
           "WaitOnResourceSignals": true,
         },
       },
+    },
+    "AutoScalingGroupCdkplaygroundScaleIn24F0C6B8": Object {
+      "Properties": Object {
+        "AdjustmentType": "ChangeInCapacity",
+        "AutoScalingGroupName": Object {
+          "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        },
+        "PolicyType": "SimpleScaling",
+        "ScalingAdjustment": -1,
+      },
+      "Type": "AWS::AutoScaling::ScalingPolicy",
+    },
+    "AutoScalingGroupCdkplaygroundScaleOutA06BF2EE": Object {
+      "Properties": Object {
+        "AdjustmentType": "ChangeInCapacity",
+        "AutoScalingGroupName": Object {
+          "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        },
+        "PolicyType": "SimpleScaling",
+        "ScalingAdjustment": 1,
+      },
+      "Type": "AWS::AutoScaling::ScalingPolicy",
     },
     "CertificateCdkplayground47FCF7D9": Object {
       "DeletionPolicy": "Retain",
