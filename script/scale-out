@@ -2,7 +2,7 @@
 
 set -e
 
-CLOUDFORMATION_STACK_NAME=playground-CODE-scaling-asg-rolling-update
+CLOUDFORMATION_STACK_NAME=playground-PROD-cdk-playground
 
 POLICY_ARN=$(
   aws cloudformation describe-stacks \
