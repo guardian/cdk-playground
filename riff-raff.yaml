@@ -85,8 +85,6 @@ deployments:
       minInstancesInServiceParameters:
         MinInstancesInServiceForcdkplayground:
           App: cdk-playground
-        NotInTemplate:
-          App: cdk-playground
       amiParametersToTags:
         AMICdkplayground:
           BuiltBy: amigo
