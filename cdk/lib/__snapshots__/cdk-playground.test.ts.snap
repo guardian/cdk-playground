@@ -102,7 +102,7 @@ Object {
     },
     "MinInstancesInServiceForcdkplayground": Object {
       "Default": 1,
-      "MaxValue": 1,
+      "MaxValue": 9,
       "Type": "Number",
     },
     "VpcId": Object {
@@ -177,7 +177,7 @@ Object {
             ],
           },
         },
-        "MaxSize": "2",
+        "MaxSize": "10",
         "MetricsCollection": Array [
           Object {
             "Granularity": "1Minute",
@@ -235,7 +235,7 @@ Object {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "UpdatePolicy": Object {
         "AutoScalingRollingUpdate": Object {
-          "MaxBatchSize": 2,
+          "MaxBatchSize": 10,
           "MinInstancesInService": Object {
             "Ref": "MinInstancesInServiceForcdkplayground",
           },
