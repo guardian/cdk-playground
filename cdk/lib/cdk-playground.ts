@@ -6,7 +6,8 @@ import { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuEc2AppExperimental } from '@guardian/cdk/lib/experimental/patterns/ec2-app';
 import type { App } from 'aws-cdk-lib';
-import { Duration } from 'aws-cdk-lib';
+import { CfnOutput, Duration } from 'aws-cdk-lib';
+import { CfnScalingPolicy } from 'aws-cdk-lib/aws-autoscaling';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
@@ -35,7 +36,7 @@ export class CdkPlayground extends GuStack {
 		const ec2App = 'cdk-playground';
 		const ec2AppDomainName = 'cdk-playground.gutools.co.uk';
 
-		const { loadBalancer } = new GuEc2AppExperimental(this, {
+		const { loadBalancer, autoScalingGroup } = new GuEc2AppExperimental(this, {
 			buildIdentifier,
 			applicationPort: 9000,
 			app: ec2App,
@@ -60,6 +61,35 @@ export class CdkPlayground extends GuStack {
 				systemdUnitName: 'cdk-playground',
 			},
 			imageRecipe: 'developerPlayground-arm64-java11',
+		});
+
+		const scaleOutPolicy = new CfnScalingPolicy(autoScalingGroup, 'ScaleOut', {
+			autoScalingGroupName: autoScalingGroup.autoScalingGroupName,
+			policyType: 'SimpleScaling',
+			adjustmentType: 'ChangeInCapacity',
+			scalingAdjustment: 1,
+		});
+
+		const scaleInPolicy = new CfnScalingPolicy(autoScalingGroup, 'ScaleIn', {
+			autoScalingGroupName: autoScalingGroup.autoScalingGroupName,
+			policyType: 'SimpleScaling',
+			adjustmentType: 'ChangeInCapacity',
+			scalingAdjustment: -1,
+		});
+
+		new CfnOutput(this, 'ScaleOutArn', {
+			key: 'ScaleOutArn',
+			value: scaleOutPolicy.attrArn,
+		});
+
+		new CfnOutput(this, 'ScaleInArn', {
+			key: 'ScaleInArn',
+			value: scaleInPolicy.attrArn,
+		});
+
+		new CfnOutput(this, 'AutoscalingGroupName', {
+			key: 'AutoscalingGroupName',
+			value: autoScalingGroup.autoScalingGroupName,
 		});
 
 		new GuCname(this, 'EC2AppDNS', {
