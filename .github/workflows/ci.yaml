@@ -7,7 +7,7 @@ on:
       - main
 jobs:
   CI:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     permissions:
       contents: read
@@ -33,6 +33,8 @@ jobs:
           java-version: '11'
           distribution: 'corretto'
           cache: 'sbt'
+
+      - uses: sbt/setup-sbt@v1
 
       # Build CDK and Play (in sequence)
       - run: ./script/ci
