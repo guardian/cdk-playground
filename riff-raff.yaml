@@ -1,0 +1,39 @@
+allowedStages:
+  - PROD
+deployments:
+  # This deployment uploads the application artifact (.deb file) to S3.
+  asg-upload-eu-west-1-playground-cdk-playground:
+    type: autoscaling
+    actions:
+      - uploadArtifacts
+    regions:
+      - eu-west-1
+    stacks:
+      - playground
+    app: cdk-playground
+    parameters:
+      bucketSsmLookup: true
+      prefixApp: true
+    contentDirectory: cdk-playground
+
+  # This deployment updates the CloudFormation stack.
+  # It will start once the above deployment has completed.
+  cfn-eu-west-1-playground-cdk-playground:
+    type: cloud-formation
+    regions:
+      - eu-west-1
+    stacks:
+      - playground
+    app: cdk-playground
+    contentDirectory: cdk.out
+    parameters:
+      templateStagePaths:
+        PROD: CdkPlayground.template.json
+      amiParametersToTags:
+        AMICdkplayground:
+          BuiltBy: amigo
+          AmigoStage: PROD
+          Recipe: developerPlayground-arm64-java11
+          Encrypted: 'true'
+    dependencies:
+      - asg-upload-eu-west-1-playground-cdk-playground
