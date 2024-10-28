@@ -9,6 +9,7 @@ import type { App } from 'aws-cdk-lib';
 import { CfnOutput, Duration } from 'aws-cdk-lib';
 import { CfnScalingPolicy } from 'aws-cdk-lib/aws-autoscaling';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
+import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
 interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
@@ -62,6 +63,34 @@ export class CdkPlayground extends GuStack {
 			},
 			imageRecipe: 'developerPlayground-arm64-java11',
 		});
+
+    const cloudwatchAgentStatement = new PolicyStatement({
+      actions: [
+        'cloudwatch:PutMetricData',
+        'ec2:DescribeVolumes',
+        'logs:PutLogEvents',
+        'logs:DescribeLogStreams',
+        'logs:DescribeLogGroups',
+        'logs:CreateLogStream',
+        'logs:CreateLogGroup',
+        'ssm:DescribeAssociation',
+        'ssm:GetDeployablePatchSnapshotForInstance',
+        'ssm:GetDocument',
+        'ssm:DescribeDocument',
+        'ssm:GetManifest',
+        'ssm:GetParameter',
+        'ssm:GetParameters',
+        'ssm:ListAssociations',
+        'ssm:PutInventory',
+        'ssm:PutComplianceItems',
+        'ssm:PutConfigurePackageResult',
+        'ssm:UpdateAssociationStatus',
+        'ssm:UpdateInstanceAssociationStatus',
+      ],
+      resources: ['*'],
+    })
+
+    autoScalingGroup.addToRolePolicy(cloudwatchAgentStatement);
 
 		const scaleOutPolicy = new CfnScalingPolicy(autoScalingGroup, 'ScaleOut', {
 			autoScalingGroupName: autoScalingGroup.autoScalingGroupName,
