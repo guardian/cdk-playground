@@ -52,6 +52,7 @@ jobs:
               - cdk/cdk.out
             cdk-playground:
               - dist/cdk-playground
+              - amazon-cloudwatch-agent.json
             cdk-playground-lambda:
               - lambda/cdk-playground-lambda.zip
             event-forwarder:
