@@ -15,14 +15,14 @@
     "postbuild:event-forwarder": "cd dist && zip -r event-forwarder.zip ."
   },
   "devDependencies": {
-    "@guardian/cdk": "59.5.4",
+    "@guardian/cdk": "60.1.3",
     "@guardian/eslint-config-typescript": "5.0.0",
     "@guardian/prettier": "8.0.1",
     "@types/jest": "^28.1.6",
     "@types/node": "22.10.1",
-    "aws-cdk": "2.157.0",
-    "aws-cdk-lib": "2.157.0",
-    "constructs": "10.3.0",
+    "aws-cdk": "2.170.0",
+    "aws-cdk-lib": "2.170.0",
+    "constructs": "10.4.2",
     "jest": "^28.1.3",
     "source-map-support": "^0.5.20",
     "ts-jest": "^28.0.8",
