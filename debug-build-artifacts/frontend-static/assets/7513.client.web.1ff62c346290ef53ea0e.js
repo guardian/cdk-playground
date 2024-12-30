@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_guardian_dotcom_rendering=self.webpackChunk_guardian_dotcom_rendering||[]).push([[7513],{87513:(n,e,a)=>{a.d(e,{onConsentChange:()=>r.Ym});var r=a(9092)}}]);

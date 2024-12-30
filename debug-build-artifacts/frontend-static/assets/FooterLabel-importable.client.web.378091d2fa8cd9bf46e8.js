@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_guardian_dotcom_rendering=self.webpackChunk_guardian_dotcom_rendering||[]).push([[5926],{98736:(e,r,n)=>{n.r(r),n.d(r,{FooterLabel:()=>c});var t=n(50484),a=n(67400),d=n(69092);const c=()=>(()=>{const[e,r]=(0,a.useState)(!1);return(0,a.useEffect)((()=>{(0,d.Y)().then(r)}),[]),e})()?(0,t.jsx)(t.Fragment,{children:"(dcr, adapted)"}):(0,t.jsx)(t.Fragment,{children:"(dcr)"})}}]);
+//# sourceMappingURL=FooterLabel-importable.client.web.378091d2fa8cd9bf46e8.js.map

@@ -1,0 +1,1811 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Guardian Islands</title>
+	</head>
+	<style>
+		:root {
+			font-family:
+				system-ui,
+				-apple-system,
+				BlinkMacSystemFont,
+				'Segoe UI',
+				Roboto,
+				Oxygen,
+				Ubuntu,
+				Cantarell,
+				'Open Sans',
+				'Helvetica Neue',
+				sans-serif;
+			font-variant-numeric: tabular-nums;
+
+			color-scheme: light dark;
+		}
+
+		ul#components {
+			display: grid;
+			padding: 0;
+			width: 100%;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 3rem;
+		}
+
+		#components > li {
+			list-style-type: none;
+			border: 4px solid ButtonFace;
+			display: flex;
+			flex-direction: column;
+			height: min-content;
+		}
+
+		#components > li > * {
+			padding: 0.25rem;
+		}
+
+		#components > li > header {
+			display: flex;
+			justify-content: space-between;
+		}
+
+		#components > li header,
+		#components > li footer {
+			background-color: ButtonFace;
+			color: ButtonText;
+		}
+
+		#components > li h1 {
+			margin-top: 0;
+		}
+
+		#components > li h1 a {
+			color: inherit;
+		}
+
+		#components > li h4 {
+			margin: 0;
+		}
+
+		#components > li p {
+			margin: 0;
+			padding: 0.5rem 0;
+		}
+
+		#components hr {
+			border: 1px solid ButtonFace;
+			margin: 0 -0.25rem;
+		}
+	</style>
+
+	<body>
+		<style></style>
+		<h1>Guardian Islands</h1>
+		<h2>
+			Automatically
+			<a
+				href="https://github.com/guardian/dotcom-rendering/blob/66f2501ff3b8be3d8395448b3c3e029ee8bd6b2b/dotcom-rendering/scripts/islands/descriptions.mjs"
+				>generated from source</a
+			>
+			on
+			2024-12-30T12:52:42.305Z
+		</h2>
+		<ul id="components">
+			<li>
+    <header>
+        <h4>13.2kB gzip 🔴</h4>
+        <h4>54.3kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="titlepiece"><a href="#titlepiece">Titlepiece</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/Titlepiece.importable.tsx">…/components/Titlepiece.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>11.2kB gzip 🔴</h4>
+        <h4>42.6kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="get-match-nav"><a href="#get-match-nav">Get Match Nav</a></h1>
+<p>Wrapper around <code>MatchNav</code> with loading and fallback.</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>We poll the results from the match url on the client-side.
+e.g. https://api.nextgen.guardianapps.co.uk/football/api/match-nav/2023/02/08/12/28.json?dcr=true</p>
+<hr>
+<p><a href="https://www.chromatic.com/component?appId=63e251470cfbe61776b0ef19&#x26;csfId=components-matchnav"><code>MatchNav</code> on Chromatic</a></p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/GetMatchNav.importable.tsx#L70-L82">…/components/GetMatchNav.importable.tsx#L70-L82</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>9.1kB gzip 🔴</h4>
+        <h4>28.0kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="top-bar"><a href="#top-bar">Top Bar</a></h1>
+<p>The <em>new and improved</em> slim dark blue top bar at the very top of Guardian pages</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<ul>
+<li>We need to check if a user is signed in to show them the right header.</li>
+<li>We track clicks on print subscription with a page view ID</li>
+</ul>
+<hr>
+<p><a href="https://www.chromatic.com/component?appId=63e251470cfbe61776b0ef19&#x26;csfId=components-topbar"><code>TopBar</code> on Chromatic</a></p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/TopBar.importable.tsx#L96-L108">…/components/TopBar.importable.tsx#L96-L108</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>8.3kB gzip 🔴</h4>
+        <h4>28.1kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="interactive-block-component"><a href="#interactive-block-component">Interactive Block Component</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/InteractiveBlockComponent.importable.tsx">…/components/InteractiveBlockComponent.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>7.9kB gzip 🔴</h4>
+        <h4>21.0kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="sticky-liveblog-ask-wrapper"><a href="#sticky-liveblog-ask-wrapper">Sticky Liveblog Ask Wrapper</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/StickyLiveblogAskWrapper.importable.tsx">…/components/StickyLiveblogAskWrapper.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>7.9kB gzip 🔴</h4>
+        <h4>28.9kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="carousel"><a href="#carousel">Carousel</a></h1>
+<p>A carousel of cards, mainly used in onward journeys,
+at the bottom of articles</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>Data is fetched from an API client-side.</p>
+<hr>
+<p><a href="https://www.chromatic.com/component?appId=63e251470cfbe61776b0ef19&#x26;csfId=components-carousel"><code>Carousel</code> on Chromatic</a></p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/Carousel.importable.tsx#L775-L787">…/components/Carousel.importable.tsx#L775-L787</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>7.8kB gzip 🔴</h4>
+        <h4>29.9kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="get-match-stats"><a href="#get-match-stats">Get Match Stats</a></h1>
+<p>Wrapper around <code>MatchStats</code>.</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>It fetches data from the API.</p>
+<hr>
+<p><a href="https://www.chromatic.com/component?appId=63e251470cfbe61776b0ef19&#x26;csfId=components-matchstats"><code>MatchStats</code> on Chromatic</a></p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/GetMatchStats.importable.tsx#L63-L74">…/components/GetMatchStats.importable.tsx#L63-L74</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>7.2kB gzip 🔴</h4>
+        <h4>26.7kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="front-sub-nav"><a href="#front-sub-nav">Front Sub Nav</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/FrontSubNav.importable.tsx">…/components/FrontSubNav.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>7.0kB gzip 🔴</h4>
+        <h4>20.3kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="latest-links"><a href="#latest-links">Latest Links</a></h1>
+<p>Display the last three blocks from a Liveblog when the fronts
+tool has enabled showing live updates.</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>We make an API call to retrieve the latest blocks,
+constantly updating when new data comes in.</p>
+<hr>
+<p><a href="https://www.chromatic.com/component?appId=63e251470cfbe61776b0ef19&#x26;csfId=components-latestlinks&#x26;buildNumber=2967"><code>LatestLinks</code> on Chromatic</a></p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/LatestLinks.importable.tsx#L102-L115">…/components/LatestLinks.importable.tsx#L102-L115</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>6.9kB gzip 🔴</h4>
+        <h4>21.7kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="many-newsletter-sign-up"><a href="#many-newsletter-sign-up">Many Newsletter Sign Up</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/ManyNewsletterSignUp.importable.tsx">…/components/ManyNewsletterSignUp.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>6.7kB gzip 🔴</h4>
+        <h4>19.1kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="most-viewed-footer-data"><a href="#most-viewed-footer-data">Most Viewed Footer Data</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/MostViewedFooterData.importable.tsx">…/components/MostViewedFooterData.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>6.6kB gzip 🔴</h4>
+        <h4>21.1kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="onwards-upper"><a href="#onwards-upper">Onwards Upper</a></h1>
+<p>A wrapper around <code>Carousel</code> for showing related articles at the bottom
+of an article. This contains the logic around which articles to show,
+depending on a series of factors (story package, paid content, series tag, …)</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>It is a client-side only component, which cannot be rendered on the server,
+as none of the relevant information comes from the CAPI response.</p>
+<hr>
+<p><a href="https://www.chromatic.com/component?appId=63e251470cfbe61776b0ef19&#x26;csfId=components-carousel"><code>Carousel</code> on Chromatic</a></p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/OnwardsUpper.importable.tsx#L186-L200">…/components/OnwardsUpper.importable.tsx#L186-L200</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>6.6kB gzip 🔴</h4>
+        <h4>20.0kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="callout-block-component"><a href="#callout-block-component">Callout Block Component</a></h1>
+<p>A callout to readers to share their stories.
+This is the updated version of the CalloutEmbedBlockComponent.</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>We are responding to user interactions on the page,
+and submitting a form.</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/CalloutBlockComponent.importable.tsx#L9-L18">…/components/CalloutBlockComponent.importable.tsx#L9-L18</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>6.4kB gzip 🔴</h4>
+        <h4>21.9kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="lightbox-layout"><a href="#lightbox-layout">Lightbox Layout</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/LightboxLayout.importable.tsx">…/components/LightboxLayout.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>6.4kB gzip 🔴</h4>
+        <h4>19.1kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="secure-signup"><a href="#secure-signup">Secure Signup</a></h1>
+<h1 id="secure-signup-1"><a href="#secure-signup-1">Secure Signup</a></h1>
+<p>We can only inject ReCAPTCHA client-side, and need to respond to user input.</p>
+<hr>
+<p><a href="https://www.chromatic.com/component?appId=63e251470cfbe61776b0ef19&#x26;csfId=components-emailsignup"><code>EmailSignup</code> on Chromatic</a></p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/SecureSignup.importable.tsx#L248-L257">…/components/SecureSignup.importable.tsx#L248-L257</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>6.3kB gzip 🔴</h4>
+        <h4>20.7kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="expandable-marketing-card-wrapper"><a href="#expandable-marketing-card-wrapper">Expandable Marketing Card Wrapper</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/ExpandableMarketingCardWrapper.importable.tsx">…/components/ExpandableMarketingCardWrapper.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>6.2kB gzip 🔴</h4>
+        <h4>21.4kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="accessibility"><a href="#accessibility">Accessibility</a></h1>
+<p>Updates the user's accessibility preferences</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>Allows user to select their accessibility preferences</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/Accessibility.importable.tsx#L26-L33">…/components/Accessibility.importable.tsx#L26-L33</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>6.2kB gzip 🔴</h4>
+        <h4>22.3kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="audio-player-wrapper"><a href="#audio-player-wrapper">Audio Player Wrapper</a></h1>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>The audio player is interactive.
+Requires consent to use audio ads.</p>
+<hr>
+<p>(No visual story exists)</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/AudioPlayerWrapper.importable.tsx#L13-L23">…/components/AudioPlayerWrapper.importable.tsx#L13-L23</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>6.1kB gzip 🔴</h4>
+        <h4>17.8kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="get-cricket-scoreboard"><a href="#get-cricket-scoreboard">Get Cricket Scoreboard</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/GetCricketScoreboard.importable.tsx">…/components/GetCricketScoreboard.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>6.0kB gzip 🔴</h4>
+        <h4>17.2kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="sticky-bottom-banner"><a href="#sticky-bottom-banner">Sticky Bottom Banner</a></h1>
+<p>The reader revenue banner at the end of articles</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>The content of the banner is personalised to an individual page view.</p>
+<hr>
+<p>(No visual story exists)</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/StickyBottomBanner.importable.tsx#L203-L214">…/components/StickyBottomBanner.importable.tsx#L203-L214</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>5.9kB gzip 🔴</h4>
+        <h4>21.1kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="weather-wrapper"><a href="#weather-wrapper">Weather Wrapper</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/WeatherWrapper.importable.tsx">…/components/WeatherWrapper.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>5.9kB gzip 🔴</h4>
+        <h4>17.2kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="us-eoy2024-wrapper"><a href="#us-eoy2024-wrapper">Us Eoy2024 Wrapper</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/UsEoy2024Wrapper.importable.tsx">…/components/UsEoy2024Wrapper.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>5.9kB gzip 🔴</h4>
+        <h4>18.9kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="rich-link-component"><a href="#rich-link-component">Rich Link Component</a></h1>
+<p>Wrapper around <code>RichLink</code> which fetches the rich links’ images.</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>Rich links’ images and formats are not available on the CAPI response,
+so they have to be fetched client-side, via the card embed endpoint;
+e.g. <a href="https://api.nextgen.guardianapps.co.uk/embed/card/football/2023/feb/08/erik-ten-hag-blasts-manchester-uniteds-start-as-unacceptable-against-leeds.json?dcr=true">https://api.nextgen.guardianapps.co.uk/embed/card/football/2023/feb/08/erik-ten-hag-blasts-manchester-uniteds-start-as-unacceptable-against-leeds.json?dcr=true</a></p>
+<p>This enables to have a richer look for these links, rather than simply their
+headline and a grey “Read More” unaware of the pillar or design.</p>
+<hr>
+<p><a href="https://www.chromatic.com/component?appId=63e251470cfbe61776b0ef19&#x26;csfId=components-richlink"><code>RichLink</code> on Chromatic</a></p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/RichLinkComponent.importable.tsx#L64-L80">…/components/RichLinkComponent.importable.tsx#L64-L80</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>5.7kB gzip 🔴</h4>
+        <h4>18.6kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="video-facebook-block-component"><a href="#video-facebook-block-component">Video Facebook Block Component</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/VideoFacebookBlockComponent.importable.tsx">…/components/VideoFacebookBlockComponent.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>5.7kB gzip 🔴</h4>
+        <h4>18.6kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="map-embed-block-component"><a href="#map-embed-block-component">Map Embed Block Component</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/MapEmbedBlockComponent.importable.tsx">…/components/MapEmbedBlockComponent.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>5.7kB gzip 🔴</h4>
+        <h4>14.8kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="sign-in-gate-selector"><a href="#sign-in-gate-selector">Sign In Gate Selector</a></h1>
+<p>Component with conditional logic which determines if a sign in gate
+should be shown on the current page.</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>The sign-in gate logic is entirely client-side</p>
+<hr>
+<p>(No visual story exists)</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/SignInGateSelector.importable.tsx#L173-L185">…/components/SignInGateSelector.importable.tsx#L173-L185</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>5.6kB gzip 🔴</h4>
+        <h4>23.5kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="callout-embed-block-component"><a href="#callout-embed-block-component">Callout Embed Block Component</a></h1>
+<p>A callout to readers to share their stories.</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>We are responding to user interactions on the page,
+and submitting a form via AJAX.</p>
+<hr>
+<p><a href="https://www.chromatic.com/component?appId=63e251470cfbe61776b0ef19&#x26;csfId=components-calloutembedblockcomponent"><code>CalloutEmbedBlockComponent</code> on Chromatic</a></p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/CalloutEmbedBlockComponent.importable.tsx#L135-L146">…/components/CalloutEmbedBlockComponent.importable.tsx#L135-L146</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>5.6kB gzip 🔴</h4>
+        <h4>17.5kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="key-events-carousel"><a href="#key-events-carousel">Key Events Carousel</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/KeyEventsCarousel.importable.tsx">…/components/KeyEventsCarousel.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>5.6kB gzip 🔴</h4>
+        <h4>17.9kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="spotify-block-component"><a href="#spotify-block-component">Spotify Block Component</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/SpotifyBlockComponent.importable.tsx">…/components/SpotifyBlockComponent.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>5.5kB gzip 🔴</h4>
+        <h4>18.9kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="scrollable-highlights"><a href="#scrollable-highlights">Scrollable Highlights</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/ScrollableHighlights.importable.tsx">…/components/ScrollableHighlights.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>5.4kB gzip 🔴</h4>
+        <h4>13.9kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="au-eoy2024-wrapper"><a href="#au-eoy2024-wrapper">Au Eoy2024 Wrapper</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/AuEoy2024Wrapper.importable.tsx">…/components/AuEoy2024Wrapper.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>5.0kB gzip 🔴</h4>
+        <h4>16.1kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="carousel-for-newsletters"><a href="#carousel-for-newsletters">Carousel For Newsletters</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/CarouselForNewsletters.importable.tsx">…/components/CarouselForNewsletters.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>4.9kB gzip 🟠</h4>
+        <h4>14.1kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="most-viewed-right-with-ad"><a href="#most-viewed-right-with-ad">Most Viewed Right With Ad</a></h1>
+<p>Wrapping <code>MostViewedRight</code> so we can determine whether or not
+there's enough vertical space in the container to render it.</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>We may show the most viewed component depending on the length of the article,
+based on the computed height of the container and the height of this component is
+changed dynamically.</p>
+<hr>
+<p>(No visual story exists)</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/MostViewedRightWithAd.importable.tsx#L26-L40">…/components/MostViewedRightWithAd.importable.tsx#L26-L40</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>4.7kB gzip 🟠</h4>
+        <h4>14.2kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="ad-portals"><a href="#ad-portals">Ad Portals</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/AdPortals.importable.tsx">…/components/AdPortals.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>4.7kB gzip 🟠</h4>
+        <h4>13.8kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="slot-body-end"><a href="#slot-body-end">Slot Body End</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/SlotBodyEnd.importable.tsx">…/components/SlotBodyEnd.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>4.7kB gzip 🟠</h4>
+        <h4>17.5kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="liveblog-notifications"><a href="#liveblog-notifications">Liveblog Notifications</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/LiveblogNotifications.importable.tsx">…/components/LiveblogNotifications.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>4.6kB gzip 🟠</h4>
+        <h4>14.2kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="liveness"><a href="#liveness">Liveness</a></h1>
+<p>Allow new blocks on live blogs to be added without page reload.
+Polls the content API inserts news blocks if the user
+is at the top of the article.
+If they have scrolled down, show them a toast to scroll back up.</p>
+<p>This component insert HTML directly, which is generated from @see LiveBlock
+and received from the <code>blocksToHtml</code> handler.</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/Liveness.importable.tsx#L138-L147">…/components/Liveness.importable.tsx#L138-L147</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>4.6kB gzip 🟠</h4>
+        <h4>12.7kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="most-viewed-footer"><a href="#most-viewed-footer">Most Viewed Footer</a></h1>
+<p>List of 10 most viewed articles to show at the bottom of pages.</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>Most viewed data if fetched client-side.</p>
+<hr>
+<p>(No visual story exists)</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/MostViewedFooter.importable.tsx#L13-L24">…/components/MostViewedFooter.importable.tsx#L13-L24</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>4.5kB gzip 🟠</h4>
+        <h4>15.0kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="share-button"><a href="#share-button">Share Button</a></h1>
+<p>A button or link for sharing articles:</p>
+<ul>
+<li>if <code>canShare</code> is supported, triggers native share</li>
+<li>otherwise if <code>clipboard</code> is supported, a copy button</li>
+<li>otherwise a <code>mailto:</code> link</li>
+</ul>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>We need JS to identify if the browser supports specific
+features, and trigger share or clipboard copy.</p>
+<hr>
+<p><a href="https://www.chromatic.com/component?appId=63e251470cfbe61776b0ef19&#x26;csfId=components-sharebutton&#x26;buildNumber=6976&#x26;k=65d716aedbc77e22153b20a9-1200px-interactive-true&#x26;h=13&#x26;b=-2"><code>ShareButton</code> on Chromatic</a></p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/ShareButton.importable.tsx#L164-L179">…/components/ShareButton.importable.tsx#L164-L179</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>4.5kB gzip 🟠</h4>
+        <h4>11.8kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="scrollable-feature"><a href="#scrollable-feature">Scrollable Feature</a></h1>
+<p>A container used on fronts to display a carousel of small cards</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>The carouselling arrow buttons need to run javascript.</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/ScrollableFeature.importable.tsx#L18-L25">…/components/ScrollableFeature.importable.tsx#L18-L25</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>4.3kB gzip 🟠</h4>
+        <h4>13.6kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="slideshow-carousel"><a href="#slideshow-carousel">Slideshow Carousel</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/SlideshowCarousel.importable.tsx">…/components/SlideshowCarousel.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>3.9kB gzip 🟠</h4>
+        <h4>12.3kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="set-a-b-tests"><a href="#set-a-b-tests">Set A B Tests</a></h1>
+<p>Initialises the values of <code>useAB</code> and sends relevant Ophan events.</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>All this logic is client-side.</p>
+<hr>
+<p>Does not render <strong>anything</strong>.</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/SetABTests.importable.tsx#L52-L63">…/components/SetABTests.importable.tsx#L52-L63</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>3.8kB gzip 🟠</h4>
+        <h4>11.9kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="embed-block-component"><a href="#embed-block-component">Embed Block Component</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/EmbedBlockComponent.importable.tsx">…/components/EmbedBlockComponent.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>3.7kB gzip 🟠</h4>
+        <h4>11.3kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="filter-key-events-toggle"><a href="#filter-key-events-toggle">Filter Key Events Toggle</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/FilterKeyEventsToggle.importable.tsx">…/components/FilterKeyEventsToggle.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>3.7kB gzip 🟠</h4>
+        <h4>10.5kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="interactive-contents-block-component"><a href="#interactive-contents-block-component">Interactive Contents Block Component</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/InteractiveContentsBlockComponent.importable.tsx">…/components/InteractiveContentsBlockComponent.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>3.5kB gzip 🟠</h4>
+        <h4>11.4kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="youtube-block-component"><a href="#youtube-block-component">Youtube Block Component</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/YoutubeBlockComponent.importable.tsx">…/components/YoutubeBlockComponent.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>3.5kB gzip 🟠</h4>
+        <h4>10.3kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="apps-epic"><a href="#apps-epic">Apps Epic</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/AppsEpic.importable.tsx">…/components/AppsEpic.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>3.5kB gzip 🟠</h4>
+        <h4>8.5kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="live-blog-epic"><a href="#live-blog-epic">Live Blog Epic</a></h1>
+<p>LiveBlogEpic is the support epic which appears in-between blocks in blogs</p>
+<p>There are three main steps to create this epic:</p>
+<ol>
+<li>usePayload - Build the payload. The config object we send to contributions</li>
+<li>Fetch - POST the payload to the contributions endpoint</li>
+<li>Render - Take the props and name data we got in response to our fetch and dynamically import
+and render the Epic component using it</li>
+</ol>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>All behaviour is client-side.</p>
+<hr>
+<p>(No visual story exist)</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/LiveBlogEpic.importable.tsx#L208-L226">…/components/LiveBlogEpic.importable.tsx#L208-L226</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>3.4kB gzip 🟠</h4>
+        <h4>9.8kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="edition-switcher-banner"><a href="#edition-switcher-banner">Edition Switcher Banner</a></h1>
+<p>Displays a banner between the header and main content on network fronts.
+Provides a link to switch to the homepage of the user's preferred edition.</p>
+<p>See PR for details: https://github.com/guardian/dotcom-rendering/pull/11763</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/EditionSwitcherBanner.importable.tsx#L75-L81">…/components/EditionSwitcherBanner.importable.tsx#L75-L81</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>3.4kB gzip 🟠</h4>
+        <h4>9.6kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="footer-reader-revenue-links"><a href="#footer-reader-revenue-links">Footer Reader Revenue Links</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/FooterReaderRevenueLinks.importable.tsx">…/components/FooterReaderRevenueLinks.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>3.4kB gzip 🟠</h4>
+        <h4>9.8kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="table-of-contents"><a href="#table-of-contents">Table Of Contents</a></h1>
+<p>A table of contents, shown at the top of an article
+to allow readers to quickly navigate though articles.</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>We are responding to user interactions on the page.</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/TableOfContents.importable.tsx#L128-L136">…/components/TableOfContents.importable.tsx#L128-L136</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>3.2kB gzip 🟠</h4>
+        <h4>11.5kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="show-more"><a href="#show-more">Show More</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/ShowMore.importable.tsx">…/components/ShowMore.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.8kB gzip 🟠</h4>
+        <h4>7.6kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="unsafe-embed-block-component"><a href="#unsafe-embed-block-component">Unsafe Embed Block Component</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/UnsafeEmbedBlockComponent.importable.tsx">…/components/UnsafeEmbedBlockComponent.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.8kB gzip 🟠</h4>
+        <h4>7.6kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="instagram-block-component"><a href="#instagram-block-component">Instagram Block Component</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/InstagramBlockComponent.importable.tsx">…/components/InstagramBlockComponent.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.8kB gzip 🟠</h4>
+        <h4>9.3kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="branding"><a href="#branding">Branding</a></h1>
+<p>Wrapper around the logo and link for sponsored or paid for content.</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>So we can track sponsor logo clicks.</p>
+<hr>
+<p>(No visual story exists)</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/Branding.importable.tsx#L197-L208">…/components/Branding.importable.tsx#L197-L208</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.8kB gzip 🟠</h4>
+        <h4>7.0kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="ad-block-ask"><a href="#ad-block-ask">Ad Block Ask</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/AdBlockAsk.importable.tsx">…/components/AdBlockAsk.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.7kB gzip 🟠</h4>
+        <h4>8.8kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="document-block-component"><a href="#document-block-component">Document Block Component</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/DocumentBlockComponent.importable.tsx">…/components/DocumentBlockComponent.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.7kB gzip 🟠</h4>
+        <h4>7.7kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="vine-block-component"><a href="#vine-block-component">Vine Block Component</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/VineBlockComponent.importable.tsx">…/components/VineBlockComponent.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.6kB gzip 🟠</h4>
+        <h4>7.9kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="apps-footer"><a href="#apps-footer">Apps Footer</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/AppsFooter.importable.tsx">…/components/AppsFooter.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.6kB gzip 🟠</h4>
+        <h4>5.9kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="metrics"><a href="#metrics">Metrics</a></h1>
+<p>Record relevant metrics to our data warehouse:</p>
+<ul>
+<li>Core Web Vitals</li>
+<li>Commercial Metrics</li>
+</ul>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>Metrics are tied to a single page view and are gathered
+on the client-side exclusively.</p>
+<hr>
+<p>(No visual story exists as this does not render anything)</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/Metrics.importable.tsx#L68-L82">…/components/Metrics.importable.tsx#L68-L82</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.6kB gzip 🟠</h4>
+        <h4>7.7kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="apps-lightbox-image"><a href="#apps-lightbox-image">Apps Lightbox Image</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/AppsLightboxImage.importable.tsx">…/components/AppsLightboxImage.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.6kB gzip 🟠</h4>
+        <h4>6.6kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="card-comment-count"><a href="#card-comment-count">Card Comment Count</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/CardCommentCount.importable.tsx">…/components/CardCommentCount.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.6kB gzip 🟠</h4>
+        <h4>7.4kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="australian-territory-switcher"><a href="#australian-territory-switcher">Australian Territory Switcher</a></h1>
+<p>Allows containers targetted to a specific territory to be changed
+to a different territory. E.g New South Wales to Victoria</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>We use cookies to set the user’s territory.</p>
+<hr>
+<p><a href="https://www.chromatic.com/component?appId=63e251470cfbe61776b0ef19&#x26;csfId=components-australianterritoryswitcher--victoria&#x26;buildNumber=2967"><code>AustralianTerritorySwitcher</code> on Chromatic</a></p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/AustralianTerritorySwitcher.importable.tsx#L47-L59">…/components/AustralianTerritorySwitcher.importable.tsx#L47-L59</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.5kB gzip 🟠</h4>
+        <h4>7.6kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="audio-atom-wrapper"><a href="#audio-atom-wrapper">Audio Atom Wrapper</a></h1>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>The audio atom is interactive.
+Requires consent to use audio ads.</p>
+<hr>
+<p>(No visual story exists)</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/AudioAtomWrapper.importable.tsx#L16-L26">…/components/AudioAtomWrapper.importable.tsx#L16-L26</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.5kB gzip 🟠</h4>
+        <h4>6.8kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="get-match-tabs"><a href="#get-match-tabs">Get Match Tabs</a></h1>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>Data is fetched from an API on the client-side.</p>
+<hr>
+<p>(No visual story exists)</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/GetMatchTabs.importable.tsx#L13-L22">…/components/GetMatchTabs.importable.tsx#L13-L22</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.5kB gzip 🟠</h4>
+        <h4>7.3kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="apps-lightbox-image-store"><a href="#apps-lightbox-image-store">Apps Lightbox Image Store</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/AppsLightboxImageStore.importable.tsx">…/components/AppsLightboxImageStore.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.5kB gzip 🟠</h4>
+        <h4>5.9kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="relative-time"><a href="#relative-time">Relative Time</a></h1>
+<p>Shows a recent time as relative, such as “3h ago”</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>We update the relative time on the browser on an interval.</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/RelativeTime.importable.tsx#L52-L59">…/components/RelativeTime.importable.tsx#L52-L59</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.5kB gzip 🟠</h4>
+        <h4>8.8kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="follow-wrapper"><a href="#follow-wrapper">Follow Wrapper</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/FollowWrapper.importable.tsx">…/components/FollowWrapper.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.4kB gzip 🟠</h4>
+        <h4>5.4kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="top-bar-support"><a href="#top-bar-support">Top Bar Support</a></h1>
+<p>Shows support messaging and a CTA (call to action) button in the top bar
+Messaging comes from the RRCP (reader revenue control panel) via the
+contributions service</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>Reader revenue links are entirely client-side and specific to a unique
+page view. They also relying on getting a country code.</p>
+<hr>
+<p>(No visual story exists)</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/TopBarSupport.importable.tsx#L140-L154">…/components/TopBarSupport.importable.tsx#L140-L154</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.4kB gzip 🟠</h4>
+        <h4>6.4kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="personality-quiz-atom"><a href="#personality-quiz-atom">Personality Quiz Atom</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/PersonalityQuizAtom.importable.tsx">…/components/PersonalityQuizAtom.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.4kB gzip 🟠</h4>
+        <h4>6.7kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="discussion-meta"><a href="#discussion-meta">Discussion Meta</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/DiscussionMeta.importable.tsx">…/components/DiscussionMeta.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.4kB gzip 🟠</h4>
+        <h4>7.0kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="sub-nav"><a href="#sub-nav">Sub Nav</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/SubNav.importable.tsx">…/components/SubNav.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.3kB gzip 🟠</h4>
+        <h4>6.9kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="scrollable-medium"><a href="#scrollable-medium">Scrollable Medium</a></h1>
+<p>A container used on fronts to display a carousel of small cards</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>The carouselling arrow buttons need to run javascript.</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/ScrollableMedium.importable.tsx#L21-L28">…/components/ScrollableMedium.importable.tsx#L21-L28</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.3kB gzip 🟠</h4>
+        <h4>6.9kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="scrollable-small"><a href="#scrollable-small">Scrollable Small</a></h1>
+<p>A container used on fronts to display a carousel of small cards</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>The carouselling arrow buttons need to run javascript.</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/ScrollableSmall.importable.tsx#L20-L27">…/components/ScrollableSmall.importable.tsx#L20-L27</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.2kB gzip 🟠</h4>
+        <h4>6.0kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="knowledge-quiz-atom"><a href="#knowledge-quiz-atom">Knowledge Quiz Atom</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/KnowledgeQuizAtom.importable.tsx">…/components/KnowledgeQuizAtom.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.2kB gzip 🟠</h4>
+        <h4>6.1kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="comment-count"><a href="#comment-count">Comment Count</a></h1>
+<p>Shows the number of comments at the top of an article.</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>Fetches the count from the discussion API.</p>
+<hr>
+<p><a href="https://www.chromatic.com/component?appId=63e251470cfbe61776b0ef19&#x26;csfId=components-counts&#x26;buildNumber=2967"><code>Count</code> on Chromatic</a></p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/CommentCount.importable.tsx#L73-L84">…/components/CommentCount.importable.tsx#L73-L84</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.2kB gzip 🟠</h4>
+        <h4>6.7kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="send-targeting-params"><a href="#send-targeting-params">Send Targeting Params</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/SendTargetingParams.importable.tsx">…/components/SendTargetingParams.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>2.0kB gzip 🟠</h4>
+        <h4>4.4kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="enhance-pinned-post"><a href="#enhance-pinned-post">Enhance Pinned Post</a></h1>
+<p>Observes the pinned post element on live blogs.</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>We want to record how long this element was in view</p>
+<hr>
+<p>No visual output</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/EnhancePinnedPost.importable.tsx#L81-L92">…/components/EnhancePinnedPost.importable.tsx#L81-L92</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>1.9kB gzip 🟠</h4>
+        <h4>4.3kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="braze-messaging"><a href="#braze-messaging">Braze Messaging</a></h1>
+<p>This component ensures we call buildBrazeMessaging at least once
+on every page</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>All behaviour is client-side.</p>
+<hr>
+<p>Does not render <strong>anything</strong>.</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/BrazeMessaging.importable.tsx#L9-L21">…/components/BrazeMessaging.importable.tsx#L9-L21</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>1.9kB gzip 🟠</h4>
+        <h4>4.3kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="fetch-onwards-data"><a href="#fetch-onwards-data">Fetch Onwards Data</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/FetchOnwardsData.importable.tsx">…/components/FetchOnwardsData.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>1.9kB gzip 🟠</h4>
+        <h4>4.9kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="discussion-apps"><a href="#discussion-apps">Discussion Apps</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/DiscussionApps.importable.tsx">…/components/DiscussionApps.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>1.7kB gzip 🟠</h4>
+        <h4>3.9kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="discussion-web"><a href="#discussion-web">Discussion Web</a></h1>
+<p>A wrapper component that decides if the user is signed in or not.</p>
+<p>If they are, it renders <code>DiscussionWhenSignedIn</code> which includes
+an API call to fetch the user profile.</p>
+<p>If not, it simply renders <code>Discussion</code></p>
+<p>We use component composition like this here because you cannot call react
+hooks conditionally and we're using a hook to make the fetch request</p>
+<p>Note. We allow the ...props pattern here because it makes sense when we're
+just passing them through</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>Discussion has client-side interactivity.
+Signed-in status is only known on the client.</p>
+<hr>
+<p>(No visual story exist)</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/DiscussionWeb.importable.tsx#L65-L88">…/components/DiscussionWeb.importable.tsx#L65-L88</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>1.7kB gzip 🟠</h4>
+        <h4>4.6kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="dropdown"><a href="#dropdown">Dropdown</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/Dropdown.importable.tsx">…/components/Dropdown.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>1.2kB gzip 🟠</h4>
+        <h4>2.9kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="timeline-atom"><a href="#timeline-atom">Timeline Atom</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/TimelineAtom.importable.tsx">…/components/TimelineAtom.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>1.1kB gzip 🟠</h4>
+        <h4>2.0kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="tweet-block-component"><a href="#tweet-block-component">Tweet Block Component</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/TweetBlockComponent.importable.tsx">…/components/TweetBlockComponent.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>0.8kB gzip 🟢</h4>
+        <h4>1.7kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="interactive-atom-messenger"><a href="#interactive-atom-messenger">Interactive Atom Messenger</a></h1>
+<p>Send and receive messages from interactive Atoms.</p>
+<p>Currently supported messages:</p>
+<ul>
+<li><code>interactive:scroll</code></li>
+<li><code>interactive:height</code></li>
+</ul>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>It needs to send information to an adjoining <code>InteractiveAtom</code></p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/InteractiveAtomMessenger.importable.tsx#L22-L33">…/components/InteractiveAtomMessenger.importable.tsx#L22-L33</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>0.8kB gzip 🟢</h4>
+        <h4>1.6kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="profile-atom-wrapper"><a href="#profile-atom-wrapper">Profile Atom Wrapper</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/ProfileAtomWrapper.importable.tsx">…/components/ProfileAtomWrapper.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>0.8kB gzip 🟢</h4>
+        <h4>1.5kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="guide-atom-wrapper"><a href="#guide-atom-wrapper">Guide Atom Wrapper</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/GuideAtomWrapper.importable.tsx">…/components/GuideAtomWrapper.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>0.7kB gzip 🟢</h4>
+        <h4>1.3kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="pulsing-dot"><a href="#pulsing-dot">Pulsing Dot</a></h1>
+<p>Used for indicating an article is updating live</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>We want to respect user’s flashing elements preferences</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/PulsingDot.importable.tsx#L37-L44">…/components/PulsingDot.importable.tsx#L37-L44</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>0.7kB gzip 🟢</h4>
+        <h4>1.3kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="show-hide-containers"><a href="#show-hide-containers">Show Hide Containers</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/ShowHideContainers.importable.tsx">…/components/ShowHideContainers.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>0.6kB gzip 🟢</h4>
+        <h4>1.3kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="focus-styles"><a href="#focus-styles">Focus Styles</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/FocusStyles.importable.tsx">…/components/FocusStyles.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>0.5kB gzip 🟢</h4>
+        <h4>1.0kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="profile-atom"><a href="#profile-atom">Profile Atom</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/ProfileAtom.importable.tsx">…/components/ProfileAtom.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>0.5kB gzip 🟢</h4>
+        <h4>1.0kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="qanda-atom"><a href="#qanda-atom">Qanda Atom</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/QandaAtom.importable.tsx">…/components/QandaAtom.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>0.5kB gzip 🟢</h4>
+        <h4>0.8kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="chart-atom"><a href="#chart-atom">Chart Atom</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/ChartAtom.importable.tsx">…/components/ChartAtom.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>0.5kB gzip 🟢</h4>
+        <h4>0.7kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="set-ad-targeting"><a href="#set-ad-targeting">Set Ad Targeting</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/SetAdTargeting.importable.tsx">…/components/SetAdTargeting.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>0.5kB gzip 🟢</h4>
+        <h4>0.8kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="reader-revenue-dev"><a href="#reader-revenue-dev">Reader Revenue Dev</a></h1>
+<p>No description yet… 😢</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/ReaderRevenueDev.importable.tsx">…/components/ReaderRevenueDev.importable.tsx</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>0.4kB gzip 🟢</h4>
+        <h4>0.6kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="lightbox-hash"><a href="#lightbox-hash">Lightbox Hash</a></h1>
+<p>This small snippet of javascript is executed at page load. It checks to
+see if the url that was initially loaded contains a hash matching the <code>#img-</code>
+pattern.</p>
+<p>If it finds one, it means the reader has clicked a link pointing directly at an
+image so the lightbox will immediately open. But because we close the lightbox
+by going back, we need to make sure we have an entry in the history state to
+go back to, so we create one here.</p>
+<p>If we didn't do this then you'd end up back where you were when you pasted the
+url into the browser and unable to access the article under the lightbox.</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>This behaviour is entirely client-side.</p>
+<hr>
+<p>Does not render <strong>anything</strong>.</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/LightboxHash.importable.tsx#L4-L25">…/components/LightboxHash.importable.tsx#L4-L25</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>0.4kB gzip 🟢</h4>
+        <h4>0.6kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="already-visited"><a href="#already-visited">Already Visited</a></h1>
+<p>Increment the already visited count.</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>This modifies local storage values.</p>
+<hr>
+<p>Does not render <strong>anything</strong>.</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/AlreadyVisited.importable.tsx#L4-L15">…/components/AlreadyVisited.importable.tsx#L4-L15</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>0.3kB gzip 🟢</h4>
+        <h4>0.5kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="footer-label"><a href="#footer-label">Footer Label</a></h1>
+<p>Choose the correct label for the footer, which may indicate
+that the page was adapted.</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>Deciding on whether to adapt can only be determined client-side.</p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/FooterLabel.importable.tsx#L3-L11">…/components/FooterLabel.importable.tsx#L3-L11</a> online
+    </footer>
+    </li>
+<li>
+    <header>
+        <h4>0.0kB gzip 🟢</h4>
+        <h4>0.0kB parsed</h4>
+    </header>
+
+    <main>
+    <h1 id="privacy-settings-link"><a href="#privacy-settings-link">Privacy Settings Link</a></h1>
+<p>A Link/Button that opens the privacy settings modal.</p>
+<h2 id="why-does-this-need-to-be-an-island">Why does this need to be an Island?</h2>
+<p>We need to respond to clicks by calling the consent management platform’s
+privacy settings modal.</p>
+<p>To prevent this island from creating a distinct network request,
+we tell webpack to eagerly load it, so it ends up in the entry chunk.
+@see <code>eagerlyImportPrivacySettingsLinkIsland</code></p>
+    </main>
+
+    <footer>
+    See <a href="https://github.com/guardian/dotcom-rendering/blob/main/dotcom-rendering/src/components/PrivacySettingsLink.importable.tsx#L25-L37">…/components/PrivacySettingsLink.importable.tsx#L25-L37</a> online
+    </footer>
+    </li>
+		</ul>
+	</body>
+</html>

@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_guardian_dotcom_rendering=self.webpackChunk_guardian_dotcom_rendering||[]).push([[5926],{55542:(e,r,n)=>{n.r(r),n.d(r,{FooterLabel:()=>u});var t=n(50484),a=n(22820),d=n(67400),c=n(74968),u=function(){var e,r,n,u;return e=(0,d.useState)(!1),n=(r=(0,a.A)(e,2))[0],u=r[1],(0,d.useEffect)((function(){(0,c.Y)().then(u)}),[]),n?(0,t.jsx)(t.Fragment,{children:"(dcr, adapted)"}):(0,t.jsx)(t.Fragment,{children:"(dcr)"})}}}]);
+//# sourceMappingURL=FooterLabel-importable.client.web.legacy.d21e59d8cb0b093f232a.js.map

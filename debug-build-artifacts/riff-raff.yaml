@@ -1,0 +1,95 @@
+stacks:
+  - frontend
+regions:
+  - eu-west-1
+allowedStages:
+  - CODE
+  - PROD
+templates:
+  cloudformation:
+    type: cloud-formation
+    parameters:
+      amiEncrypted: true
+      amiTags:
+        Recipe: dotcom-rendering-ARM-jammy-node-20.15.1
+        AmigoStage: PROD
+deployments:
+  frontend-static:
+    type: aws-s3
+    parameters:
+      bucketSsmKey: /account/services/dotcom-static.bucket
+      cacheControl:
+        - pattern: \/stats\/
+          value: max-age=3600
+        - pattern: .*
+          value: public, max-age=315360000, immutable
+      prefixStack: false
+      publicReadAcl: false
+  article-rendering-cfn:
+    template: cloudformation
+    parameters:
+      templateStagePaths:
+        CODE: ArticleRendering-CODE.template.json
+        PROD: ArticleRendering-PROD.template.json
+      cloudFormationStackByTags: false
+      cloudFormationStackName: article-rendering
+      amiParameter: AMIArticlerendering
+  article-rendering:
+    type: autoscaling
+    parameters:
+      bucketSsmKey: /account/services/dotcom-artifact.bucket
+      secondsToWait: 1500
+    dependencies:
+      - frontend-static
+      - article-rendering-cfn
+  facia-rendering-cfn:
+    template: cloudformation
+    parameters:
+      templateStagePaths:
+        CODE: FaciaRendering-CODE.template.json
+        PROD: FaciaRendering-PROD.template.json
+      cloudFormationStackByTags: false
+      cloudFormationStackName: facia-rendering
+      amiParameter: AMIFaciarendering
+  facia-rendering:
+    type: autoscaling
+    parameters:
+      bucketSsmKey: /account/services/dotcom-artifact.bucket
+      secondsToWait: 1500
+    dependencies:
+      - frontend-static
+      - facia-rendering-cfn
+  tag-page-rendering-cfn:
+    template: cloudformation
+    parameters:
+      templateStagePaths:
+        CODE: TagPageRendering-CODE.template.json
+        PROD: TagPageRendering-PROD.template.json
+      cloudFormationStackByTags: false
+      cloudFormationStackName: tag-page-rendering
+      amiParameter: AMITagpagerendering
+  tag-page-rendering:
+    type: autoscaling
+    parameters:
+      bucketSsmKey: /account/services/dotcom-artifact.bucket
+      secondsToWait: 1500
+    dependencies:
+      - frontend-static
+      - tag-page-rendering-cfn
+  interactive-rendering-cfn:
+    template: cloudformation
+    parameters:
+      templateStagePaths:
+        CODE: InteractiveRendering-CODE.template.json
+        PROD: InteractiveRendering-PROD.template.json
+      cloudFormationStackByTags: false
+      cloudFormationStackName: interactive-rendering
+      amiParameter: AMIInteractiverendering
+  interactive-rendering:
+    type: autoscaling
+    parameters:
+      bucketSsmKey: /account/services/dotcom-artifact.bucket
+      secondsToWait: 1500
+    dependencies:
+      - frontend-static
+      - interactive-rendering-cfn
