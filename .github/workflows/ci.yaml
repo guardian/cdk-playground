@@ -40,7 +40,7 @@ jobs:
       - run: ./script/ci
 
       # Upload our build artifacts to Riff-Raff (well, S3)
-      - uses: guardian/actions-riff-raff@v4
+      - uses: guardian/actions-riff-raff@467cc54ea0e4312f827a0d2c07b5c13fccfcfc87 # Latest commit on https://github.com/guardian/actions-riff-raff/pull/191
         with:
           projectName: devx::cdk-playground
           githubToken: ${{ secrets.GITHUB_TOKEN }}
