@@ -5,8 +5,8 @@ exports[`The Deploy stack matches the snapshot 1`] = `
   "Metadata": {
     "gu:cdk:constructs": [
       "GuVpcParameter",
-      "GuSubnetListParameter",
-      "GuSubnetListParameter",
+      "GuVpcPublicSubnetsParameter",
+      "GuVpcPrivateSubnetsParameter",
       "GuEc2AppExperimental",
       "GuDistributionBucketParameter",
       "GuCertificate",
@@ -110,14 +110,14 @@ exports[`The Deploy stack matches the snapshot 1`] = `
       "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
-    "cdkplaygroundPrivateSubnets": {
+    "VpcPrivateSubnets": {
       "Default": "/account/vpc/primary/subnets/private",
-      "Description": "A list of private subnets",
+      "Description": "A comma-separated list of private subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
-    "cdkplaygroundPublicSubnets": {
+    "VpcPublicSubnets": {
       "Default": "/account/vpc/primary/subnets/public",
-      "Description": "A list of public subnets",
+      "Description": "A comma-separated list of public subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
   },
@@ -229,7 +229,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
           },
         ],
         "VPCZoneIdentifier": {
-          "Ref": "cdkplaygroundPrivateSubnets",
+          "Ref": "VpcPrivateSubnets",
         },
       },
       "Type": "AWS::AutoScaling::AutoScalingGroup",
@@ -623,7 +623,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
           },
         ],
         "Subnets": {
-          "Ref": "cdkplaygroundPublicSubnets",
+          "Ref": "VpcPublicSubnets",
         },
         "Tags": [
           {
