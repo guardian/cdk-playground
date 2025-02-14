@@ -1,4 +1,4 @@
-import { GuApiLambda } from '@guardian/cdk';
+import {GuApiLambda, GuEc2App} from '@guardian/cdk';
 import { AccessScope } from '@guardian/cdk/lib/constants/access';
 import { GuCertificate } from '@guardian/cdk/lib/constructs/acm';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
@@ -8,7 +8,7 @@ import { GuEc2AppExperimental } from '@guardian/cdk/lib/experimental/patterns/ec
 import type { App } from 'aws-cdk-lib';
 import { CfnOutput, Duration } from 'aws-cdk-lib';
 import { CfnScalingPolicy } from 'aws-cdk-lib/aws-autoscaling';
-import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
+import {InstanceClass, InstanceSize, InstanceType, Peer} from 'aws-cdk-lib/aws-ec2';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
 interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
@@ -130,5 +130,46 @@ export class CdkPlayground extends GuStack {
 			domainName: lambdaDomainName,
 			resourceRecord: domain.domainNameAliasDomainName,
 		});
+
+    /*
+    For testing https://docs.google.com/document/d/11TTJ2pwUIEzHtfkxgIRMriJ_Kygji0ypOVHcog_KYJc/edit?tab=t.0
+     */
+    const testingSubnetsApp = 'cdk-playground-testing-subnets';
+    const testingSubnetsAppDomain = 'cdk-playground-testing-subnets.gutools.co.uk';
+    const testApp = new GuEc2App(this, {
+      applicationPort: 9000,
+      app: testingSubnetsApp,
+      instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
+      access: { scope: AccessScope.INTERNAL, cidrRanges: [Peer.ipv4("10.0.0.0/16")] },
+      userData: {
+        distributable: {
+          fileName: `${testingSubnetsApp}.deb`,
+          executionStatement: `dpkg -i /${testingSubnetsApp}/${testingSubnetsApp}.deb`,
+        },
+      },
+      certificateProps: {
+        domainName: testingSubnetsAppDomain,
+      },
+      monitoringConfiguration: { noMonitoring: true },
+      scaling: {
+        minimumInstances: 1,
+        maximumInstances: 2,
+      },
+      applicationLogging: {
+        enabled: false,
+      },
+      imageRecipe: 'developerPlayground-arm64-java11',
+    });
+
+    new GuCname(this, 'TestEC2AppDNS', {
+      app: testingSubnetsApp,
+      ttl: Duration.minutes(1),
+      domainName: testingSubnetsAppDomain,
+      resourceRecord: testApp.loadBalancer.loadBalancerDnsName,
+    });
+
+    const subnetParam = this.parameters[`${testingSubnetsApp}PrivateSubnets`]
+    subnetParam.default = '/account/vpc/primary/subnets/private-new'
+    subnetParam.allowedValues = ['/account/vpc/primary/subnets/private-new']
 	}
 }

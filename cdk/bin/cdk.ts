@@ -9,7 +9,7 @@ const eventForwarder = new EventForwarder(app);
 
 const applicationStack = new CdkPlayground(app, 'CdkPlayground', {
 	cloudFormationStackName: 'playground-PROD-cdk-playground',
-	buildIdentifier: process.env.GITHUB_RUN_NUMBER ?? 'DEV',
+	buildIdentifier: process.env.GITHUB_RUN_NUMBER ?? '1195',
 });
 
 // Configure Riff-Raff to deploy the application stack after the EventForwarder stack has finished.
