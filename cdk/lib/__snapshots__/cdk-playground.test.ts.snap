@@ -2576,13 +2576,13 @@ dpkg -i /cdk-playground/cdk-playground-TEST.deb
                 "",
                 [
                   "#!/bin/bash
-mkdir -p $(dirname '/cdk-playground-testing-subnets/cdk-playground-testing-subnets-TEST.deb')
+mkdir -p $(dirname '/cdk-playground-testing-subnets/cdk-playground-testing-subnets.deb')
 aws s3 cp 's3://",
                   {
                     "Ref": "DistributionBucketName",
                   },
-                  "/playground/PROD/cdk-playground-testing-subnets/cdk-playground-testing-subnets-TEST.deb' '/cdk-playground-testing-subnets/cdk-playground-testing-subnets-TEST.deb'
-dpkg -i /cdk-playground-testing-subnets/cdk-playground-testing-subnets-TEST.deb",
+                  "/playground/PROD/cdk-playground-testing-subnets/cdk-playground-testing-subnets.deb' '/cdk-playground-testing-subnets/cdk-playground-testing-subnets.deb'
+dpkg -i /cdk-playground-testing-subnets/cdk-playground-testing-subnets.deb",
                 ],
               ],
             },

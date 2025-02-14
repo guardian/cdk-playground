@@ -143,8 +143,8 @@ export class CdkPlayground extends GuStack {
       access: { scope: AccessScope.INTERNAL, cidrRanges: [Peer.ipv4("10.0.0.0/16")] },
       userData: {
         distributable: {
-          fileName: `${testingSubnetsApp}-${buildIdentifier}.deb`,
-          executionStatement: `dpkg -i /${testingSubnetsApp}/${testingSubnetsApp}-${buildIdentifier}.deb`,
+          fileName: `${testingSubnetsApp}.deb`,
+          executionStatement: `dpkg -i /${testingSubnetsApp}/${testingSubnetsApp}.deb`,
         },
       },
       certificateProps: {
