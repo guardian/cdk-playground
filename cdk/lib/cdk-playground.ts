@@ -168,7 +168,8 @@ export class CdkPlayground extends GuStack {
       resourceRecord: testApp.loadBalancer.loadBalancerDnsName,
     });
 
-    // const subnetParam = this.parameters[`${testingSubnetsApp}PrivateSubnets`]
-    // subnetParam.default = '/account/vpc/primary/subnets/private-new'
+    const subnetParam = this.parameters[`${testingSubnetsApp}PrivateSubnets`]
+    subnetParam.default = '/account/vpc/primary/subnets/private-new'
+    subnetParam.allowedValues = ['/account/vpc/primary/subnets/private-new']
 	}
 }
