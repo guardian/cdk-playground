@@ -52,6 +52,8 @@ jobs:
               - cdk/cdk.out
             cdk-playground:
               - dist/cdk-playground
+            cdk-playground-testing-subnets:
+              - dist/cdk-playground-testing-subnets
             cdk-playground-lambda:
               - lambda/cdk-playground-lambda.zip
             event-forwarder:

@@ -28,6 +28,21 @@ exports[`The Deploy stack matches the snapshot 1`] = `
       "GuApiLambda",
       "GuCertificate",
       "GuCname",
+      "GuSubnetListParameter",
+      "GuSubnetListParameter",
+      "GuEc2AppExperimental",
+      "GuCertificate",
+      "GuInstanceRole",
+      "GuGetDistributablePolicy",
+      "GuParameterStoreReadPolicy",
+      "GuAmiParameter",
+      "GuHttpsEgressSecurityGroup",
+      "GuAutoScalingGroup",
+      "GuApplicationLoadBalancer",
+      "GuApplicationTargetGroup",
+      "GuHttpsApplicationListener",
+      "GuSecurityGroup",
+      "GuCname",
     ],
     "gu:cdk:version": "TEST",
   },
@@ -42,6 +57,15 @@ exports[`The Deploy stack matches the snapshot 1`] = `
       "Value": {
         "Fn::GetAtt": [
           "LoadBalancerCdkplayground7C6B4D97",
+          "DNSName",
+        ],
+      },
+    },
+    "LoadBalancerCdkplaygroundtestingsubnetsDnsName": {
+      "Description": "DNS entry for LoadBalancerCdkplaygroundtestingsubnets",
+      "Value": {
+        "Fn::GetAtt": [
+          "LoadBalancerCdkplaygroundtestingsubnets8207B166",
           "DNSName",
         ],
       },
@@ -90,6 +114,10 @@ exports[`The Deploy stack matches the snapshot 1`] = `
       "Description": "Amazon Machine Image ID for the app cdk-playground. Use this in conjunction with AMIgo to keep AMIs up to date.",
       "Type": "AWS::EC2::Image::Id",
     },
+    "AMICdkplaygroundtestingsubnets": {
+      "Description": "Amazon Machine Image ID for the app cdk-playground-testing-subnets. Use this in conjunction with AMIgo to keep AMIs up to date.",
+      "Type": "AWS::EC2::Image::Id",
+    },
     "DistributionBucketName": {
       "Default": "/account/services/artifact.bucket",
       "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
@@ -111,11 +139,21 @@ exports[`The Deploy stack matches the snapshot 1`] = `
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
     "cdkplaygroundPrivateSubnets": {
-      "Default": "/account/vpc/primary/subnets/private-new",
+      "Default": "/account/vpc/primary/subnets/private",
       "Description": "A list of private subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
     "cdkplaygroundPublicSubnets": {
+      "Default": "/account/vpc/primary/subnets/public",
+      "Description": "A list of public subnets",
+      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
+    },
+    "cdkplaygroundtestingsubnetsPrivateSubnets": {
+      "Default": "/account/vpc/primary/subnets/private",
+      "Description": "A list of private subnets",
+      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
+    },
+    "cdkplaygroundtestingsubnetsPublicSubnets": {
       "Default": "/account/vpc/primary/subnets/public",
       "Description": "A list of public subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
@@ -145,6 +183,9 @@ exports[`The Deploy stack matches the snapshot 1`] = `
         "Roles": [
           {
             "Ref": "InstanceRoleCdkplaygroundC280027A",
+          },
+          {
+            "Ref": "InstanceRoleCdkplaygroundtestingsubnets38235D0A",
           },
         ],
       },
@@ -270,6 +311,98 @@ exports[`The Deploy stack matches the snapshot 1`] = `
       },
       "Type": "AWS::AutoScaling::ScalingPolicy",
     },
+    "AutoScalingGroupCdkplaygroundtestingsubnetsASGB4B81FC6": {
+      "CreationPolicy": {
+        "AutoScalingCreationPolicy": {
+          "MinSuccessfulInstancesPercent": 100,
+        },
+        "ResourceSignal": {
+          "Count": 1,
+          "Timeout": "PT3M",
+        },
+      },
+      "DependsOn": [
+        "AsgRollingUpdatePolicy2A1DDC6F",
+      ],
+      "Properties": {
+        "DesiredCapacity": "1",
+        "HealthCheckGracePeriod": 120,
+        "HealthCheckType": "ELB",
+        "LaunchTemplate": {
+          "LaunchTemplateId": {
+            "Ref": "playgroundPRODcdkplaygroundtestingsubnetsB6F3E8F8",
+          },
+          "Version": {
+            "Fn::GetAtt": [
+              "playgroundPRODcdkplaygroundtestingsubnetsB6F3E8F8",
+              "LatestVersionNumber",
+            ],
+          },
+        },
+        "MaxSize": "2",
+        "MetricsCollection": [
+          {
+            "Granularity": "1Minute",
+          },
+        ],
+        "MinSize": "1",
+        "Tags": [
+          {
+            "Key": "App",
+            "PropagateAtLaunch": true,
+            "Value": "cdk-playground-testing-subnets",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "PropagateAtLaunch": true,
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "PropagateAtLaunch": true,
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "LogKinesisStreamName",
+            "PropagateAtLaunch": true,
+            "Value": {
+              "Ref": "LoggingStreamName",
+            },
+          },
+          {
+            "Key": "Stack",
+            "PropagateAtLaunch": true,
+            "Value": "playground",
+          },
+          {
+            "Key": "Stage",
+            "PropagateAtLaunch": true,
+            "Value": "PROD",
+          },
+        ],
+        "TargetGroupARNs": [
+          {
+            "Ref": "TargetGroupCdkplaygroundtestingsubnetsEF1F09C4",
+          },
+        ],
+        "VPCZoneIdentifier": {
+          "Ref": "cdkplaygroundtestingsubnetsPrivateSubnets",
+        },
+      },
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "UpdatePolicy": {
+        "AutoScalingRollingUpdate": {
+          "MaxBatchSize": 2,
+          "MinInstancesInService": 1,
+          "MinSuccessfulInstancesPercent": 100,
+          "PauseTime": "PT3M",
+          "SuspendProcesses": [
+            "AlarmNotification",
+          ],
+          "WaitOnResourceSignals": true,
+        },
+      },
+    },
     "CertificateCdkplayground47FCF7D9": {
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -340,6 +473,41 @@ exports[`The Deploy stack matches the snapshot 1`] = `
       "Type": "AWS::CertificateManager::Certificate",
       "UpdateReplacePolicy": "Retain",
     },
+    "CertificateCdkplaygroundtestingsubnetsB03FFFB8": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "DomainName": "cdk-playground-testing-subnets.gutools.co.uk",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground-testing-subnets",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Name",
+            "Value": "CdkPlayground/CertificateCdkplaygroundtestingsubnets",
+          },
+          {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "ValidationMethod": "DNS",
+      },
+      "Type": "AWS::CertificateManager::Certificate",
+      "UpdateReplacePolicy": "Retain",
+    },
     "DescribeEC2PolicyFF5F9295": {
       "Properties": {
         "PolicyDocument": {
@@ -361,6 +529,9 @@ exports[`The Deploy stack matches the snapshot 1`] = `
         "Roles": [
           {
             "Ref": "InstanceRoleCdkplaygroundC280027A",
+          },
+          {
+            "Ref": "InstanceRoleCdkplaygroundtestingsubnets38235D0A",
           },
         ],
       },
@@ -410,6 +581,38 @@ exports[`The Deploy stack matches the snapshot 1`] = `
         "Roles": [
           {
             "Ref": "InstanceRoleCdkplaygroundC280027A",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "GetDistributablePolicyCdkplaygroundtestingsubnetsEE1DFECF": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:s3:::",
+                    {
+                      "Ref": "DistributionBucketName",
+                    },
+                    "/playground/PROD/cdk-playground-testing-subnets/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "GetDistributablePolicyCdkplaygroundtestingsubnetsEE1DFECF",
+        "Roles": [
+          {
+            "Ref": "InstanceRoleCdkplaygroundtestingsubnets38235D0A",
           },
         ],
       },
@@ -476,6 +679,88 @@ exports[`The Deploy stack matches the snapshot 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
+    "GuHttpsEgressSecurityGroupCdkplaygroundtestingsubnets59E61A05": {
+      "Properties": {
+        "GroupDescription": "Allow all outbound HTTPS traffic",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound HTTPS traffic",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground-testing-subnets",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "GuHttpsEgressSecurityGroupCdkplaygroundtestingsubnetsfromCdkPlaygroundInternalIngressSecurityGroupCdkplaygroundtestingsubnetsD16806DA90002B2404F3": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "FromPort": 9000,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "GuHttpsEgressSecurityGroupCdkplaygroundtestingsubnets59E61A05",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "InternalIngressSecurityGroupCdkplaygroundtestingsubnetsD0F809EB",
+            "GroupId",
+          ],
+        },
+        "ToPort": 9000,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "GuHttpsEgressSecurityGroupCdkplaygroundtestingsubnetsfromCdkPlaygroundLoadBalancerCdkplaygroundtestingsubnetsSecurityGroup03310780900073E8BB97": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "FromPort": 9000,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "GuHttpsEgressSecurityGroupCdkplaygroundtestingsubnets59E61A05",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "LoadBalancerCdkplaygroundtestingsubnetsSecurityGroupEBCA8389",
+            "GroupId",
+          ],
+        },
+        "ToPort": 9000,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
     "GuLogShippingPolicy981BFE5A": {
       "Properties": {
         "PolicyDocument": {
@@ -509,6 +794,9 @@ exports[`The Deploy stack matches the snapshot 1`] = `
         "Roles": [
           {
             "Ref": "InstanceRoleCdkplaygroundC280027A",
+          },
+          {
+            "Ref": "InstanceRoleCdkplaygroundtestingsubnets38235D0A",
           },
         ],
       },
@@ -554,6 +842,128 @@ exports[`The Deploy stack matches the snapshot 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
+    "InstanceRoleCdkplaygroundtestingsubnets38235D0A": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ec2.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Path": "/",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground-testing-subnets",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "InternalIngressSecurityGroupCdkplaygroundtestingsubnetsD0F809EB": {
+      "Properties": {
+        "GroupDescription": "Allow restricted ingress from CIDR ranges",
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "10.0.0.0/16",
+            "Description": "Allow access on port 443 from 10.0.0.0/16",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground-testing-subnets",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "InternalIngressSecurityGroupCdkplaygroundtestingsubnetstoCdkPlaygroundGuHttpsEgressSecurityGroupCdkplaygroundtestingsubnets3AF0C5949000388FAEDF": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": {
+          "Fn::GetAtt": [
+            "GuHttpsEgressSecurityGroupCdkplaygroundtestingsubnets59E61A05",
+            "GroupId",
+          ],
+        },
+        "FromPort": 9000,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "InternalIngressSecurityGroupCdkplaygroundtestingsubnetsD0F809EB",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 9000,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
+    "InternalIngressSecurityGroupCdkplaygroundtestingsubnetstoCdkPlaygroundWazuhSecurityGroupBE1C2E039000CA560681": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": {
+          "Fn::GetAtt": [
+            "WazuhSecurityGroup",
+            "GroupId",
+          ],
+        },
+        "FromPort": 9000,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "InternalIngressSecurityGroupCdkplaygroundtestingsubnetsD0F809EB",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 9000,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
     "LambdaDNS": {
       "Properties": {
         "Name": "cdk-playground-lambda.gutools.co.uk",
@@ -590,6 +1000,32 @@ exports[`The Deploy stack matches the snapshot 1`] = `
         ],
         "LoadBalancerArn": {
           "Ref": "LoadBalancerCdkplayground7C6B4D97",
+        },
+        "Port": 443,
+        "Protocol": "HTTPS",
+        "SslPolicy": "ELBSecurityPolicy-TLS13-1-2-2021-06",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+    },
+    "ListenerCdkplaygroundtestingsubnets49951EB2": {
+      "Properties": {
+        "Certificates": [
+          {
+            "CertificateArn": {
+              "Ref": "CertificateCdkplaygroundtestingsubnetsB03FFFB8",
+            },
+          },
+        ],
+        "DefaultActions": [
+          {
+            "TargetGroupArn": {
+              "Ref": "TargetGroupCdkplaygroundtestingsubnetsEF1F09C4",
+            },
+            "Type": "forward",
+          },
+        ],
+        "LoadBalancerArn": {
+          "Ref": "LoadBalancerCdkplaygroundtestingsubnets8207B166",
         },
         "Port": 443,
         "Protocol": "HTTPS",
@@ -733,6 +1169,139 @@ exports[`The Deploy stack matches the snapshot 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
     },
+    "LoadBalancerCdkplaygroundtestingsubnets8207B166": {
+      "Properties": {
+        "LoadBalancerAttributes": [
+          {
+            "Key": "deletion_protection.enabled",
+            "Value": "true",
+          },
+          {
+            "Key": "routing.http.x_amzn_tls_version_and_cipher_suite.enabled",
+            "Value": "true",
+          },
+          {
+            "Key": "routing.http.drop_invalid_header_fields.enabled",
+            "Value": "true",
+          },
+        ],
+        "Scheme": "internal",
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "LoadBalancerCdkplaygroundtestingsubnetsSecurityGroupEBCA8389",
+              "GroupId",
+            ],
+          },
+          {
+            "Fn::GetAtt": [
+              "InternalIngressSecurityGroupCdkplaygroundtestingsubnetsD0F809EB",
+              "GroupId",
+            ],
+          },
+        ],
+        "Subnets": {
+          "Ref": "cdkplaygroundtestingsubnetsPrivateSubnets",
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground-testing-subnets",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "Type": "application",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+    },
+    "LoadBalancerCdkplaygroundtestingsubnetsSecurityGroupEBCA8389": {
+      "Properties": {
+        "GroupDescription": "Automatically created Security Group for ELB CdkPlaygroundLoadBalancerCdkplaygroundtestingsubnets2743B48A",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground-testing-subnets",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "LoadBalancerCdkplaygroundtestingsubnetsSecurityGrouptoCdkPlaygroundGuHttpsEgressSecurityGroupCdkplaygroundtestingsubnets3AF0C5949000B3010F21": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": {
+          "Fn::GetAtt": [
+            "GuHttpsEgressSecurityGroupCdkplaygroundtestingsubnets59E61A05",
+            "GroupId",
+          ],
+        },
+        "FromPort": 9000,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "LoadBalancerCdkplaygroundtestingsubnetsSecurityGroupEBCA8389",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 9000,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
+    "LoadBalancerCdkplaygroundtestingsubnetsSecurityGrouptoCdkPlaygroundWazuhSecurityGroupBE1C2E039000D1E4FC17": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": {
+          "Fn::GetAtt": [
+            "WazuhSecurityGroup",
+            "GroupId",
+          ],
+        },
+        "FromPort": 9000,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "LoadBalancerCdkplaygroundtestingsubnetsSecurityGroupEBCA8389",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 9000,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
     "ParameterStoreReadCdkplaygroundF78958B9": {
       "Properties": {
         "PolicyDocument": {
@@ -784,6 +1353,57 @@ exports[`The Deploy stack matches the snapshot 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
+    "ParameterStoreReadCdkplaygroundtestingsubnets55BF0AFD": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ssm:GetParametersByPath",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/PROD/playground/cdk-playground-testing-subnets",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/PROD/playground/cdk-playground-testing-subnets/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "parameter-store-read-policy",
+        "Roles": [
+          {
+            "Ref": "InstanceRoleCdkplaygroundtestingsubnets38235D0A",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "SsmSshPolicy4CFC977E": {
       "Properties": {
         "PolicyDocument": {
@@ -815,6 +1435,9 @@ exports[`The Deploy stack matches the snapshot 1`] = `
         "Roles": [
           {
             "Ref": "InstanceRoleCdkplaygroundC280027A",
+          },
+          {
+            "Ref": "InstanceRoleCdkplaygroundtestingsubnets38235D0A",
           },
         ],
       },
@@ -869,6 +1492,72 @@ exports[`The Deploy stack matches the snapshot 1`] = `
       },
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
     },
+    "TargetGroupCdkplaygroundtestingsubnetsEF1F09C4": {
+      "Properties": {
+        "HealthCheckIntervalSeconds": 10,
+        "HealthCheckPath": "/healthcheck",
+        "HealthCheckProtocol": "HTTP",
+        "HealthCheckTimeoutSeconds": 5,
+        "HealthyThresholdCount": 5,
+        "Port": 9000,
+        "Protocol": "HTTP",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground-testing-subnets",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "TargetGroupAttributes": [
+          {
+            "Key": "deregistration_delay.timeout_seconds",
+            "Value": "30",
+          },
+          {
+            "Key": "stickiness.enabled",
+            "Value": "false",
+          },
+        ],
+        "TargetType": "instance",
+        "UnhealthyThresholdCount": 2,
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+    },
+    "TestEC2AppDNS": {
+      "Properties": {
+        "Name": "cdk-playground-testing-subnets.gutools.co.uk",
+        "RecordType": "CNAME",
+        "ResourceRecords": [
+          {
+            "Fn::GetAtt": [
+              "LoadBalancerCdkplaygroundtestingsubnets8207B166",
+              "DNSName",
+            ],
+          },
+        ],
+        "Stage": "PROD",
+        "TTL": 60,
+      },
+      "Type": "Guardian::DNS::RecordSet",
+    },
     "WazuhSecurityGroup": {
       "Properties": {
         "GroupDescription": "Allow outbound traffic from wazuh agent to manager",
@@ -912,6 +1601,27 @@ exports[`The Deploy stack matches the snapshot 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
+    "WazuhSecurityGroupfromCdkPlaygroundInternalIngressSecurityGroupCdkplaygroundtestingsubnetsD16806DA90007E1EC6A0": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "FromPort": 9000,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "WazuhSecurityGroup",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "InternalIngressSecurityGroupCdkplaygroundtestingsubnetsD0F809EB",
+            "GroupId",
+          ],
+        },
+        "ToPort": 9000,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
     "WazuhSecurityGroupfromCdkPlaygroundLoadBalancerCdkplaygroundSecurityGroupE52E5B3890001018F1AF": {
       "Properties": {
         "Description": "Load balancer to target",
@@ -926,6 +1636,27 @@ exports[`The Deploy stack matches the snapshot 1`] = `
         "SourceSecurityGroupId": {
           "Fn::GetAtt": [
             "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+            "GroupId",
+          ],
+        },
+        "ToPort": 9000,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "WazuhSecurityGroupfromCdkPlaygroundLoadBalancerCdkplaygroundtestingsubnetsSecurityGroup0331078090009872AC59": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "FromPort": 9000,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "WazuhSecurityGroup",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "LoadBalancerCdkplaygroundtestingsubnetsSecurityGroupEBCA8389",
             "GroupId",
           ],
         },
@@ -1766,6 +2497,211 @@ dpkg -i /cdk-playground/cdk-playground-TEST.deb
         "Roles": [
           {
             "Ref": "InstanceRoleCdkplaygroundC280027A",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::InstanceProfile",
+    },
+    "playgroundPRODcdkplaygroundtestingsubnetsB6F3E8F8": {
+      "DependsOn": [
+        "InstanceRoleCdkplaygroundtestingsubnets38235D0A",
+      ],
+      "Properties": {
+        "LaunchTemplateData": {
+          "IamInstanceProfile": {
+            "Arn": {
+              "Fn::GetAtt": [
+                "playgroundPRODcdkplaygroundtestingsubnetsProfileE9BBC593",
+                "Arn",
+              ],
+            },
+          },
+          "ImageId": {
+            "Ref": "AMICdkplaygroundtestingsubnets",
+          },
+          "InstanceType": "t4g.micro",
+          "MetadataOptions": {
+            "HttpTokens": "required",
+            "InstanceMetadataTags": "enabled",
+          },
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "GuHttpsEgressSecurityGroupCdkplaygroundtestingsubnets59E61A05",
+                "GroupId",
+              ],
+            },
+            {
+              "Fn::GetAtt": [
+                "WazuhSecurityGroup",
+                "GroupId",
+              ],
+            },
+          ],
+          "TagSpecifications": [
+            {
+              "ResourceType": "instance",
+              "Tags": [
+                {
+                  "Key": "App",
+                  "Value": "cdk-playground-testing-subnets",
+                },
+                {
+                  "Key": "gu:build-identifier",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "gu:cdk:version",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/cdk-playground",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "CdkPlayground/playground-PROD-cdk-playground-testing-subnets",
+                },
+                {
+                  "Key": "Stack",
+                  "Value": "playground",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "PROD",
+                },
+              ],
+            },
+            {
+              "ResourceType": "volume",
+              "Tags": [
+                {
+                  "Key": "App",
+                  "Value": "cdk-playground-testing-subnets",
+                },
+                {
+                  "Key": "gu:build-identifier",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "gu:cdk:version",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/cdk-playground",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "CdkPlayground/playground-PROD-cdk-playground-testing-subnets",
+                },
+                {
+                  "Key": "Stack",
+                  "Value": "playground",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "PROD",
+                },
+              ],
+            },
+          ],
+          "UserData": {
+            "Fn::Base64": {
+              "Fn::Join": [
+                "",
+                [
+                  "#!/bin/bash
+function exitTrap(){
+exitCode=$?
+
+        cfn-signal --stack ",
+                  {
+                    "Ref": "AWS::StackId",
+                  },
+                  "           --resource AutoScalingGroupCdkplaygroundtestingsubnetsASGB4B81FC6           --region eu-west-1           --exit-code $exitCode || echo 'Failed to send Cloudformation Signal'
+        
+}
+trap exitTrap EXIT
+mkdir -p $(dirname '/cdk-playground-testing-subnets/cdk-playground-testing-subnets-TEST.deb')
+aws s3 cp 's3://",
+                  {
+                    "Ref": "DistributionBucketName",
+                  },
+                  "/playground/PROD/cdk-playground-testing-subnets/cdk-playground-testing-subnets-TEST.deb' '/cdk-playground-testing-subnets/cdk-playground-testing-subnets-TEST.deb'
+dpkg -i /cdk-playground-testing-subnets/cdk-playground-testing-subnets-TEST.deb
+# GuEc2AppExperimental UserData Start
+
+      TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+      INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/instance-id")
+
+      STATE=$(aws elbv2 describe-target-health         --target-group-arn ",
+                  {
+                    "Ref": "TargetGroupCdkplaygroundtestingsubnetsEF1F09C4",
+                  },
+                  "         --region eu-west-1         --targets Id=$INSTANCE_ID,Port=9000         --query "TargetHealthDescriptions[0].TargetHealth.State")
+
+      until [ "$STATE" == "\\"healthy\\"" ]; do
+        echo "Instance running build TEST not yet healthy within target group. Current state $STATE. Sleeping..."
+        sleep 5
+        STATE=$(aws elbv2 describe-target-health           --target-group-arn ",
+                  {
+                    "Ref": "TargetGroupCdkplaygroundtestingsubnetsEF1F09C4",
+                  },
+                  "           --region eu-west-1           --targets Id=$INSTANCE_ID,Port=9000           --query "TargetHealthDescriptions[0].TargetHealth.State")
+      done
+
+      echo "Instance running build TEST is healthy in target group."
+      
+# GuEc2AppExperimental UserData End",
+                ],
+              ],
+            },
+          },
+        },
+        "TagSpecifications": [
+          {
+            "ResourceType": "launch-template",
+            "Tags": [
+              {
+                "Key": "App",
+                "Value": "cdk-playground-testing-subnets",
+              },
+              {
+                "Key": "gu:build-identifier",
+                "Value": "TEST",
+              },
+              {
+                "Key": "gu:cdk:version",
+                "Value": "TEST",
+              },
+              {
+                "Key": "gu:repo",
+                "Value": "guardian/cdk-playground",
+              },
+              {
+                "Key": "Name",
+                "Value": "CdkPlayground/playground-PROD-cdk-playground-testing-subnets",
+              },
+              {
+                "Key": "Stack",
+                "Value": "playground",
+              },
+              {
+                "Key": "Stage",
+                "Value": "PROD",
+              },
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::EC2::LaunchTemplate",
+    },
+    "playgroundPRODcdkplaygroundtestingsubnetsProfileE9BBC593": {
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "InstanceRoleCdkplaygroundtestingsubnets38235D0A",
           },
         ],
       },

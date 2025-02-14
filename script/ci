@@ -19,4 +19,7 @@ set -e
 sbt clean compile test debian:packageBin
 
 mkdir -p dist/cdk-playground
-mv target/cdk-playground_1.0-SNAPSHOT_all.deb "dist/cdk-playground/cdk-playground-$GITHUB_RUN_NUMBER.deb"
+cp target/cdk-playground_1.0-SNAPSHOT_all.deb "dist/cdk-playground/cdk-playground-$GITHUB_RUN_NUMBER.deb"
+
+mkdir -p dist/cdk-playground-testing-subnets
+cp target/cdk-playground_1.0-SNAPSHOT_all.deb "dist/cdk-playground-testing-subnets/cdk-playground-testing-subnets-$GITHUB_RUN_NUMBER.deb"
