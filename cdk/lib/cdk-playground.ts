@@ -1,4 +1,4 @@
-import { GuApiLambda } from '@guardian/cdk';
+import {GuApiLambda, GuEc2App} from '@guardian/cdk';
 import { AccessScope } from '@guardian/cdk/lib/constants/access';
 import { GuCertificate } from '@guardian/cdk/lib/constructs/acm';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
@@ -136,8 +136,7 @@ export class CdkPlayground extends GuStack {
      */
     const testingSubnetsApp = 'cdk-playground-testing-subnets';
     const testingSubnetsAppDomain = 'cdk-playground-testing-subnets.gutools.co.uk';
-    const testApp = new GuEc2AppExperimental(this, {
-      buildIdentifier,
+    const testApp = new GuEc2App(this, {
       applicationPort: 9000,
       app: testingSubnetsApp,
       instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
