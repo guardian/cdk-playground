@@ -130,5 +130,8 @@ export class CdkPlayground extends GuStack {
 			domainName: lambdaDomainName,
 			resourceRecord: domain.domainNameAliasDomainName,
 		});
+
+    const subnetParam = this.parameters['cdk-playgroundPrivateSubnets']
+    subnetParam.default = '/account/vpc/primary/subnets/private-new'
 	}
 }

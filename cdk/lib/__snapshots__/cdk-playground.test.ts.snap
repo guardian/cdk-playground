@@ -111,7 +111,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
     "cdkplaygroundPrivateSubnets": {
-      "Default": "/account/vpc/primary/subnets/private",
+      "Default": "/account/vpc/primary/subnets/private-new",
       "Description": "A list of private subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
