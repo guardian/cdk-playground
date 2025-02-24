@@ -15,7 +15,7 @@
     "postbuild:event-forwarder": "cd dist && zip -r event-forwarder.zip ."
   },
   "devDependencies": {
-    "@guardian/cdk": "61.1.3",
+    "@guardian/cdk": "61.3.0",
     "@guardian/eslint-config-typescript": "12.0.0",
     "@guardian/prettier": "8.0.1",
     "@types/jest": "^29.5.14",
