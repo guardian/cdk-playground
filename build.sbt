@@ -1,5 +1,5 @@
 // https://github.com/orgs/playframework/discussions/11222
-val jacksonVersion         = "2.18.2"
+val jacksonVersion         = "2.18.3"
 
 val jacksonOverrides = Seq(
   "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8",
@@ -38,7 +38,7 @@ lazy val root = (project in file("."))
       ++ Seq(
         "net.logstash.logback" % "logstash-logback-encoder" % "8.0",
         // Transient dependency of Play. No newer version of Play 2.9 or Play 3.0 with this vulnerability fixed.
-        "ch.qos.logback" % "logback-classic" % "1.5.16",
+        "ch.qos.logback" % "logback-classic" % "1.5.17",
       ),
 
     buildInfoKeys ++= Seq[BuildInfoKey](
