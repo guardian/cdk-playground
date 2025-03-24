@@ -28,7 +28,7 @@
     "ts-jest": "29.2.6",
     "ts-node": "^10.9.2",
     "typescript": "5.5.4",
-    "@types/aws-lambda": "8.10.147",
+    "@types/aws-lambda": "8.10.148",
     "@aws-sdk/client-auto-scaling": "3.772.0",
     "@aws-sdk/credential-providers": "3.768.0",
     "esbuild": "0.25.1"
