@@ -36,7 +36,7 @@ export class CdkPlayground extends GuStack {
 		const ec2App = 'cdk-playground';
 		const ec2AppDomainName = 'cdk-playground.gutools.co.uk';
 
-		const { loadBalancer, autoScalingGroup } = new GuEc2AppExperimental(this, {
+		const { loadBalancer, targetGroup, autoScalingGroup } = new GuEc2AppExperimental(this, {
 			buildIdentifier,
 			applicationPort: 9000,
 			app: ec2App,
@@ -62,6 +62,8 @@ export class CdkPlayground extends GuStack {
 			},
 			imageRecipe: 'developerPlayground-arm64-java11',
 		});
+
+    targetGroup.setAttribute("slow_start.duration_seconds", "30")
 
 		const scaleOutPolicy = new CfnScalingPolicy(autoScalingGroup, 'ScaleOut', {
 			autoScalingGroupName: autoScalingGroup.autoScalingGroupName,

@@ -860,6 +860,10 @@ exports[`The Deploy stack matches the snapshot 1`] = `
             "Key": "stickiness.enabled",
             "Value": "false",
           },
+          {
+            "Key": "slow_start.duration_seconds",
+            "Value": "30",
+          },
         ],
         "TargetType": "instance",
         "UnhealthyThresholdCount": 2,
