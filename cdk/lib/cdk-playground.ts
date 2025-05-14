@@ -61,6 +61,7 @@ export class CdkPlayground extends GuStack {
 				systemdUnitName: 'cdk-playground',
 			},
 			imageRecipe: 'developerPlayground-arm64-java11',
+      slowStartDuration: Duration.minutes(2),
 		});
 
 		const scaleOutPolicy = new CfnScalingPolicy(autoScalingGroup, 'ScaleOut', {
