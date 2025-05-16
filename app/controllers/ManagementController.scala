@@ -1,9 +1,12 @@
 package controllers
 
+
 import buildinfo.BuildInfo
 import play.api.Logging
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
+
+import java.time.{Duration, LocalDateTime}
 import scala.io.Source
 
 class ManagementController (override val controllerComponents: ControllerComponents) extends BaseController with Logging {
@@ -32,8 +35,15 @@ class ManagementController (override val controllerComponents: ControllerCompone
   }
 
   def healthCheck: Action[AnyContent] = Action {
-    logger.info("hello from the health check")
-    Ok("OK")
+    val now = LocalDateTime.now()
+    // Start failing the healthcheck after we enter slow start mode to simulate a service falling over under load
+    if (now.isBefore(HealthCheck.firstHealthCheck.plus(Duration.ofSeconds(75)))) {
+      logger.info("Passing healthcheck")
+      Ok("OK")
+    } else {
+      logger.info(s"Failing healthcheck")
+      InternalServerError
+    }
   }
 
   def movedPermanently: Action[AnyContent] = Action {
@@ -48,4 +58,8 @@ class ManagementController (override val controllerComponents: ControllerCompone
     InternalServerError
   }
 
+}
+
+object HealthCheck {
+  lazy val firstHealthCheck = LocalDateTime.now()
 }
