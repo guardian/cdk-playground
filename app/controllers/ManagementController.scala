@@ -4,6 +4,7 @@ import buildinfo.BuildInfo
 import play.api.Logging
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
+
 import scala.io.Source
 
 class ManagementController (override val controllerComponents: ControllerComponents) extends BaseController with Logging {
@@ -32,8 +33,11 @@ class ManagementController (override val controllerComponents: ControllerCompone
   }
 
   def healthCheck: Action[AnyContent] = Action {
-    logger.info("hello from the health check")
-    Ok("OK")
+    if (Config.getHealthCheckConfigOnce == "pass") {
+      Ok("OK")
+    } else {
+      InternalServerError
+    }
   }
 
   def movedPermanently: Action[AnyContent] = Action {
