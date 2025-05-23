@@ -7,7 +7,7 @@ import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuEc2AppExperimental } from '@guardian/cdk/lib/experimental/patterns/ec2-app';
 import type { App } from 'aws-cdk-lib';
 import { CfnOutput, Duration } from 'aws-cdk-lib';
-import { CfnScalingPolicy } from 'aws-cdk-lib/aws-autoscaling';
+//import { CfnScalingPolicy } from 'aws-cdk-lib/aws-autoscaling';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
@@ -64,29 +64,29 @@ export class CdkPlayground extends GuStack {
       instanceMetricGranularity: '5Minute'
     });
 
-		const scaleOutPolicy = new CfnScalingPolicy(autoScalingGroup, 'ScaleOut', {
-			autoScalingGroupName: autoScalingGroup.autoScalingGroupName,
-			policyType: 'SimpleScaling',
-			adjustmentType: 'ChangeInCapacity',
-			scalingAdjustment: 1,
-		});
+		// const scaleOutPolicy = new CfnScalingPolicy(autoScalingGroup, 'ScaleOut', {
+		// 	autoScalingGroupName: autoScalingGroup.autoScalingGroupName,
+		// 	policyType: 'SimpleScaling',
+		// 	adjustmentType: 'ChangeInCapacity',
+		// 	scalingAdjustment: 1,
+		// });
+    //
+		// const scaleInPolicy = new CfnScalingPolicy(autoScalingGroup, 'ScaleIn', {
+		// 	autoScalingGroupName: autoScalingGroup.autoScalingGroupName,
+		// 	policyType: 'SimpleScaling',
+		// 	adjustmentType: 'ChangeInCapacity',
+		// 	scalingAdjustment: -1,
+		// });
 
-		const scaleInPolicy = new CfnScalingPolicy(autoScalingGroup, 'ScaleIn', {
-			autoScalingGroupName: autoScalingGroup.autoScalingGroupName,
-			policyType: 'SimpleScaling',
-			adjustmentType: 'ChangeInCapacity',
-			scalingAdjustment: -1,
-		});
-
-		new CfnOutput(this, 'ScaleOutArn', {
-			key: 'ScaleOutArn',
-			value: scaleOutPolicy.attrArn,
-		});
-
-		new CfnOutput(this, 'ScaleInArn', {
-			key: 'ScaleInArn',
-			value: scaleInPolicy.attrArn,
-		});
+		// new CfnOutput(this, 'ScaleOutArn', {
+		// 	key: 'ScaleOutArn',
+		// 	value: scaleOutPolicy.attrArn,
+		// });
+    //
+		// new CfnOutput(this, 'ScaleInArn', {
+		// 	key: 'ScaleInArn',
+		// 	value: scaleInPolicy.attrArn,
+		// });
 
 		new CfnOutput(this, 'AutoscalingGroupName', {
 			key: 'AutoscalingGroupName',
