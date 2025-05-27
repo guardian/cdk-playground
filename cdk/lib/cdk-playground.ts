@@ -42,6 +42,7 @@ export class CdkPlayground extends GuStack {
 			app: ec2App,
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
 			access: { scope: AccessScope.PUBLIC },
+      accessLogging: { enabled: true, prefix: `${this.stage}/${this.stack}/${ec2App}` },
 			userData: {
 				distributable: {
 					fileName: `${ec2App}-${buildIdentifier}.deb`,
@@ -131,5 +132,11 @@ export class CdkPlayground extends GuStack {
 			domainName: lambdaDomainName,
 			resourceRecord: domain.domainNameAliasDomainName,
 		});
+
+    const albLogsBucketParam = this.parameters["AccessLoggingBucket"];
+    const parameterStoreLookup = '/jacob/alb-logging-spike';
+    albLogsBucketParam.default = parameterStoreLookup;
+    albLogsBucketParam.allowedValues = [parameterStoreLookup];
+
 	}
 }
