@@ -4,9 +4,10 @@ import { GuCertificate } from '@guardian/cdk/lib/constructs/acm';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
+import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
 import { GuEc2AppExperimental } from '@guardian/cdk/lib/experimental/patterns/ec2-app';
 import type { App } from 'aws-cdk-lib';
-import { CfnOutput, Duration } from 'aws-cdk-lib';
+import { CfnOutput, Duration, RemovalPolicy } from 'aws-cdk-lib';
 import { CfnScalingPolicy } from 'aws-cdk-lib/aws-autoscaling';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
@@ -32,6 +33,7 @@ export class CdkPlayground extends GuStack {
 		});
 
 		const { buildIdentifier } = props;
+		const { stack, stage } = this;
 
 		const ec2App = 'cdk-playground';
 		const ec2AppDomainName = 'cdk-playground.gutools.co.uk';
@@ -61,8 +63,20 @@ export class CdkPlayground extends GuStack {
 				systemdUnitName: 'cdk-playground',
 			},
 			imageRecipe: 'developerPlayground-arm64-java11',
-      instanceMetricGranularity: '5Minute'
-    });
+			instanceMetricGranularity: '5Minute',
+		});
+
+		const albAccessLogsBucket = new GuS3Bucket(this, 'AlbAccessLogsBucket', {
+			app: ec2App,
+		});
+
+		// For this app, we don't need to retain the access logs bucket after the stack is deleted.
+		albAccessLogsBucket.applyRemovalPolicy(RemovalPolicy.DESTROY);
+
+		loadBalancer.logAccessLogs(
+			albAccessLogsBucket,
+			`${stack}/${stage}/${ec2App}`,
+		);
 
 		const scaleOutPolicy = new CfnScalingPolicy(autoScalingGroup, 'ScaleOut', {
 			autoScalingGroupName: autoScalingGroup.autoScalingGroupName,
