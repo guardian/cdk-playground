@@ -65,7 +65,7 @@ export class CdkPlayground extends GuStack {
 			instanceMetricGranularity: '5Minute',
 			accessLogging: {
 				enabled: true,
-				prefix: `v2/${stage}/${stack}/${ec2App}`,
+				prefix: `application-load-balancer/${stage}/${stack}/${ec2App}`,
 			},
 		});
 
