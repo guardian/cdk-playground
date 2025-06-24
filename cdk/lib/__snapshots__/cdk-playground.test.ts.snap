@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`The Deploy stack matches the snapshot 1`] = `
 {
@@ -629,7 +629,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
           },
           {
             "Key": "access_logs.s3.prefix",
-            "Value": "v2/PROD/playground/cdk-playground",
+            "Value": "application-load-balancer/PROD/playground/cdk-playground",
           },
         ],
         "Scheme": "internet-facing",
