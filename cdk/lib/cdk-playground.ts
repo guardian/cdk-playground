@@ -61,7 +61,11 @@ export class CdkPlayground extends GuStack {
 				enabled: true,
 				systemdUnitName: 'cdk-playground',
 			},
-			imageRecipe: 'developerPlayground-arm64-java11',
+			imageRecipe: {
+				Recipe: 'arm64-jammy-java11-deploy-infrastructure',
+				AmigoStage: 'CODE',
+				Encrypted: false,
+			},
 			instanceMetricGranularity: '5Minute',
 			accessLogging: {
 				enabled: true,
