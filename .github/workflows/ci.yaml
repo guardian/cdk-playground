@@ -49,3 +49,20 @@ jobs:
               - lambda/cdk-playground-lambda.zip
             event-forwarder:
               - cdk/dist/event-forwarder.zip
+
+      - uses: guardian/actions-riff-raff@aa/error-as-annotation
+        with:
+          projectName: a-fake-project
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
+          commentingStage: 'PROD'
+          configPath: cdk/cdk.out/riff-raff.yaml
+          contentDirectories: |
+            cdk.out:
+              - cdk/cdk.out
+            cdk-playground:
+              - dist/cdk-playground
+            cdk-playground-lambda:
+              - lambda/cdk-playground-lambda.zip
+            event-forwarder:
+              - cdk/dist/event-forwarder.zip
