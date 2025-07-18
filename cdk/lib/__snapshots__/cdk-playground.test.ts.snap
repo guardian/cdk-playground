@@ -24,6 +24,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
       "GuAccessLoggingBucketParameter",
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
+      "GuStringParameter",
       "GuCname",
       "GuApiLambda",
       "GuCertificate",
@@ -94,6 +95,10 @@ exports[`The Deploy stack matches the snapshot 1`] = `
       "Default": "/account/services/access-logging/bucket",
       "Description": "S3 bucket to store your access logs",
       "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "DeploymentIdParam": {
+      "Default": "abcde",
+      "Type": "String",
     },
     "DistributionBucketName": {
       "Default": "/account/services/artifact.bucket",
@@ -1648,7 +1653,11 @@ dpkg -i /cdk-playground/cdk-playground-TEST.deb
 
       echo "Instance running build TEST is healthy in target group."
       
-# GuEc2AppExperimental Instance Health Check End",
+# GuEc2AppExperimental Instance Health Check End
+# Deployment Id: ",
+                  {
+                    "Ref": "DeploymentIdParam",
+                  },
                 ],
               ],
             },

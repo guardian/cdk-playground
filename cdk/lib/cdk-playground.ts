@@ -2,7 +2,7 @@ import { GuApiLambda } from '@guardian/cdk';
 import { AccessScope } from '@guardian/cdk/lib/constants/access';
 import { GuCertificate } from '@guardian/cdk/lib/constructs/acm';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
-import { GuStack } from '@guardian/cdk/lib/constructs/core';
+import { GuStack, GuStringParameter } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuEc2AppExperimental } from '@guardian/cdk/lib/experimental/patterns/ec2-app';
 import type { App } from 'aws-cdk-lib';
@@ -68,6 +68,13 @@ export class CdkPlayground extends GuStack {
 				prefix: `application-load-balancer/${stage}/${stack}/${ec2App}`,
 			},
 		});
+
+		const deploymentIdParam = new GuStringParameter(this, 'DeploymentIdParam', {
+			default: 'abcde',
+		});
+		autoScalingGroup.userData.addCommands(
+			`# Deployment Id: ${deploymentIdParam.valueAsString}`,
+		);
 
 		const scaleOutPolicy = new CfnScalingPolicy(autoScalingGroup, 'ScaleOut', {
 			autoScalingGroupName: autoScalingGroup.autoScalingGroupName,
