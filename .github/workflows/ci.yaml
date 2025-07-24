@@ -35,7 +35,7 @@ jobs:
       # Upload our build artifacts to Riff-Raff (well, S3)
       - uses: guardian/actions-riff-raff@v4
         with:
-          projectName: devx::cdk-playground
+          projectName: devx::cdk-playground-test
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
           commentingStage: 'PROD'
