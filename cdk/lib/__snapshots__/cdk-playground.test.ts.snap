@@ -106,8 +106,6 @@ exports[`The Deploy stack matches the snapshot 1`] = `
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "MinInstancesInServiceForcdkplayground": {
-      "Default": 1,
-      "MaxValue": 9,
       "Type": "Number",
     },
     "VpcId": {
