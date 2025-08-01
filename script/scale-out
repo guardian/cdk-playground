@@ -2,12 +2,12 @@
 
 set -e
 
-CLOUDFORMATION_STACK_NAME=deploy-PROD-cdk-playground
+CLOUDFORMATION_STACK_NAME=deploy-CODE-cdk-playground
 
 POLICY_ARN=$(
   aws cloudformation describe-stacks \
       --stack-name "$CLOUDFORMATION_STACK_NAME" \
-      --profile deploy \
+      --profile deployTools \
       --region eu-west-1 \
       --no-cli-pager | \
       jq -r '.Stacks[].Outputs[] | select( [.OutputKey | contains("ScaleOutArn") ] | any) | .OutputValue'
@@ -16,7 +16,7 @@ POLICY_ARN=$(
 ASG_NAME=$(
   aws cloudformation describe-stacks \
       --stack-name "$CLOUDFORMATION_STACK_NAME" \
-      --profile deploy \
+      --profile deployTools \
       --region eu-west-1 \
       --no-cli-pager | \
       jq -r '.Stacks[].Outputs[] | select( [.OutputKey | contains("AutoscalingGroupName") ] | any) | .OutputValue'
@@ -25,20 +25,20 @@ ASG_NAME=$(
 CURRENT_DESIRED_CAPACITY=$(
   aws autoscaling describe-auto-scaling-groups \
     --auto-scaling-group-names "$ASG_NAME" \
-    --profile deploy \
+    --profile deployTools \
     --region eu-west-1 | \
     jq -r '.AutoScalingGroups[].DesiredCapacity'
 )
 
 aws autoscaling execute-policy \
   --policy-name "$POLICY_ARN" \
-  --profile deploy \
+  --profile deployTools \
   --region eu-west-1
 
 NEW_DESIRED_CAPACITY=$(
   aws autoscaling describe-auto-scaling-groups \
     --auto-scaling-group-names "$ASG_NAME" \
-    --profile deploy \
+    --profile deployTools \
     --region eu-west-1 | \
     jq -r '.AutoScalingGroups[].DesiredCapacity'
 )

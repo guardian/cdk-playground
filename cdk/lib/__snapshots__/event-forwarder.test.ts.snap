@@ -42,7 +42,7 @@ exports[`The EventForwarder stack matches the snapshot for CODE 1`] = `
           "detail": {
             "AutoScalingGroupName": [
               {
-                "wildcard": "playground-PROD-cdk-playground-*",
+                "wildcard": "deploy-CODE-cdk-playground-*",
               },
             ],
           },
@@ -98,7 +98,7 @@ exports[`The EventForwarder stack matches the snapshot for CODE 1`] = `
                       {
                         "Ref": "AWS::AccountId",
                       },
-                      ":stack/playground-PROD-cdk-playground*",
+                      ":stack/deploy-CODE-cdk-playground*",
                     ],
                   ],
                 },
