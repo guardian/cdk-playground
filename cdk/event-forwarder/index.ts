@@ -60,7 +60,7 @@ async function getCloudformationStackNameForAsg(
 	const awsConfig: AwsClientConfig = {
 		region: 'eu-west-1',
 		...(stage === 'DEV' && {
-			credentials: fromIni({ profile: 'developerPlayground' }),
+			credentials: fromIni({ profile: 'deploy' }),
 		}),
 	};
 

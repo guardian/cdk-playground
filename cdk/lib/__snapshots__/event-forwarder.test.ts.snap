@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`The EventForwarder stack matches the snapshot 1`] = `
 {
@@ -137,12 +137,12 @@ exports[`The EventForwarder stack matches the snapshot 1`] = `
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "playground/PROD/event-forwarder/event-forwarder.zip",
+          "S3Key": "deploy/PROD/event-forwarder/event-forwarder.zip",
         },
         "Environment": {
           "Variables": {
             "APP": "event-forwarder",
-            "STACK": "playground",
+            "STACK": "deploy",
             "STAGE": "PROD",
           },
         },
@@ -173,7 +173,7 @@ exports[`The EventForwarder stack matches the snapshot 1`] = `
           },
           {
             "Key": "Stack",
-            "Value": "playground",
+            "Value": "deploy",
           },
           {
             "Key": "Stage",
@@ -227,7 +227,7 @@ exports[`The EventForwarder stack matches the snapshot 1`] = `
           },
           {
             "Key": "Stack",
-            "Value": "playground",
+            "Value": "deploy",
           },
           {
             "Key": "Stage",
@@ -276,7 +276,7 @@ exports[`The EventForwarder stack matches the snapshot 1`] = `
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/playground/PROD/event-forwarder/event-forwarder.zip",
+                      "/deploy/PROD/event-forwarder/event-forwarder.zip",
                     ],
                   ],
                 },
@@ -293,7 +293,7 @@ exports[`The EventForwarder stack matches the snapshot 1`] = `
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/PROD/playground/event-forwarder",
+                    ":parameter/PROD/deploy/event-forwarder",
                   ],
                 ],
               },
@@ -312,7 +312,7 @@ exports[`The EventForwarder stack matches the snapshot 1`] = `
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/PROD/playground/event-forwarder/*",
+                    ":parameter/PROD/deploy/event-forwarder/*",
                   ],
                 ],
               },
