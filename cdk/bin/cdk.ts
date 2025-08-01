@@ -6,11 +6,14 @@ import { EventForwarder } from '../lib/event-forwarder';
 
 const app = new App();
 
-const eventForwarder = new EventForwarder(app, 'EventForwarder', {
+const eventForwarderProd = new EventForwarder(app, 'EventForwarder', {
 	stage: 'PROD',
 });
+const eventForwarderCode = new EventForwarder(app, 'EventForwarder-CODE', {
+	stage: 'CODE',
+});
 
-const applicationStack = new CdkPlayground(app, 'CdkPlayground', {
+const applicationStackProd = new CdkPlayground(app, 'CdkPlayground', {
 	cloudFormationStackName: 'deploy-PROD-cdk-playground',
 	buildIdentifier: process.env.GITHUB_RUN_NUMBER ?? 'DEV',
 	stage: 'PROD',
@@ -18,8 +21,17 @@ const applicationStack = new CdkPlayground(app, 'CdkPlayground', {
 	lambdaDomainName: 'cdk-playground-lambda.gutools.co.uk',
 });
 
+const applicationStackCode = new CdkPlayground(app, 'CdkPlayground-CODE', {
+	cloudFormationStackName: 'deploy-CODE-cdk-playground',
+	buildIdentifier: process.env.GITHUB_RUN_NUMBER ?? 'DEV',
+	stage: 'CODE',
+	ec2AppDomainName: 'cdk-playground.code.dev-gutools.co.uk',
+	lambdaDomainName: 'cdk-playground-lambda.code.dev-gutools.co.uk',
+});
+
 // Configure Riff-Raff to deploy the application stack after the EventForwarder stack has finished.
-applicationStack.addDependency(eventForwarder);
+applicationStackProd.addDependency(eventForwarderProd);
+applicationStackCode.addDependency(eventForwarderCode);
 
 const riffRaff = new RiffRaffYamlFile(app);
 const cfnDeployment = riffRaff.riffRaffYaml.deployments.get(
@@ -47,6 +59,9 @@ if (cfnDeployment) {
 		...cfnDeployment.parameters,
 		templateStageParameters: {
 			PROD: {
+				MinInstancesInServiceForcdkplayground: '1',
+			},
+			CODE: {
 				MinInstancesInServiceForcdkplayground: '1',
 			},
 		},

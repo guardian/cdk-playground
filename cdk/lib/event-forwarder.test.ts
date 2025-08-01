@@ -9,4 +9,12 @@ describe('The EventForwarder stack', () => {
 		const template = Template.fromStack(stack);
 		expect(template.toJSON()).toMatchSnapshot();
 	});
+	it('matches the snapshot for CODE', () => {
+		const app = new App({ outdir: '/tmp/cdk.out' });
+		const stack = new EventForwarder(app, 'EventForwarder-CODE', {
+			stage: 'CODE',
+		});
+		const template = Template.fromStack(stack);
+		expect(template.toJSON()).toMatchSnapshot();
+	});
 });

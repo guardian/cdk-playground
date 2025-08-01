@@ -13,4 +13,14 @@ describe('The Deploy stack', () => {
 		});
 		expect(Template.fromStack(stack).toJSON()).toMatchSnapshot();
 	});
+	it('matches the snapshot for CODE', () => {
+		const app = new App({ outdir: '/tmp/cdk.out' });
+		const stack = new CdkPlayground(app, 'CdkPlayground-CODE', {
+			buildIdentifier: 'TEST',
+			stage: 'CODE',
+			ec2AppDomainName: 'cdk-playground.code.dev-gutools.co.uk',
+			lambdaDomainName: 'cdk-playground-lambda.code.dev-gutools.co.uk',
+		});
+		expect(Template.fromStack(stack).toJSON()).toMatchSnapshot();
+	});
 });
