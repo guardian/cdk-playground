@@ -6,11 +6,16 @@ import { EventForwarder } from '../lib/event-forwarder';
 
 const app = new App();
 
-const eventForwarder = new EventForwarder(app);
+const eventForwarder = new EventForwarder(app, 'EventForwarder', {
+	stage: 'PROD',
+});
 
 const applicationStack = new CdkPlayground(app, 'CdkPlayground', {
 	cloudFormationStackName: 'deploy-PROD-cdk-playground',
 	buildIdentifier: process.env.GITHUB_RUN_NUMBER ?? 'DEV',
+	stage: 'PROD',
+	ec2AppDomainName: 'cdk-playground.gutools.co.uk',
+	lambdaDomainName: 'cdk-playground-lambda.gutools.co.uk',
 });
 
 // Configure Riff-Raff to deploy the application stack after the EventForwarder stack has finished.

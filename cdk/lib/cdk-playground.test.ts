@@ -7,6 +7,9 @@ describe('The Deploy stack', () => {
 		const app = new App({ outdir: '/tmp/cdk.out' });
 		const stack = new CdkPlayground(app, 'CdkPlayground', {
 			buildIdentifier: 'TEST',
+			stage: 'PROD',
+			ec2AppDomainName: 'cdk-playground.gutools.co.uk',
+			lambdaDomainName: 'cdk-playground-lambda.gutools.co.uk',
 		});
 		expect(Template.fromStack(stack).toJSON()).toMatchSnapshot();
 	});

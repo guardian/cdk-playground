@@ -11,7 +11,7 @@ import { CfnScalingPolicy } from 'aws-cdk-lib/aws-autoscaling';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
-interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
+interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack'> {
 	/**
 	 * Which application build to run.
 	 * This will typically match the build number provided by CI.
@@ -20,6 +20,20 @@ interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 	 * process.env.GITHUB_RUN_NUMBER
 	 */
 	buildIdentifier: string;
+
+	/**
+	 * The domain name for the Play app, running on EC2.
+	 */
+	ec2AppDomainName:
+		| 'cdk-playground.code.dev-gutools.co.uk'
+		| 'cdk-playground.gutools.co.uk';
+
+	/**
+	 * The domain name for the API Gateway lambda.
+	 */
+	lambdaDomainName:
+		| 'cdk-playground-lambda.code.dev-gutools.co.uk'
+		| 'cdk-playground-lambda.gutools.co.uk';
 }
 
 export class CdkPlayground extends GuStack {
@@ -27,15 +41,13 @@ export class CdkPlayground extends GuStack {
 		super(scope, id, {
 			...props,
 			stack: 'deploy',
-			stage: 'PROD',
 			env: { region: 'eu-west-1' },
 		});
 
-		const { buildIdentifier } = props;
+		const { buildIdentifier, ec2AppDomainName, lambdaDomainName } = props;
 		const { stack, stage } = this;
 
 		const ec2App = 'cdk-playground';
-		const ec2AppDomainName = 'cdk-playground.gutools.co.uk';
 
 		const { loadBalancer, autoScalingGroup } = new GuEc2AppExperimental(this, {
 			buildIdentifier,
@@ -106,7 +118,6 @@ export class CdkPlayground extends GuStack {
 		});
 
 		const lambdaApp = 'cdk-playground-lambda';
-		const lambdaDomainName = 'cdk-playground-lambda.gutools.co.uk';
 
 		const lambda = new GuApiLambda(this, 'lambda', {
 			fileName: `cdk-playground-lambda.zip`,

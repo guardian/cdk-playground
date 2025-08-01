@@ -5,7 +5,7 @@ import { EventForwarder } from './event-forwarder';
 describe('The EventForwarder stack', () => {
 	it('matches the snapshot', () => {
 		const app = new App();
-		const stack = new EventForwarder(app);
+		const stack = new EventForwarder(app, 'EventForwarder', { stage: 'PROD' });
 		const template = Template.fromStack(stack);
 		expect(template.toJSON()).toMatchSnapshot();
 	});
