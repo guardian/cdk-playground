@@ -12,7 +12,7 @@ export class EventForwarder extends GuStack {
 		const app = 'event-forwarder';
 
 		super(scope, 'EventForwarder', {
-			stack: 'playground',
+			stack: 'deploy',
 			stage: 'PROD',
 			app,
 			env: {

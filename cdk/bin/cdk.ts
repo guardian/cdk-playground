@@ -8,7 +8,7 @@ const app = new GuRoot();
 const eventForwarder = new EventForwarder(app);
 
 const applicationStack = new CdkPlayground(app, 'CdkPlayground', {
-	cloudFormationStackName: 'playground-PROD-cdk-playground',
+	cloudFormationStackName: 'deploy-PROD-cdk-playground',
 	buildIdentifier: process.env.GITHUB_RUN_NUMBER ?? 'DEV',
 });
 

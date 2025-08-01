@@ -171,11 +171,11 @@ exports[`The Deploy stack matches the snapshot 1`] = `
         "HealthCheckType": "ELB",
         "LaunchTemplate": {
           "LaunchTemplateId": {
-            "Ref": "playgroundPRODcdkplayground7B64111F",
+            "Ref": "deployPRODcdkplayground4155738F",
           },
           "Version": {
             "Fn::GetAtt": [
-              "playgroundPRODcdkplayground7B64111F",
+              "deployPRODcdkplayground4155738F",
               "LatestVersionNumber",
             ],
           },
@@ -213,7 +213,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
           {
             "Key": "Stack",
             "PropagateAtLaunch": true,
-            "Value": "playground",
+            "Value": "deploy",
           },
           {
             "Key": "Stage",
@@ -296,7 +296,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
           },
           {
             "Key": "Stack",
-            "Value": "playground",
+            "Value": "deploy",
           },
           {
             "Key": "Stage",
@@ -331,7 +331,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
           },
           {
             "Key": "Stack",
-            "Value": "playground",
+            "Value": "deploy",
           },
           {
             "Key": "Stage",
@@ -401,7 +401,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
                     {
                       "Ref": "DistributionBucketName",
                     },
-                    "/playground/PROD/cdk-playground/*",
+                    "/deploy/PROD/cdk-playground/*",
                   ],
                 ],
               },
@@ -445,7 +445,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
           },
           {
             "Key": "Stack",
-            "Value": "playground",
+            "Value": "deploy",
           },
           {
             "Key": "Stage",
@@ -547,7 +547,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
           },
           {
             "Key": "Stack",
-            "Value": "playground",
+            "Value": "deploy",
           },
           {
             "Key": "Stage",
@@ -627,7 +627,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
           },
           {
             "Key": "access_logs.s3.prefix",
-            "Value": "application-load-balancer/PROD/playground/cdk-playground",
+            "Value": "application-load-balancer/PROD/deploy/cdk-playground",
           },
         ],
         "Scheme": "internet-facing",
@@ -657,7 +657,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
           },
           {
             "Key": "Stack",
-            "Value": "playground",
+            "Value": "deploy",
           },
           {
             "Key": "Stage",
@@ -695,7 +695,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
           },
           {
             "Key": "Stack",
-            "Value": "playground",
+            "Value": "deploy",
           },
           {
             "Key": "Stage",
@@ -744,7 +744,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/PROD/playground/cdk-playground",
+                    ":parameter/PROD/deploy/cdk-playground",
                   ],
                 ],
               },
@@ -763,7 +763,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/PROD/playground/cdk-playground/*",
+                    ":parameter/PROD/deploy/cdk-playground/*",
                   ],
                 ],
               },
@@ -840,7 +840,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
           },
           {
             "Key": "Stack",
-            "Value": "playground",
+            "Value": "deploy",
           },
           {
             "Key": "Stage",
@@ -865,6 +865,208 @@ exports[`The Deploy stack matches the snapshot 1`] = `
       },
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
     },
+    "deployPRODcdkplayground4155738F": {
+      "DependsOn": [
+        "InstanceRoleCdkplaygroundC280027A",
+      ],
+      "Properties": {
+        "LaunchTemplateData": {
+          "IamInstanceProfile": {
+            "Arn": {
+              "Fn::GetAtt": [
+                "deployPRODcdkplaygroundProfile5822B7A8",
+                "Arn",
+              ],
+            },
+          },
+          "ImageId": {
+            "Ref": "AMICdkplayground",
+          },
+          "InstanceType": "t4g.micro",
+          "MetadataOptions": {
+            "HttpTokens": "required",
+            "InstanceMetadataTags": "enabled",
+          },
+          "Monitoring": {
+            "Enabled": false,
+          },
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "GuHttpsEgressSecurityGroupCdkplaygroundAF9827C8",
+                "GroupId",
+              ],
+            },
+          ],
+          "TagSpecifications": [
+            {
+              "ResourceType": "instance",
+              "Tags": [
+                {
+                  "Key": "App",
+                  "Value": "cdk-playground",
+                },
+                {
+                  "Key": "gu:build-identifier",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "gu:cdk:version",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/cdk-playground",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "CdkPlayground/deploy-PROD-cdk-playground",
+                },
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "PROD",
+                },
+              ],
+            },
+            {
+              "ResourceType": "volume",
+              "Tags": [
+                {
+                  "Key": "App",
+                  "Value": "cdk-playground",
+                },
+                {
+                  "Key": "gu:build-identifier",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "gu:cdk:version",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/cdk-playground",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "CdkPlayground/deploy-PROD-cdk-playground",
+                },
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "PROD",
+                },
+              ],
+            },
+          ],
+          "UserData": {
+            "Fn::Base64": {
+              "Fn::Join": [
+                "",
+                [
+                  "#!/bin/bash
+function exitTrap(){
+exitCode=$?
+
+        cfn-signal --stack ",
+                  {
+                    "Ref": "AWS::StackId",
+                  },
+                  "           --resource AutoScalingGroupCdkplaygroundASGD6E49F0F           --region eu-west-1           --exit-code $exitCode || echo 'Failed to send Cloudformation Signal'
+        
+}
+trap exitTrap EXIT
+mkdir -p $(dirname '/cdk-playground/cdk-playground-TEST.deb')
+aws s3 cp 's3://",
+                  {
+                    "Ref": "DistributionBucketName",
+                  },
+                  "/deploy/PROD/cdk-playground/cdk-playground-TEST.deb' '/cdk-playground/cdk-playground-TEST.deb'
+dpkg -i /cdk-playground/cdk-playground-TEST.deb
+# GuEc2AppExperimental Instance Health Check Start
+
+      TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+      INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/instance-id")
+
+      STATE=$(aws elbv2 describe-target-health         --target-group-arn ",
+                  {
+                    "Ref": "TargetGroupCdkplayground7A453FC2",
+                  },
+                  "         --region eu-west-1         --targets Id=$INSTANCE_ID,Port=9000         --query "TargetHealthDescriptions[0].TargetHealth.State")
+
+      until [ "$STATE" == "\\"healthy\\"" ]; do
+        echo "Instance running build TEST not yet healthy within target group. Current state $STATE. Sleeping..."
+        sleep 5
+        STATE=$(aws elbv2 describe-target-health           --target-group-arn ",
+                  {
+                    "Ref": "TargetGroupCdkplayground7A453FC2",
+                  },
+                  "           --region eu-west-1           --targets Id=$INSTANCE_ID,Port=9000           --query "TargetHealthDescriptions[0].TargetHealth.State")
+      done
+
+      echo "Instance running build TEST is healthy in target group."
+      
+# GuEc2AppExperimental Instance Health Check End",
+                ],
+              ],
+            },
+          },
+        },
+        "TagSpecifications": [
+          {
+            "ResourceType": "launch-template",
+            "Tags": [
+              {
+                "Key": "App",
+                "Value": "cdk-playground",
+              },
+              {
+                "Key": "gu:build-identifier",
+                "Value": "TEST",
+              },
+              {
+                "Key": "gu:cdk:version",
+                "Value": "TEST",
+              },
+              {
+                "Key": "gu:repo",
+                "Value": "guardian/cdk-playground",
+              },
+              {
+                "Key": "Name",
+                "Value": "CdkPlayground/deploy-PROD-cdk-playground",
+              },
+              {
+                "Key": "Stack",
+                "Value": "deploy",
+              },
+              {
+                "Key": "Stage",
+                "Value": "PROD",
+              },
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::EC2::LaunchTemplate",
+    },
+    "deployPRODcdkplaygroundProfile5822B7A8": {
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "InstanceRoleCdkplaygroundC280027A",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::InstanceProfile",
+    },
     "lambda8B5974B5": {
       "DependsOn": [
         "lambdaServiceRoleDefaultPolicyBF6FA5E7",
@@ -875,12 +1077,12 @@ exports[`The Deploy stack matches the snapshot 1`] = `
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "playground/PROD/cdk-playground-lambda/cdk-playground-lambda.zip",
+          "S3Key": "deploy/PROD/cdk-playground-lambda/cdk-playground-lambda.zip",
         },
         "Environment": {
           "Variables": {
             "APP": "cdk-playground-lambda",
-            "STACK": "playground",
+            "STACK": "deploy",
             "STAGE": "PROD",
           },
         },
@@ -911,7 +1113,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
           },
           {
             "Key": "Stack",
-            "Value": "playground",
+            "Value": "deploy",
           },
           {
             "Key": "Stage",
@@ -965,7 +1167,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
           },
           {
             "Key": "Stack",
-            "Value": "playground",
+            "Value": "deploy",
           },
           {
             "Key": "Stage",
@@ -1014,7 +1216,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/playground/PROD/cdk-playground-lambda/cdk-playground-lambda.zip",
+                      "/deploy/PROD/cdk-playground-lambda/cdk-playground-lambda.zip",
                     ],
                   ],
                 },
@@ -1031,7 +1233,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/PROD/playground/cdk-playground-lambda",
+                    ":parameter/PROD/deploy/cdk-playground-lambda",
                   ],
                 ],
               },
@@ -1050,7 +1252,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/PROD/playground/cdk-playground-lambda/*",
+                    ":parameter/PROD/deploy/cdk-playground-lambda/*",
                   ],
                 ],
               },
@@ -1070,7 +1272,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
     "lambdacdkplaygroundlambdaapi061BB942": {
       "Properties": {
         "Description": "cdk-playground-lambda",
-        "Name": "playground-PROD-cdk-playground-lambda-api",
+        "Name": "deploy-PROD-cdk-playground-lambda-api",
         "Tags": [
           {
             "Key": "App",
@@ -1086,7 +1288,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
           },
           {
             "Key": "Stack",
-            "Value": "playground",
+            "Value": "deploy",
           },
           {
             "Key": "Stage",
@@ -1265,7 +1467,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
           },
           {
             "Key": "Stack",
-            "Value": "playground",
+            "Value": "deploy",
           },
           {
             "Key": "Stage",
@@ -1276,7 +1478,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "lambdacdkplaygroundlambdaapiDeployment157471B23507d885fa4f6f2bfbd1011b60b24ca1": {
+    "lambdacdkplaygroundlambdaapiDeployment157471B20d2d4164f37ebcfcd963e39b83d9cd68": {
       "DependsOn": [
         "lambdacdkplaygroundlambdaapiproxyANYDB984CB2",
         "lambdacdkplaygroundlambdaapiproxyFA4DE6D2",
@@ -1296,7 +1498,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
       ],
       "Properties": {
         "DeploymentId": {
-          "Ref": "lambdacdkplaygroundlambdaapiDeployment157471B23507d885fa4f6f2bfbd1011b60b24ca1",
+          "Ref": "lambdacdkplaygroundlambdaapiDeployment157471B20d2d4164f37ebcfcd963e39b83d9cd68",
         },
         "RestApiId": {
           "Ref": "lambdacdkplaygroundlambdaapi061BB942",
@@ -1317,7 +1519,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
           },
           {
             "Key": "Stack",
-            "Value": "playground",
+            "Value": "deploy",
           },
           {
             "Key": "Stage",
@@ -1353,7 +1555,7 @@ exports[`The Deploy stack matches the snapshot 1`] = `
           },
           {
             "Key": "Stack",
-            "Value": "playground",
+            "Value": "deploy",
           },
           {
             "Key": "Stage",
@@ -1497,208 +1699,6 @@ exports[`The Deploy stack matches the snapshot 1`] = `
         },
       },
       "Type": "AWS::ApiGateway::Resource",
-    },
-    "playgroundPRODcdkplayground7B64111F": {
-      "DependsOn": [
-        "InstanceRoleCdkplaygroundC280027A",
-      ],
-      "Properties": {
-        "LaunchTemplateData": {
-          "IamInstanceProfile": {
-            "Arn": {
-              "Fn::GetAtt": [
-                "playgroundPRODcdkplaygroundProfile617BB4EE",
-                "Arn",
-              ],
-            },
-          },
-          "ImageId": {
-            "Ref": "AMICdkplayground",
-          },
-          "InstanceType": "t4g.micro",
-          "MetadataOptions": {
-            "HttpTokens": "required",
-            "InstanceMetadataTags": "enabled",
-          },
-          "Monitoring": {
-            "Enabled": false,
-          },
-          "SecurityGroupIds": [
-            {
-              "Fn::GetAtt": [
-                "GuHttpsEgressSecurityGroupCdkplaygroundAF9827C8",
-                "GroupId",
-              ],
-            },
-          ],
-          "TagSpecifications": [
-            {
-              "ResourceType": "instance",
-              "Tags": [
-                {
-                  "Key": "App",
-                  "Value": "cdk-playground",
-                },
-                {
-                  "Key": "gu:build-identifier",
-                  "Value": "TEST",
-                },
-                {
-                  "Key": "gu:cdk:version",
-                  "Value": "TEST",
-                },
-                {
-                  "Key": "gu:repo",
-                  "Value": "guardian/cdk-playground",
-                },
-                {
-                  "Key": "Name",
-                  "Value": "CdkPlayground/playground-PROD-cdk-playground",
-                },
-                {
-                  "Key": "Stack",
-                  "Value": "playground",
-                },
-                {
-                  "Key": "Stage",
-                  "Value": "PROD",
-                },
-              ],
-            },
-            {
-              "ResourceType": "volume",
-              "Tags": [
-                {
-                  "Key": "App",
-                  "Value": "cdk-playground",
-                },
-                {
-                  "Key": "gu:build-identifier",
-                  "Value": "TEST",
-                },
-                {
-                  "Key": "gu:cdk:version",
-                  "Value": "TEST",
-                },
-                {
-                  "Key": "gu:repo",
-                  "Value": "guardian/cdk-playground",
-                },
-                {
-                  "Key": "Name",
-                  "Value": "CdkPlayground/playground-PROD-cdk-playground",
-                },
-                {
-                  "Key": "Stack",
-                  "Value": "playground",
-                },
-                {
-                  "Key": "Stage",
-                  "Value": "PROD",
-                },
-              ],
-            },
-          ],
-          "UserData": {
-            "Fn::Base64": {
-              "Fn::Join": [
-                "",
-                [
-                  "#!/bin/bash
-function exitTrap(){
-exitCode=$?
-
-        cfn-signal --stack ",
-                  {
-                    "Ref": "AWS::StackId",
-                  },
-                  "           --resource AutoScalingGroupCdkplaygroundASGD6E49F0F           --region eu-west-1           --exit-code $exitCode || echo 'Failed to send Cloudformation Signal'
-        
-}
-trap exitTrap EXIT
-mkdir -p $(dirname '/cdk-playground/cdk-playground-TEST.deb')
-aws s3 cp 's3://",
-                  {
-                    "Ref": "DistributionBucketName",
-                  },
-                  "/playground/PROD/cdk-playground/cdk-playground-TEST.deb' '/cdk-playground/cdk-playground-TEST.deb'
-dpkg -i /cdk-playground/cdk-playground-TEST.deb
-# GuEc2AppExperimental Instance Health Check Start
-
-      TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-      INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/instance-id")
-
-      STATE=$(aws elbv2 describe-target-health         --target-group-arn ",
-                  {
-                    "Ref": "TargetGroupCdkplayground7A453FC2",
-                  },
-                  "         --region eu-west-1         --targets Id=$INSTANCE_ID,Port=9000         --query "TargetHealthDescriptions[0].TargetHealth.State")
-
-      until [ "$STATE" == "\\"healthy\\"" ]; do
-        echo "Instance running build TEST not yet healthy within target group. Current state $STATE. Sleeping..."
-        sleep 5
-        STATE=$(aws elbv2 describe-target-health           --target-group-arn ",
-                  {
-                    "Ref": "TargetGroupCdkplayground7A453FC2",
-                  },
-                  "           --region eu-west-1           --targets Id=$INSTANCE_ID,Port=9000           --query "TargetHealthDescriptions[0].TargetHealth.State")
-      done
-
-      echo "Instance running build TEST is healthy in target group."
-      
-# GuEc2AppExperimental Instance Health Check End",
-                ],
-              ],
-            },
-          },
-        },
-        "TagSpecifications": [
-          {
-            "ResourceType": "launch-template",
-            "Tags": [
-              {
-                "Key": "App",
-                "Value": "cdk-playground",
-              },
-              {
-                "Key": "gu:build-identifier",
-                "Value": "TEST",
-              },
-              {
-                "Key": "gu:cdk:version",
-                "Value": "TEST",
-              },
-              {
-                "Key": "gu:repo",
-                "Value": "guardian/cdk-playground",
-              },
-              {
-                "Key": "Name",
-                "Value": "CdkPlayground/playground-PROD-cdk-playground",
-              },
-              {
-                "Key": "Stack",
-                "Value": "playground",
-              },
-              {
-                "Key": "Stage",
-                "Value": "PROD",
-              },
-            ],
-          },
-        ],
-      },
-      "Type": "AWS::EC2::LaunchTemplate",
-    },
-    "playgroundPRODcdkplaygroundProfile617BB4EE": {
-      "Properties": {
-        "Roles": [
-          {
-            "Ref": "InstanceRoleCdkplaygroundC280027A",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::InstanceProfile",
     },
   },
 }

@@ -26,7 +26,7 @@ export class CdkPlayground extends GuStack {
 	constructor(scope: App, id: string, props: CdkPlaygroundProps) {
 		super(scope, id, {
 			...props,
-			stack: 'playground',
+			stack: 'deploy',
 			stage: 'PROD',
 			env: { region: 'eu-west-1' },
 		});
@@ -61,7 +61,7 @@ export class CdkPlayground extends GuStack {
 				enabled: true,
 				systemdUnitName: 'cdk-playground',
 			},
-			imageRecipe: 'developerPlayground-arm64-java11',
+			imageRecipe: 'arm64-focal-java11-deploy-infrastructure',
 			instanceMetricGranularity: '5Minute',
 			accessLogging: {
 				enabled: true,
