@@ -63,7 +63,7 @@ export class EventForwarder extends GuStack {
 								region,
 								account,
 								resource: 'stack',
-								resourceName: 'playground-PROD-cdk-playground*',
+								resourceName: 'deploy-CODE-cdk-playground*',
 							}),
 						},
 					],
@@ -78,7 +78,7 @@ export class EventForwarder extends GuStack {
 				detail: {
 					AutoScalingGroupName: [
 						{
-							wildcard: 'playground-PROD-cdk-playground-*',
+							wildcard: 'deploy-CODE-cdk-playground-*',
 						},
 					],
 				},
