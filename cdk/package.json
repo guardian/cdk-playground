@@ -6,7 +6,7 @@
     "build": "tsc",
     "test": "jest",
     "format": "prettier --write \"{lib,bin}/**/*.ts\"",
-    "lint": "eslint lib/** bin/** --ext .ts --no-error-on-unmatched-pattern",
+    "lint": "eslint lib/** bin/** --no-error-on-unmatched-pattern",
     "synth": "cdk synth --path-metadata false --version-reporting false",
     "diff": "cdk diff --path-metadata false --version-reporting false",
     "start:event-forwarder": "node -r ts-node/register --env-file=event-forwarder/.env event-forwarder/run-locally.ts",
@@ -16,13 +16,15 @@
   },
   "devDependencies": {
     "@guardian/cdk": "61.10.1",
-    "@guardian/eslint-config-typescript": "12.0.0",
+    "@guardian/eslint-config": "11.0.0",
     "@guardian/prettier": "8.0.1",
     "@types/jest": "^30.0.0",
     "@types/node": "24.1.0",
     "aws-cdk": "2.1018.0",
     "aws-cdk-lib": "2.200.1",
     "constructs": "10.4.2",
+    "eslint": "9.32.0",
+    "eslint-plugin-prettier": "5.5.3",
     "jest": "^30.0.5",
     "source-map-support": "^0.5.20",
     "ts-jest": "29.4.1",
@@ -43,34 +45,6 @@
     },
     "setupFilesAfterEnv": [
       "./jest.setup.js"
-    ]
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true,
-      "jest": true
-    },
-    "extends": [
-      "@guardian/eslint-config-typescript"
-    ],
-    "parserOptions": {
-      "ecmaVersion": 2020,
-      "sourceType": "module"
-    },
-    "plugins": [
-      "@typescript-eslint"
-    ],
-    "rules": {
-      "@typescript-eslint/no-inferrable-types": 0,
-      "import/no-namespace": 2
-    },
-    "ignorePatterns": [
-      "**/*.js",
-      "node_modules",
-      "cdk.out",
-      ".eslintrc.js",
-      "jest.config.js"
     ]
   }
 }
