@@ -25,7 +25,7 @@
     "constructs": "10.4.2",
     "jest": "^30.0.5",
     "source-map-support": "^0.5.20",
-    "ts-jest": "29.4.0",
+    "ts-jest": "29.4.1",
     "ts-node": "^10.9.2",
     "typescript": "5.5.4",
     "@types/aws-lambda": "8.10.152",
