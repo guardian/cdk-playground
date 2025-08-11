@@ -24,7 +24,7 @@
     "aws-cdk-lib": "2.200.1",
     "constructs": "10.4.2",
     "eslint": "9.32.0",
-    "eslint-plugin-prettier": "5.5.3",
+    "eslint-plugin-prettier": "5.5.4",
     "jest": "^30.0.5",
     "source-map-support": "^0.5.20",
     "ts-jest": "29.4.1",
