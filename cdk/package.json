@@ -19,7 +19,7 @@
     "@guardian/eslint-config": "11.0.0",
     "@guardian/prettier": "8.0.1",
     "@types/jest": "^30.0.0",
-    "@types/node": "24.2.1",
+    "@types/node": "24.3.0",
     "aws-cdk": "2.1018.0",
     "aws-cdk-lib": "2.200.1",
     "constructs": "10.4.2",
