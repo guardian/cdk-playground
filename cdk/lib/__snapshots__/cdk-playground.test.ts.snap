@@ -24,6 +24,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "GuAccessLoggingBucketParameter",
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
+      "GuRiffRaffDeploymentIdParameter",
       "GuCname",
       "GuApiLambda",
       "GuCertificate",
@@ -107,6 +108,10 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
     },
     "MinInstancesInServiceForcdkplayground": {
       "Type": "Number",
+    },
+    "RiffRaffDeploymentId": {
+      "Description": "Used by Riff-Raff to inject the deployment ID.",
+      "Type": "String",
     },
     "VpcId": {
       "Default": "/account/vpc/primary/id",
@@ -990,6 +995,11 @@ aws s3 cp 's3://",
                   },
                   "/deploy/CODE/cdk-playground/cdk-playground-TEST.deb' '/cdk-playground/cdk-playground-TEST.deb'
 dpkg -i /cdk-playground/cdk-playground-TEST.deb
+echo "Launch template last updated by Riff-Raff deployment ID: ",
+                  {
+                    "Ref": "RiffRaffDeploymentId",
+                  },
+                  ""
 # GuEc2AppExperimental Instance Health Check Start
 
       TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
