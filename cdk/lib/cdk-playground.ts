@@ -6,6 +6,7 @@ import { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuEc2AppExperimental } from '@guardian/cdk/lib/experimental/patterns/ec2-app';
 import type { App } from 'aws-cdk-lib';
+import { CfnParameter } from 'aws-cdk-lib';
 import { CfnOutput, Duration } from 'aws-cdk-lib';
 import { CfnScalingPolicy } from 'aws-cdk-lib/aws-autoscaling';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
@@ -137,5 +138,13 @@ export class CdkPlayground extends GuStack {
 			domainName: lambdaDomainName,
 			resourceRecord: domain.domainNameAliasDomainName,
 		});
+
+		const deploymentId = new CfnParameter(this, 'DeploymentId', {
+			type: 'String',
+		});
+
+		autoScalingGroup.instanceLaunchTemplate.userData?.addCommands(
+			`echo 'The deployment ID is ${deploymentId.valueAsString}'`,
+		);
 	}
 }

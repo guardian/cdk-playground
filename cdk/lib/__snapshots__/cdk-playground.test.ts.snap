@@ -95,6 +95,9 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "Description": "S3 bucket to store your access logs",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
+    "DeploymentId": {
+      "Type": "String",
+    },
     "DistributionBucketName": {
       "Default": "/account/services/artifact.bucket",
       "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
@@ -1013,7 +1016,12 @@ dpkg -i /cdk-playground/cdk-playground-TEST.deb
 
       echo "Instance running build TEST is healthy in target group."
       
-# GuEc2AppExperimental Instance Health Check End",
+# GuEc2AppExperimental Instance Health Check End
+echo 'The deployment ID is ",
+                  {
+                    "Ref": "DeploymentId",
+                  },
+                  "'",
                 ],
               ],
             },
