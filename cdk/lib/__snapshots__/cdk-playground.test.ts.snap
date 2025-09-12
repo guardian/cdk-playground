@@ -1494,6 +1494,9 @@ echo "Launch template last updated by Riff-Raff deployment ID: ",
         "lambdacdkplaygroundlambdaapiproxyFA4DE6D2",
         "lambdacdkplaygroundlambdaapiANY46D7365E",
       ],
+      "Metadata": {
+        "aws:cdk:do-not-refactor": true,
+      },
       "Properties": {
         "Description": "cdk-playground-lambda",
         "RestApiId": {
