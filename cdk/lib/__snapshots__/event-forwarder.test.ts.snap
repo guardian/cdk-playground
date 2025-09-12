@@ -51,6 +51,28 @@ exports[`The EventForwarder stack matches the snapshot for CODE 1`] = `
           ],
         },
         "State": "ENABLED",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "event-forwarder",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
         "Targets": [
           {
             "Arn": {
@@ -113,6 +135,28 @@ exports[`The EventForwarder stack matches the snapshot for CODE 1`] = `
           ],
         },
         "State": "ENABLED",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "event-forwarder",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
         "Targets": [
           {
             "Arn": {
