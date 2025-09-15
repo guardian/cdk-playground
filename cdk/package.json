@@ -32,7 +32,7 @@
     "typescript": "5.9.2",
     "@types/aws-lambda": "8.10.152",
     "@aws-sdk/client-auto-scaling": "3.888.0",
-    "@aws-sdk/credential-providers": "3.887.0",
+    "@aws-sdk/credential-providers": "3.888.0",
     "esbuild": "0.25.9"
   },
   "prettier": "@guardian/prettier",
