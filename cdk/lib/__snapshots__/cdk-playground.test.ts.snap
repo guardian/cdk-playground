@@ -1713,6 +1713,27 @@ echo "Launch template last updated by Riff-Raff deployment ID: ",
       },
       "Type": "AWS::ApiGateway::Resource",
     },
+    "something3AD62578": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "something3AD62578",
+        "Roles": [
+          {
+            "Ref": "InstanceRoleCdkplaygroundC280027A",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
   },
 }
 `;
