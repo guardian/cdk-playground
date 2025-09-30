@@ -32,7 +32,6 @@ export class CdkPlayground extends GuStack {
 		});
 
 		const { buildIdentifier } = props;
-		const { stack, stage } = this;
 
 		const ec2AppDomainName = 'cdk-playground.code.dev-gutools.co.uk';
 		const lambdaDomainName = 'cdk-playground-lambda.code.dev-gutools.co.uk';
@@ -65,10 +64,6 @@ export class CdkPlayground extends GuStack {
 			},
 			imageRecipe: 'arm64-focal-java11-deploy-infrastructure',
 			instanceMetricGranularity: '5Minute',
-			accessLogging: {
-				enabled: true,
-				prefix: `application-load-balancer/${stage}/${stack}/${ec2App}`,
-			},
 		});
 
 		const scaleOutPolicy = new CfnScalingPolicy(autoScalingGroup, 'ScaleOut', {
