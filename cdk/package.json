@@ -31,7 +31,7 @@
     "ts-node": "^10.9.2",
     "typescript": "5.9.3",
     "@types/aws-lambda": "8.10.152",
-    "@aws-sdk/client-auto-scaling": "3.899.0",
+    "@aws-sdk/client-auto-scaling": "3.901.0",
     "@aws-sdk/credential-providers": "3.901.0",
     "esbuild": "0.25.10"
   },
