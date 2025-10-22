@@ -7,8 +7,24 @@ import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
 import scala.io.Source
 
 class ManagementController (override val controllerComponents: ControllerComponents) extends BaseController with Logging {
+
+  var instanceShouldWork = true
+
+  def breakInstance(build: String): Action[AnyContent] = Action {
+    if (BuildInfo.buildNumber.contains(build)) {
+      instanceShouldWork = false
+      Ok
+    } else {
+      BadRequest
+    }
+  }
+
   def manifest: Action[AnyContent] = Action {
-    Ok(Json.parse(BuildInfo.toJson))
+    if (instanceShouldWork) {
+      Ok(Json.parse(BuildInfo.toJson))
+    } else {
+      InternalServerError
+    }
   }
 
   def tags: Action[AnyContent] = Action {
@@ -33,7 +49,11 @@ class ManagementController (override val controllerComponents: ControllerCompone
 
   def healthCheck: Action[AnyContent] = Action {
     logger.info("hello from the health check")
-    Ok("OK")
+    if (instanceShouldWork) {
+      Ok("OK")
+    } else {
+      InternalServerError
+    }
   }
 
   def movedPermanently: Action[AnyContent] = Action {
