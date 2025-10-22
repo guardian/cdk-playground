@@ -145,7 +145,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
           "MinSuccessfulInstancesPercent": 100,
         },
         "ResourceSignal": {
-          "Count": 1,
+          "Count": 3,
           "Timeout": "PT3M",
         },
       },
@@ -153,7 +153,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         "AsgRollingUpdatePolicy2A1DDC6F",
       ],
       "Properties": {
-        "DesiredCapacity": "1",
+        "DesiredCapacity": "3",
         "HealthCheckGracePeriod": 120,
         "HealthCheckType": "ELB",
         "LaunchTemplate": {
@@ -167,13 +167,13 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
             ],
           },
         },
-        "MaxSize": "2",
+        "MaxSize": "6",
         "MetricsCollection": [
           {
             "Granularity": "1Minute",
           },
         ],
-        "MinSize": "1",
+        "MinSize": "3",
         "Tags": [
           {
             "Key": "App",
@@ -225,8 +225,8 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "UpdatePolicy": {
         "AutoScalingRollingUpdate": {
-          "MaxBatchSize": 2,
-          "MinInstancesInService": 1,
+          "MaxBatchSize": 6,
+          "MinInstancesInService": 3,
           "MinSuccessfulInstancesPercent": 100,
           "PauseTime": "PT3M",
           "SuspendProcesses": [
