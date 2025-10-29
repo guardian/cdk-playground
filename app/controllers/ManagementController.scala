@@ -33,7 +33,7 @@ class ManagementController (override val controllerComponents: ControllerCompone
 
   def healthCheck: Action[AnyContent] = Action {
     logger.info("hello from the health check")
-    Ok("OK")
+    InternalServerError
   }
 
   def movedPermanently: Action[AnyContent] = Action {
