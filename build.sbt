@@ -19,7 +19,7 @@ lazy val root = (project in file("."))
   .settings(
     name := """cdk-playground""",
     version := "1.0-SNAPSHOT",
-    scalaVersion := "2.13.17",
+    scalaVersion := "2.13.18",
     scalacOptions ++= List(
       "-encoding", "utf8",
       "-deprecation",
