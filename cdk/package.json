@@ -33,7 +33,7 @@
     "@types/aws-lambda": "8.10.159",
     "@aws-sdk/client-auto-scaling": "3.948.0",
     "@aws-sdk/credential-providers": "3.948.0",
-    "esbuild": "0.27.1"
+    "esbuild": "0.27.2"
   },
   "prettier": "@guardian/prettier",
   "jest": {
