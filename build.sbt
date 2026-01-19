@@ -38,7 +38,7 @@ lazy val root = (project in file("."))
       ++ Seq(
         "net.logstash.logback" % "logstash-logback-encoder" % "8.1",
         // Transient dependency of Play. No newer version of Play 2.9 or Play 3.0 with this vulnerability fixed.
-        "ch.qos.logback" % "logback-classic" % "1.5.21",
+        "ch.qos.logback" % "logback-classic" % "1.5.25",
       ),
 
     buildInfoKeys ++= Seq[BuildInfoKey](
