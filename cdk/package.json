@@ -1,50 +1,50 @@
 {
-  "name": "cdk",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "build": "tsc",
-    "test": "jest",
-    "format": "prettier --write \"{lib,bin}/**/*.ts\"",
-    "lint": "eslint lib/** bin/** --no-error-on-unmatched-pattern",
-    "synth": "cdk synth --path-metadata false --version-reporting false",
-    "diff": "cdk diff --path-metadata false --version-reporting false",
-    "start:event-forwarder": "node -r ts-node/register --env-file=event-forwarder/.env event-forwarder/run-locally.ts",
-    "prebuild:event-forwarder": "rm -rf dist",
-    "build:event-forwarder": "esbuild event-forwarder/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk",
-    "postbuild:event-forwarder": "cd dist && zip -r event-forwarder.zip ."
-  },
-  "devDependencies": {
-    "@guardian/cdk": "62.1.1",
-    "@guardian/eslint-config": "13.0.2",
-    "@guardian/prettier": "9.0.0",
-    "@types/jest": "^30.0.0",
-    "@types/node": "25.0.9",
-    "aws-cdk": "2.1030.0",
-    "aws-cdk-lib": "2.219.0",
-    "constructs": "10.4.2",
-    "eslint": "9.39.2",
-    "eslint-plugin-prettier": "5.5.4",
-    "jest": "^30.2.0",
-    "source-map-support": "^0.5.20",
-    "ts-jest": "29.4.6",
-    "ts-node": "^10.9.2",
-    "typescript": "5.9.3",
-    "@types/aws-lambda": "8.10.159",
-    "@aws-sdk/client-auto-scaling": "3.971.0",
-    "@aws-sdk/credential-providers": "3.971.0",
-    "esbuild": "0.27.2"
-  },
-  "prettier": "@guardian/prettier",
-  "jest": {
-    "testMatch": [
-      "<rootDir>/lib/**/*.test.ts"
-    ],
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "setupFilesAfterEnv": [
-      "./jest.setup.js"
-    ]
-  }
+	"name": "cdk",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"build": "tsc",
+		"test": "jest",
+		"format": "prettier --write \"{lib,bin}/**/*.ts\"",
+		"lint": "eslint lib/** bin/** --no-error-on-unmatched-pattern",
+		"synth": "cdk synth --path-metadata false --version-reporting false",
+		"diff": "cdk diff --path-metadata false --version-reporting false",
+		"start:event-forwarder": "node -r ts-node/register --env-file=event-forwarder/.env event-forwarder/run-locally.ts",
+		"prebuild:event-forwarder": "rm -rf dist",
+		"build:event-forwarder": "esbuild event-forwarder/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk",
+		"postbuild:event-forwarder": "cd dist && zip -r event-forwarder.zip ."
+	},
+	"devDependencies": {
+		"@guardian/cdk": "62.3.0",
+		"@guardian/eslint-config": "13.0.2",
+		"@guardian/prettier": "9.0.0",
+		"@types/jest": "^30.0.0",
+		"@types/node": "25.0.9",
+		"aws-cdk": "2.1033.0",
+		"aws-cdk-lib": "2.232.1",
+		"constructs": "10.4.3",
+		"eslint": "9.39.2",
+		"eslint-plugin-prettier": "5.5.4",
+		"jest": "^30.2.0",
+		"source-map-support": "^0.5.20",
+		"ts-jest": "29.4.6",
+		"ts-node": "^10.9.2",
+		"typescript": "5.9.3",
+		"@types/aws-lambda": "8.10.159",
+		"@aws-sdk/client-auto-scaling": "3.971.0",
+		"@aws-sdk/credential-providers": "3.971.0",
+		"esbuild": "0.27.2"
+	},
+	"prettier": "@guardian/prettier",
+	"jest": {
+		"testMatch": [
+			"<rootDir>/lib/**/*.test.ts"
+		],
+		"transform": {
+			"^.+\\.tsx?$": "ts-jest"
+		},
+		"setupFilesAfterEnv": [
+			"./jest.setup.js"
+		]
+	}
 }
