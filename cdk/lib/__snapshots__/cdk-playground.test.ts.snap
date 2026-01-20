@@ -1101,12 +1101,7 @@ echo "Launch template last updated by Riff-Raff deployment ID: ",
           "LogFormat": "JSON",
         },
         "MemorySize": 512,
-        "Role": {
-          "Fn::GetAtt": [
-            "lambdaServiceRole494E4CA6",
-            "Arn",
-          ],
-        },
+        "Role": "not-a-valid-arn",
         "Runtime": "nodejs20.x",
         "Tags": [
           {

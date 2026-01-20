@@ -9,6 +9,7 @@ import type { App } from 'aws-cdk-lib';
 import { CfnOutput, Duration } from 'aws-cdk-lib';
 import { CfnScalingPolicy } from 'aws-cdk-lib/aws-autoscaling';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
+import type { CfnFunction } from 'aws-cdk-lib/aws-lambda';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
 interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
@@ -117,6 +118,9 @@ export class CdkPlayground extends GuStack {
 				description: lambdaApp,
 			},
 		});
+
+		const cfnLambda = lambda.node.defaultChild as CfnFunction;
+		cfnLambda.role = 'not-a-valid-arn';
 
 		const domain = lambda.api.addDomainName('domain', {
 			domainName: lambdaDomainName,
