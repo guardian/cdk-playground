@@ -201,7 +201,7 @@ exports[`The EventForwarder stack matches the snapshot for CODE 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "nodejs20.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "App",
