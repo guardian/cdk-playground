@@ -26,7 +26,7 @@ export class EventForwarder extends GuStack {
 			app,
 			fileName: `${app}.zip`,
 			handler: 'index.main',
-			runtime: Runtime.NODEJS_20_X,
+			runtime: Runtime.NODEJS_24_X,
 
 			/*
       Override the default provided by GuCDK for improved compatability with https://github.com/guardian/cloudwatch-logs-management when producing log lines with markers.

@@ -11,7 +11,7 @@
 		"diff": "cdk diff --path-metadata false --version-reporting false",
 		"start:event-forwarder": "node -r ts-node/register --env-file=event-forwarder/.env event-forwarder/run-locally.ts",
 		"prebuild:event-forwarder": "rm -rf dist",
-		"build:event-forwarder": "esbuild event-forwarder/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk",
+		"build:event-forwarder": "esbuild event-forwarder/index.ts --bundle --platform=node --target=node24 --outdir=dist --external:@aws-sdk",
 		"postbuild:event-forwarder": "cd dist && zip -r event-forwarder.zip ."
 	},
 	"devDependencies": {
