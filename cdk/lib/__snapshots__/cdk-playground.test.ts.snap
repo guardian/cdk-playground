@@ -567,6 +567,43 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
+    "InstanceRoleCdkplaygroundDefaultPolicy7D8FF52F": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "kinesis:DescribeStreamSummary",
+                "kinesis:GetRecords",
+                "kinesis:GetShardIterator",
+                "kinesis:ListShards",
+                "kinesis:SubscribeToShard",
+                "kinesis:DescribeStream",
+                "kinesis:ListStreams",
+                "kinesis:DescribeStreamConsumer",
+                "kinesis:PutRecord",
+                "kinesis:PutRecords",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "LoggingStreamForElasticServerlessForwarder2E2B3AD2",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "InstanceRoleCdkplaygroundDefaultPolicy7D8FF52F",
+        "Roles": [
+          {
+            "Ref": "InstanceRoleCdkplaygroundC280027A",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "LambdaDNS": {
       "Properties": {
         "Name": "cdk-playground-lambda.code.dev-gutools.co.uk",
@@ -925,6 +962,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
     },
     "deployCODEcdkplaygroundCA0A63B1": {
       "DependsOn": [
+        "InstanceRoleCdkplaygroundDefaultPolicy7D8FF52F",
         "InstanceRoleCdkplaygroundC280027A",
       ],
       "Properties": {
