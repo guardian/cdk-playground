@@ -739,6 +739,60 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
     },
+    "MonitoringMonitoringDashboardsDashboard5649A1D9": {
+      "Properties": {
+        "DashboardBody": {
+          "Fn::Join": [
+            "",
+            [
+              "{"start":"-PT8H","periodOverride":"inherit","widgets":[{"type":"text","width":24,"height":1,"x":0,"y":0,"properties":{"markdown":"### Auto Scaling Group **AutoScalingGroupCdkplayground**"}},{"type":"metric","width":12,"height":5,"x":0,"y":1,"properties":{"view":"timeSeries","title":"Group Size","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/AutoScaling","GroupMinSize","AutoScalingGroupName","",
+              {
+                "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+              },
+              "",{"label":"Min"}],["AWS/AutoScaling","GroupMaxSize","AutoScalingGroupName","",
+              {
+                "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+              },
+              "",{"label":"Max"}],["AWS/AutoScaling","GroupDesiredCapacity","AutoScalingGroupName","",
+              {
+                "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+              },
+              "",{"label":"Desired"}],["AWS/AutoScaling","GroupTotalInstances","AutoScalingGroupName","",
+              {
+                "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+              },
+              "",{"label":"Total"}]],"yAxis":{"left":{"min":0,"label":"Count","showUnits":false}}}},{"type":"metric","width":12,"height":5,"x":12,"y":1,"properties":{"view":"timeSeries","title":"Instance States","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","stacked":true,"metrics":[["AWS/AutoScaling","GroupInServiceInstances","AutoScalingGroupName","",
+              {
+                "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+              },
+              "",{"label":"InService"}],["AWS/AutoScaling","GroupPendingInstances","AutoScalingGroupName","",
+              {
+                "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+              },
+              "",{"label":"Pending"}],["AWS/AutoScaling","GroupStandbyInstances","AutoScalingGroupName","",
+              {
+                "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+              },
+              "",{"label":"Standby"}],["AWS/AutoScaling","GroupTerminatingInstances","AutoScalingGroupName","",
+              {
+                "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+              },
+              "",{"label":"Terminating"}]],"yAxis":{"left":{"min":0,"label":"Count","showUnits":false}}}}]}",
+            ],
+          ],
+        },
+        "DashboardName": "Monitoring",
+      },
+      "Type": "AWS::CloudWatch::Dashboard",
+    },
     "ParameterStoreReadCdkplaygroundF78958B9": {
       "Properties": {
         "PolicyDocument": {

@@ -10,6 +10,7 @@ import { CfnOutput, Duration } from 'aws-cdk-lib';
 import { CfnScalingPolicy } from 'aws-cdk-lib/aws-autoscaling';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { MonitoringFacade } from 'cdk-monitoring-constructs';
 
 interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 	/**
@@ -94,6 +95,9 @@ export class CdkPlayground extends GuStack {
 			key: 'AutoscalingGroupName',
 			value: autoScalingGroup.autoScalingGroupName,
 		});
+
+		const monitoring = new MonitoringFacade(this, 'Monitoring', {});
+		monitoring.monitorAutoScalingGroup({ autoScalingGroup });
 
 		new GuCname(this, 'EC2AppDNS', {
 			app: ec2App,
