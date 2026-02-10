@@ -6,9 +6,11 @@ import { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuEc2AppExperimental } from '@guardian/cdk/lib/experimental/patterns/ec2-app';
 import type { App } from 'aws-cdk-lib';
-import { CfnOutput, Duration } from 'aws-cdk-lib';
+import { CfnOutput, Duration, RemovalPolicy, Tags } from 'aws-cdk-lib';
 import { CfnScalingPolicy } from 'aws-cdk-lib/aws-autoscaling';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
+import { Stream, StreamEncryption, StreamMode } from 'aws-cdk-lib/aws-kinesis';
+import { Alias } from 'aws-cdk-lib/aws-kms';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
 interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
@@ -57,10 +59,6 @@ export class CdkPlayground extends GuStack {
 			scaling: {
 				minimumInstances: 1,
 				maximumInstances: 10,
-			},
-			applicationLogging: {
-				enabled: true,
-				systemdUnitName: 'cdk-playground',
 			},
 			imageRecipe: 'arm64-focal-java11-deploy-infrastructure',
 			instanceMetricGranularity: '5Minute',
@@ -131,6 +129,34 @@ export class CdkPlayground extends GuStack {
 			ttl: Duration.hours(1),
 			domainName: lambdaDomainName,
 			resourceRecord: domain.domainNameAliasDomainName,
+		});
+
+		/*
+		Temporarily, do not use the account's default logging stream.
+		Instead, create a new stream for use by the Elastic Serverless Forwarder spike.
+		 */
+		const temporaryLoggingStream = new Stream(
+			this,
+			'LoggingStreamForElasticServerlessForwarder',
+			{
+				streamMode: StreamMode.ON_DEMAND,
+				retentionPeriod: Duration.days(7),
+				encryption: StreamEncryption.KMS,
+				encryptionKey: Alias.fromAliasName(
+					this,
+					'alias/aws/kinesis',
+					'alias/aws/kinesis',
+				),
+				removalPolicy: RemovalPolicy.DESTROY,
+			},
+		);
+		Tags.of(autoScalingGroup).add(
+			'LogKinesisStreamName',
+			temporaryLoggingStream.streamName,
+			{ applyToLaunchedInstances: true },
+		);
+		Tags.of(autoScalingGroup).add('SystemdUnit', 'cdk-playground.service', {
+			applyToLaunchedInstances: true,
 		});
 	}
 }
