@@ -60,7 +60,7 @@ export class CdkPlayground extends GuStack {
 				minimumInstances: 1,
 				maximumInstances: 10,
 			},
-			imageRecipe: 'arm64-focal-java11-deploy-infrastructure',
+			imageRecipe: 'arm64-noble-java21-deploy-infrastructure',
 			instanceMetricGranularity: '5Minute',
 		});
 
