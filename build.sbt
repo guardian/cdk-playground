@@ -30,7 +30,7 @@ lazy val root = (project in file("."))
     Universal / javaOptions ++= Seq(
       s"-Dpidfile.path=/dev/null",
       s"-J-Dlogs.home=/var/log/${packageName.value}",
-      s"-J-Xloggc:/var/log/${packageName.value}/gc.log",
+      s"-J-Xlog:gc*:file=/var/log/${packageName.value}/gc.log:time,uptime,level,tags",
     ),
 
     libraryDependencies ++= jacksonOverrides
