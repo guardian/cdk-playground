@@ -15,7 +15,7 @@
 		"postbuild:event-forwarder": "cd dist && zip -r event-forwarder.zip ."
 	},
 	"devDependencies": {
-		"@aws-sdk/client-auto-scaling": "3.985.0",
+		"@aws-sdk/client-auto-scaling": "3.995.0",
 		"@aws-sdk/credential-providers": "3.990.0",
 		"@guardian/cdk": "62.3.4",
 		"@guardian/eslint-config": "13.0.5",
