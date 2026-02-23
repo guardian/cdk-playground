@@ -212,7 +212,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
             "Key": "LogKinesisStreamName",
             "PropagateAtLaunch": true,
             "Value": {
-              "Ref": "LoggingStreamForElasticServerlessForwarder2E2B3AD2",
+              "Ref": "LoggingStreamName",
             },
           },
           {
@@ -738,54 +738,6 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         "ToPort": 9000,
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
-    },
-    "LoggingStreamForElasticServerlessForwarder2E2B3AD2": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "RetentionPeriodHours": 168,
-        "StreamEncryption": {
-          "EncryptionType": "KMS",
-          "KeyId": {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":kms:eu-west-1:",
-                {
-                  "Ref": "AWS::AccountId",
-                },
-                ":alias/aws/kinesis",
-              ],
-            ],
-          },
-        },
-        "StreamModeDetails": {
-          "StreamMode": "ON_DEMAND",
-        },
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/cdk-playground",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-      },
-      "Type": "AWS::Kinesis::Stream",
-      "UpdateReplacePolicy": "Delete",
     },
     "ParameterStoreReadCdkplaygroundF78958B9": {
       "Properties": {
