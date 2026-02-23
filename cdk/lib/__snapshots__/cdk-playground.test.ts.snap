@@ -212,7 +212,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
             "Key": "LogKinesisStreamName",
             "PropagateAtLaunch": true,
             "Value": {
-              "Ref": "LoggingStreamForElasticServerlessForwarder2E2B3AD2",
+              "Ref": "LoggingStreamName",
             },
           },
           {
@@ -567,43 +567,6 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "InstanceRoleCdkplaygroundDefaultPolicy7D8FF52F": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "kinesis:DescribeStreamSummary",
-                "kinesis:GetRecords",
-                "kinesis:GetShardIterator",
-                "kinesis:ListShards",
-                "kinesis:SubscribeToShard",
-                "kinesis:DescribeStream",
-                "kinesis:ListStreams",
-                "kinesis:DescribeStreamConsumer",
-                "kinesis:PutRecord",
-                "kinesis:PutRecords",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "LoggingStreamForElasticServerlessForwarder2E2B3AD2",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "InstanceRoleCdkplaygroundDefaultPolicy7D8FF52F",
-        "Roles": [
-          {
-            "Ref": "InstanceRoleCdkplaygroundC280027A",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "LambdaDNS": {
       "Properties": {
         "Name": "cdk-playground-lambda.code.dev-gutools.co.uk",
@@ -776,54 +739,6 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
     },
-    "LoggingStreamForElasticServerlessForwarder2E2B3AD2": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "RetentionPeriodHours": 168,
-        "StreamEncryption": {
-          "EncryptionType": "KMS",
-          "KeyId": {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":kms:eu-west-1:",
-                {
-                  "Ref": "AWS::AccountId",
-                },
-                ":alias/aws/kinesis",
-              ],
-            ],
-          },
-        },
-        "StreamModeDetails": {
-          "StreamMode": "ON_DEMAND",
-        },
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/cdk-playground",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-      },
-      "Type": "AWS::Kinesis::Stream",
-      "UpdateReplacePolicy": "Delete",
-    },
     "ParameterStoreReadCdkplaygroundF78958B9": {
       "Properties": {
         "PolicyDocument": {
@@ -962,7 +877,6 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
     },
     "deployCODEcdkplaygroundCA0A63B1": {
       "DependsOn": [
-        "InstanceRoleCdkplaygroundDefaultPolicy7D8FF52F",
         "InstanceRoleCdkplaygroundC280027A",
       ],
       "Properties": {
