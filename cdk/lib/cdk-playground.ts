@@ -150,7 +150,6 @@ export class CdkPlayground extends GuStack {
 				removalPolicy: RemovalPolicy.DESTROY,
 			},
 		);
-		temporaryLoggingStream.grantReadWrite(autoScalingGroup.role);
 		Tags.of(autoScalingGroup).add(
 			'LogKinesisStreamName',
 			temporaryLoggingStream.streamName,
