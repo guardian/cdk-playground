@@ -62,7 +62,7 @@ export class CdkPlayground extends GuStack {
 				enabled: true,
 				systemdUnitName: 'cdk-playground',
 			},
-			imageRecipe: 'arm64-focal-java11-deploy-infrastructure',
+			imageRecipe: 'arm64-jammy-java21-deploy-infrastructure',
 			instanceMetricGranularity: '5Minute',
 		});
 
