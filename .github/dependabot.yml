@@ -14,6 +14,9 @@ updates:
       - dependency-name: "aws-cdk"
       - dependency-name: "aws-cdk-lib"
       - dependency-name: "constructs"
+      # eslint 10 is blocked until @guardian/eslint-config supports it
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
