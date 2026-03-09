@@ -892,7 +892,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
           "ImageId": {
             "Ref": "AMICdkplayground",
           },
-          "InstanceType": "t4g.micro",
+          "InstanceType": "t4g.large",
           "MetadataOptions": {
             "HttpTokens": "required",
             "InstanceMetadataTags": "enabled",

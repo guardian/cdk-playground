@@ -42,7 +42,7 @@ export class CdkPlayground extends GuStack {
 			buildIdentifier,
 			applicationPort: 9000,
 			app: ec2App,
-			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
+			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.LARGE),
 			access: { scope: AccessScope.PUBLIC },
 			userData: {
 				distributable: {
