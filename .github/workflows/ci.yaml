@@ -38,7 +38,7 @@ jobs:
           projectName: devx::cdk-playground
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
-          configPath: cdk/cdk.out/riff-raff.yaml
+          configPath: riff-raff.yaml
           contentDirectories: |
             cdk.out:
               - cdk/cdk.out

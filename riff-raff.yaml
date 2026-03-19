@@ -1,0 +1,115 @@
+allowedStages:
+  - CODE
+deployments:
+  lambda-upload-eu-west-1-deploy-event-forwarder:
+    type: aws-lambda
+    stacks:
+      - deploy
+    regions:
+      - eu-west-1
+    app: event-forwarder
+    contentDirectory: event-forwarder
+    parameters:
+      bucketSsmLookup: true
+      lookupByTags: true
+      fileName: event-forwarder.zip
+    actions:
+      - uploadLambda
+  cfn-eu-west-1-deploy-event-forwarder:
+    type: cloud-formation
+    regions:
+      - eu-west-1
+    stacks:
+      - deploy
+    app: event-forwarder
+    contentDirectory: cdk.out
+    parameters:
+      templateStagePaths:
+        CODE: EventForwarder-CODE.template.json
+    dependencies:
+      - lambda-upload-eu-west-1-deploy-event-forwarder
+  lambda-update-eu-west-1-deploy-event-forwarder:
+    type: aws-lambda
+    stacks:
+      - deploy
+    regions:
+      - eu-west-1
+    app: event-forwarder
+    contentDirectory: event-forwarder
+    parameters:
+      bucketSsmLookup: true
+      lookupByTags: true
+      fileName: event-forwarder.zip
+    actions:
+      - updateLambda
+    dependencies:
+      - cfn-eu-west-1-deploy-event-forwarder
+  lambda-upload-eu-west-1-deploy-cdk-playground-lambda:
+    type: aws-lambda
+    stacks:
+      - deploy
+    regions:
+      - eu-west-1
+    app: cdk-playground-lambda
+    contentDirectory: cdk-playground-lambda
+    parameters:
+      bucketSsmLookup: true
+      lookupByTags: true
+      fileName: cdk-playground-lambda.zip
+    actions:
+      - uploadLambda
+  asg-upload-eu-west-1-deploy-cdk-playground:
+    type: autoscaling
+    actions:
+      - uploadArtifacts
+    regions:
+      - eu-west-1
+    stacks:
+      - deploy
+    app: cdk-playground
+    parameters:
+      bucketSsmLookup: true
+      prefixApp: true
+    contentDirectory: cdk-playground
+  cfn-eu-west-1-deploy-cdk-playground:
+    type: cloud-formation
+    regions:
+      - eu-west-1
+    stacks:
+      - deploy
+    app: cdk-playground
+    contentDirectory: cdk.out
+    parameters:
+      templateStagePaths:
+        CODE: CdkPlayground-CODE.template.json
+      amiParametersToTags:
+        AMICdkplayground:
+          BuiltBy: amigo
+          AmigoStage: PROD
+          Recipe: arm64-jammy-java21-deploy-infrastructure
+          Encrypted: 'true'
+      minInstancesInServiceParameters:
+        MinInstancesInServiceForcdkplayground:
+          App: cdk-playground
+        DoesNotExist:
+          App: does-not-exist
+    dependencies:
+      - lambda-upload-eu-west-1-deploy-cdk-playground-lambda
+      - asg-upload-eu-west-1-deploy-cdk-playground
+      - cfn-eu-west-1-deploy-event-forwarder
+  lambda-update-eu-west-1-deploy-cdk-playground-lambda:
+    type: aws-lambda
+    stacks:
+      - deploy
+    regions:
+      - eu-west-1
+    app: cdk-playground-lambda
+    contentDirectory: cdk-playground-lambda
+    parameters:
+      bucketSsmLookup: true
+      lookupByTags: true
+      fileName: cdk-playground-lambda.zip
+    actions:
+      - updateLambda
+    dependencies:
+      - cfn-eu-west-1-deploy-cdk-playground
