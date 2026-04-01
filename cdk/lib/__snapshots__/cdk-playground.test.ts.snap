@@ -25,11 +25,14 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
       "GuRiffRaffDeploymentIdParameter",
+      "GuParameter",
+      "GuParameter",
+      "GuParameter",
+      "GuParameter",
       "GuCname",
       "GuApiLambda",
       "GuCertificate",
       "GuCname",
-      "GuAsgMinInstancesInServiceParameterExperimental",
     ],
     "gu:cdk:version": "TEST",
   },
@@ -37,6 +40,30 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
     "AutoscalingGroupName": {
       "Value": {
         "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+      },
+    },
+    "FargateServiceWithClusterLoadBalancerDNS13D5ADEE": {
+      "Value": {
+        "Fn::GetAtt": [
+          "FargateServiceWithClusterLBC0F3A1A2",
+          "DNSName",
+        ],
+      },
+    },
+    "FargateServiceWithClusterServiceURLA598AD71": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "http://",
+            {
+              "Fn::GetAtt": [
+                "FargateServiceWithClusterLBC0F3A1A2",
+                "DNSName",
+              ],
+            },
+          ],
+        ],
       },
     },
     "LoadBalancerCdkplaygroundDnsName": {
@@ -114,10 +141,27 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "Description": "Used by Riff-Raff to inject the deployment ID.",
       "Type": "String",
     },
+    "VpcAZParam": {
+      "Default": "/account/vpc/primary/availability-zones",
+      "Type": "AWS::SSM::Parameter::Value<List<String>>",
+    },
     "VpcId": {
       "Default": "/account/vpc/primary/id",
       "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
+    },
+    "VpcIdParam": {
+      "Default": "/account/vpc/primary/id",
+      "Description": "The VPC to deploy the structuriser to",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "VpcPrivateParam": {
+      "Default": "/account/vpc/primary/subnets/private",
+      "Type": "AWS::SSM::Parameter::Value<List<String>>",
+    },
+    "VpcPublicParam": {
+      "Default": "/account/vpc/primary/subnets/public",
+      "Type": "AWS::SSM::Parameter::Value<List<String>>",
     },
     "cdkplaygroundPrivateSubnets": {
       "Default": "/account/vpc/primary/subnets/private",
@@ -396,6 +440,545 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         "TTL": 3600,
       },
       "Type": "Guardian::DNS::RecordSet",
+    },
+    "EcsDefaultClusterMnL3mNNYNVpc18E0451A": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::Cluster",
+    },
+    "FargateServiceWithClusterLBC0F3A1A2": {
+      "Properties": {
+        "LoadBalancerAttributes": [
+          {
+            "Key": "deletion_protection.enabled",
+            "Value": "false",
+          },
+        ],
+        "Scheme": "internet-facing",
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "FargateServiceWithClusterLBSecurityGroupC2837562",
+              "GroupId",
+            ],
+          },
+        ],
+        "Subnets": {
+          "Ref": "VpcPublicParam",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "Type": "application",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+    },
+    "FargateServiceWithClusterLBPublicListenerC7225768": {
+      "Properties": {
+        "DefaultActions": [
+          {
+            "TargetGroupArn": {
+              "Ref": "FargateServiceWithClusterLBPublicListenerECSGroupC7B6A4A8",
+            },
+            "Type": "forward",
+          },
+        ],
+        "LoadBalancerArn": {
+          "Ref": "FargateServiceWithClusterLBC0F3A1A2",
+        },
+        "Port": 80,
+        "Protocol": "HTTP",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+    },
+    "FargateServiceWithClusterLBPublicListenerECSGroupC7B6A4A8": {
+      "Properties": {
+        "Port": 80,
+        "Protocol": "HTTP",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "TargetGroupAttributes": [
+          {
+            "Key": "stickiness.enabled",
+            "Value": "false",
+          },
+        ],
+        "TargetType": "ip",
+        "VpcId": {
+          "Ref": "VpcIdParam",
+        },
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+    },
+    "FargateServiceWithClusterLBSecurityGroupC2837562": {
+      "Properties": {
+        "GroupDescription": "Automatically created Security Group for ELB CdkPlaygroundCODEFargateServiceWithClusterLB0054D6CB",
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow from anyone on port 80",
+            "FromPort": 80,
+            "IpProtocol": "tcp",
+            "ToPort": 80,
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcIdParam",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "FargateServiceWithClusterLBSecurityGrouptoCdkPlaygroundCODEFargateServiceWithClusterServiceSecurityGroup9E89F2FB804547ACEE": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": {
+          "Fn::GetAtt": [
+            "FargateServiceWithClusterServiceSecurityGroupC199044E",
+            "GroupId",
+          ],
+        },
+        "FromPort": 80,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "FargateServiceWithClusterLBSecurityGroupC2837562",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 80,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
+    "FargateServiceWithClusterServiceEC3A63FF": {
+      "DependsOn": [
+        "FargateServiceWithClusterLBPublicListenerECSGroupC7B6A4A8",
+        "FargateServiceWithClusterLBPublicListenerC7225768",
+        "FargateServiceWithClusterTaskDefTaskRole6DACF8B7",
+      ],
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsDefaultClusterMnL3mNNYNVpc18E0451A",
+        },
+        "DeploymentConfiguration": {
+          "Alarms": {
+            "AlarmNames": [],
+            "Enable": false,
+            "Rollback": false,
+          },
+          "MaximumPercent": 200,
+          "MinimumHealthyPercent": 50,
+        },
+        "EnableECSManagedTags": false,
+        "HealthCheckGracePeriodSeconds": 60,
+        "LaunchType": "FARGATE",
+        "LoadBalancers": [
+          {
+            "ContainerName": "web",
+            "ContainerPort": 80,
+            "TargetGroupArn": {
+              "Ref": "FargateServiceWithClusterLBPublicListenerECSGroupC7B6A4A8",
+            },
+          },
+        ],
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "AssignPublicIp": "DISABLED",
+            "SecurityGroups": [
+              {
+                "Fn::GetAtt": [
+                  "FargateServiceWithClusterServiceSecurityGroupC199044E",
+                  "GroupId",
+                ],
+              },
+            ],
+            "Subnets": {
+              "Ref": "VpcPrivateParam",
+            },
+          },
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "TaskDefinition": {
+          "Ref": "FargateServiceWithClusterTaskDefADD1A9C3",
+        },
+      },
+      "Type": "AWS::ECS::Service",
+    },
+    "FargateServiceWithClusterServiceSecurityGroupC199044E": {
+      "DependsOn": [
+        "FargateServiceWithClusterTaskDefTaskRole6DACF8B7",
+      ],
+      "Properties": {
+        "GroupDescription": "CdkPlayground-CODE/FargateServiceWithCluster/Service/SecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcIdParam",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "FargateServiceWithClusterServiceSecurityGroupfromCdkPlaygroundCODEFargateServiceWithClusterLBSecurityGroup8854CFAF804B1FDF6A": {
+      "DependsOn": [
+        "FargateServiceWithClusterTaskDefTaskRole6DACF8B7",
+      ],
+      "Properties": {
+        "Description": "Load balancer to target",
+        "FromPort": 80,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "FargateServiceWithClusterServiceSecurityGroupC199044E",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "FargateServiceWithClusterLBSecurityGroupC2837562",
+            "GroupId",
+          ],
+        },
+        "ToPort": 80,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "FargateServiceWithClusterTaskDefADD1A9C3": {
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "AWS::AccountId",
+                  },
+                  ".dkr.ecr.eu-west-1.",
+                  {
+                    "Ref": "AWS::URLSuffix",
+                  },
+                  "/guardian/cdk-playground:TEST",
+                ],
+              ],
+            },
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "FargateServiceWithClusterTaskDefwebLogGroup1B64019F",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "FargateServiceWithCluster",
+              },
+            },
+            "Name": "web",
+            "PortMappings": [
+              {
+                "ContainerPort": 80,
+                "Protocol": "tcp",
+              },
+            ],
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": [
+            "FargateServiceWithClusterTaskDefExecutionRole4ED71D3B",
+            "Arn",
+          ],
+        },
+        "Family": "CdkPlaygroundCODEFargateServiceWithClusterTaskDef754180B4",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "FARGATE",
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
+            "FargateServiceWithClusterTaskDefTaskRole6DACF8B7",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "FargateServiceWithClusterTaskDefExecutionRole4ED71D3B": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "FargateServiceWithClusterTaskDefExecutionRoleDefaultPolicy390D6692": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecr:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":repository/guardian/cdk-playground",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "FargateServiceWithClusterTaskDefwebLogGroup1B64019F",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "FargateServiceWithClusterTaskDefExecutionRoleDefaultPolicy390D6692",
+        "Roles": [
+          {
+            "Ref": "FargateServiceWithClusterTaskDefExecutionRole4ED71D3B",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "FargateServiceWithClusterTaskDefTaskRole6DACF8B7": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "FargateServiceWithClusterTaskDefwebLogGroup1B64019F": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
     },
     "GetDistributablePolicyCdkplaygroundBFB4D02B": {
       "Properties": {
