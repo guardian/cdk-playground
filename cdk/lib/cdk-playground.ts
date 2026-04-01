@@ -2,13 +2,18 @@ import { GuApiLambda } from '@guardian/cdk';
 import { AccessScope } from '@guardian/cdk/lib/constants/access';
 import { GuCertificate } from '@guardian/cdk/lib/constructs/acm';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
+import { GuParameter } from '@guardian/cdk/lib/constructs/core';
 import { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuEc2AppExperimental } from '@guardian/cdk/lib/experimental/patterns/ec2-app';
 import type { App } from 'aws-cdk-lib';
 import { CfnOutput, Duration } from 'aws-cdk-lib';
 import { CfnScalingPolicy } from 'aws-cdk-lib/aws-autoscaling';
+import { Vpc } from 'aws-cdk-lib/aws-ec2';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
+import { Repository } from 'aws-cdk-lib/aws-ecr';
+import { ContainerImage } from 'aws-cdk-lib/aws-ecs';
+import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
 interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
@@ -65,6 +70,57 @@ export class CdkPlayground extends GuStack {
 			imageRecipe: 'arm64-jammy-java21-deploy-infrastructure',
 			instanceMetricGranularity: '5Minute',
 		});
+
+		const vpcId = new GuParameter(this, 'VpcIdParam', {
+			fromSSM: true,
+			default: `/account/vpc/primary/id`,
+			description: 'The VPC to deploy the structuriser to',
+		});
+
+		const publicSubnetIds = new GuParameter(this, 'VpcPublicParam', {
+			fromSSM: true,
+			default: '/account/vpc/primary/subnets/public',
+			type: 'List<String>',
+		});
+
+		const privateSubnetIds = new GuParameter(this, 'VpcPrivateParam', {
+			fromSSM: true,
+			default: '/account/vpc/primary/subnets/private',
+			type: 'List<String>',
+		});
+
+		const availabilityZones = new GuParameter(this, 'VpcAZParam', {
+			fromSSM: true,
+			default: '/account/vpc/primary/availability-zones',
+			type: 'List<String>',
+		});
+
+		// Trying to use the vpc that is available via the pattern fails with the following error:
+		// ValidationError: There are no 'Public' subnet groups in this VPC. Available types:
+		const vpc = Vpc.fromVpcAttributes(this, 'Vpc', {
+			vpcId: vpcId.valueAsString,
+			publicSubnetIds: publicSubnetIds.valueAsList,
+			privateSubnetIds: privateSubnetIds.valueAsList,
+			availabilityZones: availabilityZones.valueAsList,
+		});
+
+		// Need to figure out how to make this cross-account, but this is fine for
+		// the simple case where the app and the repo are both in Deploy Tools
+		const image = ContainerImage.fromEcrRepository(
+			Repository.fromRepositoryName(this, 'Repo', this.repositoryName!),
+			buildIdentifier,
+		);
+
+		new ApplicationLoadBalancedFargateService(
+			this,
+			'FargateServiceWithCluster',
+			{
+				vpc,
+				taskImageOptions: {
+					image,
+				},
+			},
+		);
 
 		const scaleOutPolicy = new CfnScalingPolicy(autoScalingGroup, 'ScaleOut', {
 			autoScalingGroupName: autoScalingGroup.autoScalingGroupName,
