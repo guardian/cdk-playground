@@ -17,6 +17,19 @@ jobs:
       pull-requests: write #...to comment on PRs
 
     steps:
+      - name: Build facts
+        env:
+          RAW_BRANCH_NAME: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref || 'unknown' }}
+          BUILD_NUMBER: ${{ github.run_number }}
+          COMMIT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }} # When invoked from `pull_request`, `github.sha` is not the latest commit of the feature branch. All other times, it is.
+        run: |
+          # Remove "refs/heads/" prefix from RAW_BRANCH_NAME
+          BRANCH_NAME="${RAW_BRANCH_NAME#refs/heads/}"
+
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+          echo "BUILD_NUMBER=${BUILD_NUMBER}" >> $GITHUB_ENV
+          echo "COMMIT_SHA=${COMMIT_SHA}" >> $GITHUB_ENV
+
       # Checkout the branch
       - uses: actions/checkout@v6.0.2
 
