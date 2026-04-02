@@ -587,6 +587,10 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
     },
     "FargateServiceWithClusterLBPublicListenerECSGroupC7B6A4A8": {
       "Properties": {
+        "HealthCheckIntervalSeconds": 10,
+        "HealthCheckPath": "/healthcheck",
+        "HealthCheckTimeoutSeconds": 5,
+        "HealthyThresholdCount": 5,
         "Port": 80,
         "Protocol": "HTTP",
         "Tags": [
@@ -614,6 +618,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
           },
         ],
         "TargetType": "ip",
+        "UnhealthyThresholdCount": 2,
         "VpcId": {
           "Ref": "VpcIdParam",
         },
