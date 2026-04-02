@@ -164,7 +164,6 @@ export class CdkPlayground extends GuStack {
 		// Potential Issues
 		// * Load balancer deletion protection is false (to match pattern this should be true)
 		// * Allows all outbound traffic by default (to match pattern this would be HTTPs only)
-		// * ECS health check grace period - https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service_definition_parameters.html#sd-networkconfiguration
 		// * IAM roles / permissions?
 		// * Logging?
 		// * Deployment?
@@ -175,6 +174,8 @@ export class CdkPlayground extends GuStack {
 				vpc,
 				protocol: ApplicationProtocol.HTTPS,
 				certificate,
+				// healthCheckGracePeriod - should we define this? AWS CDK is defaulting to 1 minute
+				// https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service_definition_parameters.html#sd-networkconfiguration
 				taskImageOptions: {
 					image,
 					containerPort: 9000,
