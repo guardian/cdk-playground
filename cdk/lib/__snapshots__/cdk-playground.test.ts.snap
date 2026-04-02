@@ -656,7 +656,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "FargateServiceWithClusterLBSecurityGrouptoCdkPlaygroundCODEFargateServiceWithClusterServiceSecurityGroup9E89F2FB804547ACEE": {
+    "FargateServiceWithClusterLBSecurityGrouptoCdkPlaygroundCODEFargateServiceWithClusterServiceSecurityGroup9E89F2FB9000E419D184": {
       "Properties": {
         "Description": "Load balancer to target",
         "DestinationSecurityGroupId": {
@@ -665,7 +665,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
             "GroupId",
           ],
         },
-        "FromPort": 80,
+        "FromPort": 9000,
         "GroupId": {
           "Fn::GetAtt": [
             "FargateServiceWithClusterLBSecurityGroupC2837562",
@@ -673,7 +673,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
           ],
         },
         "IpProtocol": "tcp",
-        "ToPort": 80,
+        "ToPort": 9000,
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
     },
@@ -702,7 +702,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         "LoadBalancers": [
           {
             "ContainerName": "web",
-            "ContainerPort": 80,
+            "ContainerPort": 9000,
             "TargetGroupArn": {
               "Ref": "FargateServiceWithClusterLBPublicListenerECSGroupC7B6A4A8",
             },
@@ -785,13 +785,13 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "FargateServiceWithClusterServiceSecurityGroupfromCdkPlaygroundCODEFargateServiceWithClusterLBSecurityGroup8854CFAF804B1FDF6A": {
+    "FargateServiceWithClusterServiceSecurityGroupfromCdkPlaygroundCODEFargateServiceWithClusterLBSecurityGroup8854CFAF900044BA2FDA": {
       "DependsOn": [
         "FargateServiceWithClusterTaskDefTaskRole6DACF8B7",
       ],
       "Properties": {
         "Description": "Load balancer to target",
-        "FromPort": 80,
+        "FromPort": 9000,
         "GroupId": {
           "Fn::GetAtt": [
             "FargateServiceWithClusterServiceSecurityGroupC199044E",
@@ -805,7 +805,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
             "GroupId",
           ],
         },
-        "ToPort": 80,
+        "ToPort": 9000,
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
@@ -842,7 +842,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
             "Name": "web",
             "PortMappings": [
               {
-                "ContainerPort": 80,
+                "ContainerPort": 9000,
                 "Protocol": "tcp",
               },
             ],

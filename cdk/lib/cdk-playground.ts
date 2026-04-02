@@ -162,7 +162,6 @@ export class CdkPlayground extends GuStack {
 		// Potential Issues
 		// * Load balancer deletion protection is false (to match pattern this should be true)
 		// * Allows all outbound traffic by default (to match pattern this would be HTTPs only)
-		// * Target group port
 		// * ECS health check grace period - https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service_definition_parameters.html#sd-networkconfiguration
 		// * Target group health checks?
 		// * IAM roles / permissions?
@@ -177,6 +176,7 @@ export class CdkPlayground extends GuStack {
 				certificate,
 				taskImageOptions: {
 					image,
+					containerPort: 9000,
 				},
 			},
 		);
