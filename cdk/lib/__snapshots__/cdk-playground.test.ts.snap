@@ -30,6 +30,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "GuParameter",
       "GuParameter",
       "GuCertificate",
+      "GuParameterStoreReadPolicy",
       "GuCname",
       "GuApiLambda",
       "GuCertificate",
@@ -1431,6 +1432,57 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         "Roles": [
           {
             "Ref": "InstanceRoleCdkplaygroundC280027A",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ParameterStoreReadCdkplaygroundecsB1E187C6": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ssm:GetParametersByPath",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/CODE/deploy/cdk-playground-ecs",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/CODE/deploy/cdk-playground-ecs/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "parameter-store-read-policy",
+        "Roles": [
+          {
+            "Ref": "FargateServiceWithClusterTaskDefTaskRole6DACF8B7",
           },
         ],
       },
