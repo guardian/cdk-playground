@@ -163,7 +163,6 @@ export class CdkPlayground extends GuStack {
 		// * Load balancer deletion protection is false (to match pattern this should be true)
 		// * Allows all outbound traffic by default (to match pattern this would be HTTPs only)
 		// * ECS health check grace period - https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service_definition_parameters.html#sd-networkconfiguration
-		// * Target group health checks?
 		// * IAM roles / permissions?
 		// * Logging?
 		// * Deployment?
@@ -180,6 +179,14 @@ export class CdkPlayground extends GuStack {
 				},
 			},
 		);
+
+		loadBalancedEcs.targetGroup.configureHealthCheck({
+			path: '/healthcheck',
+			interval: Duration.seconds(10),
+			timeout: Duration.seconds(5),
+			healthyThresholdCount: 5,
+			unhealthyThresholdCount: 2,
+		});
 
 		// Let's create a separate GuCname for now, but we could use the existing one to perform a migration if desired
 		new GuCname(this, 'EcsDns', {
