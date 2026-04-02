@@ -706,7 +706,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         "LaunchType": "FARGATE",
         "LoadBalancers": [
           {
-            "ContainerName": "web",
+            "ContainerName": "cdk-playground",
             "ContainerPort": 9000,
             "TargetGroupArn": {
               "Ref": "FargateServiceWithClusterLBPublicListenerECSGroupC7B6A4A8",
@@ -838,13 +838,13 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "FargateServiceWithClusterTaskDefwebLogGroup1B64019F",
+                  "Ref": "FargateServiceWithClusterTaskDefcdkplaygroundLogGroup4AEF846A",
                 },
                 "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "FargateServiceWithCluster",
               },
             },
-            "Name": "web",
+            "Name": "cdk-playground",
             "PortMappings": [
               {
                 "ContainerPort": 9000,
@@ -969,7 +969,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "FargateServiceWithClusterTaskDefwebLogGroup1B64019F",
+                  "FargateServiceWithClusterTaskDefcdkplaygroundLogGroup4AEF846A",
                   "Arn",
                 ],
               },
@@ -1021,7 +1021,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "FargateServiceWithClusterTaskDefwebLogGroup1B64019F": {
+    "FargateServiceWithClusterTaskDefcdkplaygroundLogGroup4AEF846A": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "Tags": [
