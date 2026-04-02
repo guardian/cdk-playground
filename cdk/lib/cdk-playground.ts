@@ -145,11 +145,12 @@ export class CdkPlayground extends GuStack {
 		// the simple case where the app and the repo are both in Deploy Tools
 		const image = ContainerImage.fromEcrRepository(
 			Repository.fromRepositoryName(this, 'Repo', this.repositoryName!),
-			// Hardcode this for now so that we have an image to test with; this should really point to the right build number
+			// Hardcode this for now so that we have an image to test with; this should really point to the build identifier
 			'bd1737b461371a7e956eae24f12188946946c55f',
 			// buildIdentifier,
 		);
 
+		// EC2 app pattern creates this for us
 		const certificate = new GuCertificate(this, {
 			app: ecsApp,
 			domainName: ecsDomainName,
