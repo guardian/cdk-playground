@@ -178,6 +178,7 @@ export class CdkPlayground extends GuStack {
 				// https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service_definition_parameters.html#sd-networkconfiguration
 				taskImageOptions: {
 					image,
+					containerName: 'cdk-playground',
 					containerPort: 9000,
 				},
 			},
