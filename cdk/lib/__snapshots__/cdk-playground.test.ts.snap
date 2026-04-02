@@ -589,6 +589,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "Properties": {
         "HealthCheckIntervalSeconds": 10,
         "HealthCheckPath": "/healthcheck",
+        "HealthCheckPort": "9000",
         "HealthCheckTimeoutSeconds": 5,
         "HealthyThresholdCount": 5,
         "Port": 80,
