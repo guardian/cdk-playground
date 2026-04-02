@@ -115,6 +115,7 @@ export class CdkPlayground extends GuStack {
 
 		const ecsApp = 'cdk-playground-ecs';
 
+		// The EC2 app pattern hides all of this VPC wiring for us
 		const vpcId = new GuParameter(this, 'VpcIdParam', {
 			fromSSM: true,
 			default: `/account/vpc/primary/id`,
