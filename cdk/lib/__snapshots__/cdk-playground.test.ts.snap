@@ -29,7 +29,6 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "GuParameter",
       "GuParameter",
       "GuParameter",
-      "GuParameter",
       "GuCertificate",
       "GuCname",
       "GuApiLambda",
@@ -143,10 +142,6 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
     "RiffRaffDeploymentId": {
       "Description": "Used by Riff-Raff to inject the deployment ID.",
       "Type": "String",
-    },
-    "VpcAZParam": {
-      "Default": "/account/vpc/primary/availability-zones",
-      "Type": "AWS::SSM::Parameter::Value<List<String>>",
     },
     "VpcId": {
       "Default": "/account/vpc/primary/id",

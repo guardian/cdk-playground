@@ -132,19 +132,13 @@ export class CdkPlayground extends GuStack {
 			type: 'List<String>',
 		});
 
-		const availabilityZones = new GuParameter(this, 'VpcAZParam', {
-			fromSSM: true,
-			default: '/account/vpc/primary/availability-zones',
-			type: 'List<String>',
-		});
-
 		// Trying to use the vpc that is available via the pattern fails with the following error:
 		// ValidationError: There are no 'Public' subnet groups in this VPC. Available types:
 		const vpc = Vpc.fromVpcAttributes(this, 'Vpc', {
 			vpcId: vpcId.valueAsString,
 			publicSubnetIds: publicSubnetIds.valueAsList,
 			privateSubnetIds: privateSubnetIds.valueAsList,
-			availabilityZones: availabilityZones.valueAsList,
+			availabilityZones: [''], // The type system forces us to provide this but it doesn't actually seem to be needed
 		});
 
 		// Need to figure out how to make this cross-account, but this is fine for
