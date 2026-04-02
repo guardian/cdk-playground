@@ -25,10 +25,12 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
       "GuRiffRaffDeploymentIdParameter",
+      "GuCname",
       "GuParameter",
       "GuParameter",
       "GuParameter",
       "GuParameter",
+      "GuCertificate",
       "GuCname",
       "GuApiLambda",
       "GuCertificate",
@@ -55,7 +57,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         "Fn::Join": [
           "",
           [
-            "http://",
+            "https://",
             {
               "Fn::GetAtt": [
                 "FargateServiceWithClusterLBC0F3A1A2",
@@ -363,6 +365,41 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "Type": "AWS::CertificateManager::Certificate",
       "UpdateReplacePolicy": "Retain",
     },
+    "CertificateCdkplaygroundecsD6C69B43": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "DomainName": "cdk-playground-ecs.code.dev-gutools.co.uk",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground-ecs",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Name",
+            "Value": "CdkPlayground-CODE/CertificateCdkplaygroundecs",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "ValidationMethod": "DNS",
+      },
+      "Type": "AWS::CertificateManager::Certificate",
+      "UpdateReplacePolicy": "Retain",
+    },
     "CertificateCdkplaygroundlambda82D0BE4D": {
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -464,6 +501,23 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       },
       "Type": "AWS::ECS::Cluster",
     },
+    "EcsDns": {
+      "Properties": {
+        "Name": "cdk-playground-ecs.code.dev-gutools.co.uk",
+        "RecordType": "CNAME",
+        "ResourceRecords": [
+          {
+            "Fn::GetAtt": [
+              "FargateServiceWithClusterLBC0F3A1A2",
+              "DNSName",
+            ],
+          },
+        ],
+        "Stage": "CODE",
+        "TTL": 60,
+      },
+      "Type": "Guardian::DNS::RecordSet",
+    },
     "FargateServiceWithClusterLBC0F3A1A2": {
       "Properties": {
         "LoadBalancerAttributes": [
@@ -508,6 +562,13 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
     },
     "FargateServiceWithClusterLBPublicListenerC7225768": {
       "Properties": {
+        "Certificates": [
+          {
+            "CertificateArn": {
+              "Ref": "CertificateCdkplaygroundecsD6C69B43",
+            },
+          },
+        ],
         "DefaultActions": [
           {
             "TargetGroupArn": {
@@ -519,8 +580,8 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         "LoadBalancerArn": {
           "Ref": "FargateServiceWithClusterLBC0F3A1A2",
         },
-        "Port": 80,
-        "Protocol": "HTTP",
+        "Port": 443,
+        "Protocol": "HTTPS",
       },
       "Type": "AWS::ElasticLoadBalancingV2::Listener",
     },
@@ -565,10 +626,10 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         "SecurityGroupIngress": [
           {
             "CidrIp": "0.0.0.0/0",
-            "Description": "Allow from anyone on port 80",
-            "FromPort": 80,
+            "Description": "Allow from anyone on port 443",
+            "FromPort": 443,
             "IpProtocol": "tcp",
-            "ToPort": 80,
+            "ToPort": 443,
           },
         ],
         "Tags": [
