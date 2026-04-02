@@ -183,6 +183,7 @@ export class CdkPlayground extends GuStack {
 		);
 
 		loadBalancedEcs.targetGroup.configureHealthCheck({
+			port: '9000',
 			path: '/healthcheck',
 			interval: Duration.seconds(10),
 			timeout: Duration.seconds(5),
