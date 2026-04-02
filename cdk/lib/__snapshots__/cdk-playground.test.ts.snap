@@ -35,6 +35,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "GuApiLambda",
       "GuCertificate",
       "GuCname",
+      "GuAsgMinInstancesInServiceParameterExperimental",
     ],
     "gu:cdk:version": "TEST",
   },
