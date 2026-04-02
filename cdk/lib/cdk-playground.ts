@@ -4,6 +4,10 @@ import { GuCertificate } from '@guardian/cdk/lib/constructs/acm';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuParameter, GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
+import {
+	GuParameterStoreReadPolicy,
+	GuRole,
+} from '@guardian/cdk/lib/constructs/iam';
 import { GuEc2AppExperimental } from '@guardian/cdk/lib/experimental/patterns/ec2-app';
 import type { App } from 'aws-cdk-lib';
 import { CfnOutput, Duration } from 'aws-cdk-lib';
@@ -18,6 +22,7 @@ import { Repository } from 'aws-cdk-lib/aws-ecr';
 import { ContainerImage } from 'aws-cdk-lib/aws-ecs';
 import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns';
 import { ApplicationProtocol } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
 interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
@@ -156,12 +161,25 @@ export class CdkPlayground extends GuStack {
 			domainName: ecsDomainName,
 		});
 
-		// Potential Issues
+		// ## Potential Issues
 		// * Load balancer deletion protection is false (to match pattern this should be true)
 		// * Allows all outbound traffic by default (to match pattern this would be HTTPs only)
-		// * IAM roles / permissions?
 		// * Logging?
 		// * Deployment?
+		//
+		// ## CFN resources
+		// AWS::ECS::Cluster (can pass in your own)
+		// AWS::ECS::Service
+		// AWS::ECS::TaskDefinition
+		// AWS::Logs::LogGroup
+		// AWS::IAM::Role ('execution role' - used for pulling image etc. - can pass in your own)
+		// AWS::IAM::Role ('task role' - used for application's runtime permissions e.g. reading config from SSM - can pass in your own)
+		// AWS::IAM::Policy
+		// AWS::ElasticLoadBalancingV2::LoadBalancer (present in GuEc2App; no need to duplicate)
+		// AWS::ElasticLoadBalancingV2::Listener (present in GuEc2App; no need to duplicate)
+		// AWS::ElasticLoadBalancingV2::TargetGroup (present in GuEc2App; need new dedicated group)
+		// AWS::EC2::SecurityGroups and AWS::EC2::SecurityGroupEgress / AWS::EC2::SecurityGroupIngress (from memory, aws-cdk auto-generates these anyway)
+
 		const loadBalancedEcs = new ApplicationLoadBalancedFargateService(
 			this,
 			'FargateServiceWithCluster',
@@ -177,6 +195,11 @@ export class CdkPlayground extends GuStack {
 					containerPort: 9000,
 				},
 			},
+		);
+
+		// EC2 pattern helps with this wiring and provides useful default permissions, although most of these are irrelevant when running in ECS
+		new GuParameterStoreReadPolicy(this, { app: ecsApp }).attachToRole(
+			loadBalancedEcs.taskDefinition.taskRole,
 		);
 
 		loadBalancedEcs.targetGroup.configureHealthCheck({
