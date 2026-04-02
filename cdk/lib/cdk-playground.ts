@@ -4,10 +4,7 @@ import { GuCertificate } from '@guardian/cdk/lib/constructs/acm';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuParameter, GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
-import {
-	GuParameterStoreReadPolicy,
-	GuRole,
-} from '@guardian/cdk/lib/constructs/iam';
+import { GuParameterStoreReadPolicy } from '@guardian/cdk/lib/constructs/iam';
 import { GuEc2AppExperimental } from '@guardian/cdk/lib/experimental/patterns/ec2-app';
 import type { App } from 'aws-cdk-lib';
 import { CfnOutput, Duration } from 'aws-cdk-lib';
@@ -22,7 +19,6 @@ import { Repository } from 'aws-cdk-lib/aws-ecr';
 import { ContainerImage } from 'aws-cdk-lib/aws-ecs';
 import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns';
 import { ApplicationProtocol } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
-import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
 interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
