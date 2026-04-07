@@ -19,6 +19,7 @@ import { Repository } from 'aws-cdk-lib/aws-ecr';
 import { ContainerImage } from 'aws-cdk-lib/aws-ecs';
 import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns';
 import { ApplicationProtocol } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import type { CfnListener } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
 interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
@@ -49,7 +50,12 @@ export class CdkPlayground extends GuStack {
 
 		const ec2App = 'cdk-playground';
 
-		const { loadBalancer, autoScalingGroup } = new GuEc2AppExperimental(this, {
+		const {
+			loadBalancer,
+			autoScalingGroup,
+			listener,
+			targetGroup: ec2TargetGroup,
+		} = new GuEc2AppExperimental(this, {
 			buildIdentifier,
 			applicationPort: 9000,
 			app: ec2App,
@@ -185,7 +191,6 @@ export class CdkPlayground extends GuStack {
 				vpc,
 				protocol: ApplicationProtocol.HTTPS,
 				certificate,
-				// Can pass this in from the EC2 app but we end up with 2 listeners for port 443; presumably this won't work
 				loadBalancer,
 				// healthCheckGracePeriod - should we define this? AWS CDK is defaulting to 1 minute
 				// https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service_definition_parameters.html#sd-networkconfiguration
@@ -196,6 +201,32 @@ export class CdkPlayground extends GuStack {
 				},
 			},
 		);
+
+		// ApplicationLoadBalancedFargateService creates its own listener.
+		// We need to get rid of this as an ALB can only have one listener per port.
+		const publicListener = loadBalancer.node.findChild('PublicListener');
+		// This extra bit is needed as removing the listener node itself also removes the ECS target group
+		publicListener.node.tryRemoveChild('Resource');
+
+		// In the future we could do this within the pattern code, so we wouldn't need escape hatches
+		const cfnListener = listener.node.defaultChild as CfnListener;
+		cfnListener.defaultActions = [
+			{
+				type: 'forward',
+				forwardConfig: {
+					targetGroups: [
+						{
+							targetGroupArn: ec2TargetGroup.targetGroupArn,
+							weight: 50,
+						},
+						{
+							targetGroupArn: loadBalancedEcs.targetGroup.targetGroupArn,
+							weight: 50,
+						},
+					],
+				},
+			},
+		];
 
 		// EC2 pattern helps with this wiring and provides useful default permissions, although most of these are irrelevant when running in ECS
 		new GuParameterStoreReadPolicy(this, { app: ecsApp }).attachToRole(
@@ -208,14 +239,6 @@ export class CdkPlayground extends GuStack {
 			timeout: Duration.seconds(5),
 			healthyThresholdCount: 5,
 			unhealthyThresholdCount: 2,
-		});
-
-		// Let's create a separate GuCname for now, but we could use the existing one to perform a migration if desired
-		new GuCname(this, 'EcsDns', {
-			app: ecsApp,
-			ttl: Duration.minutes(1),
-			domainName: ecsDomainName,
-			resourceRecord: loadBalancedEcs.loadBalancer.loadBalancerDnsName,
 		});
 
 		const lambdaApp = 'cdk-playground-lambda';

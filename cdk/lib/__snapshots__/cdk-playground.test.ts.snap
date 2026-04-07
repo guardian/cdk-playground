@@ -31,7 +31,6 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "GuParameter",
       "GuCertificate",
       "GuParameterStoreReadPolicy",
-      "GuCname",
       "GuApiLambda",
       "GuCertificate",
       "GuCname",
@@ -498,28 +497,10 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       },
       "Type": "AWS::ECS::Cluster",
     },
-    "EcsDns": {
-      "Properties": {
-        "Name": "cdk-playground-ecs.code.dev-gutools.co.uk",
-        "RecordType": "CNAME",
-        "ResourceRecords": [
-          {
-            "Fn::GetAtt": [
-              "LoadBalancerCdkplayground7C6B4D97",
-              "DNSName",
-            ],
-          },
-        ],
-        "Stage": "CODE",
-        "TTL": 60,
-      },
-      "Type": "Guardian::DNS::RecordSet",
-    },
     "FargateServiceWithClusterServiceEC3A63FF": {
       "DependsOn": [
         "FargateServiceWithClusterTaskDefTaskRole6DACF8B7",
         "LoadBalancerCdkplaygroundPublicListenerECSGroupB6C93B7A",
-        "LoadBalancerCdkplaygroundPublicListener86C37BA4",
       ],
       "Properties": {
         "Cluster": {
@@ -1078,8 +1059,21 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         ],
         "DefaultActions": [
           {
-            "TargetGroupArn": {
-              "Ref": "TargetGroupCdkplayground7A453FC2",
+            "ForwardConfig": {
+              "TargetGroups": [
+                {
+                  "TargetGroupArn": {
+                    "Ref": "TargetGroupCdkplayground7A453FC2",
+                  },
+                  "Weight": 50,
+                },
+                {
+                  "TargetGroupArn": {
+                    "Ref": "LoadBalancerCdkplaygroundPublicListenerECSGroupB6C93B7A",
+                  },
+                  "Weight": 50,
+                },
+              ],
             },
             "Type": "forward",
           },
@@ -1160,31 +1154,6 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         "Type": "application",
       },
       "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
-    },
-    "LoadBalancerCdkplaygroundPublicListener86C37BA4": {
-      "Properties": {
-        "Certificates": [
-          {
-            "CertificateArn": {
-              "Ref": "CertificateCdkplaygroundecsD6C69B43",
-            },
-          },
-        ],
-        "DefaultActions": [
-          {
-            "TargetGroupArn": {
-              "Ref": "LoadBalancerCdkplaygroundPublicListenerECSGroupB6C93B7A",
-            },
-            "Type": "forward",
-          },
-        ],
-        "LoadBalancerArn": {
-          "Ref": "LoadBalancerCdkplayground7C6B4D97",
-        },
-        "Port": 443,
-        "Protocol": "HTTPS",
-      },
-      "Type": "AWS::ElasticLoadBalancingV2::Listener",
     },
     "LoadBalancerCdkplaygroundPublicListenerECSGroupB6C93B7A": {
       "Properties": {
