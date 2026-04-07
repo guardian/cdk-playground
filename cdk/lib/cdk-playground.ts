@@ -25,11 +25,6 @@ import {
 	LogDriver,
 } from 'aws-cdk-lib/aws-ecs';
 import type { CfnListener } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
-import {
-	ApplicationProtocol,
-	ApplicationTargetGroup,
-	TargetType,
-} from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
 interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
