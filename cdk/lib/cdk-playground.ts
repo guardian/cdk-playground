@@ -204,15 +204,6 @@ export class CdkPlayground extends GuStack {
 				vpc,
 				app: ecsApp,
 				port: 9000,
-				protocol: ApplicationProtocol.HTTP,
-				targetType: TargetType.IP,
-				healthCheck: {
-					path: '/healthcheck',
-					interval: Duration.seconds(10),
-					timeout: Duration.seconds(5),
-					healthyThresholdCount: 5,
-					unhealthyThresholdCount: 2,
-				},
 			},
 		);
 
