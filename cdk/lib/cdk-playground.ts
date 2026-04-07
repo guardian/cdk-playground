@@ -5,6 +5,7 @@ import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuParameter, GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuParameterStoreReadPolicy } from '@guardian/cdk/lib/constructs/iam';
+import { GuApplicationTargetGroup } from '@guardian/cdk/lib/constructs/loadbalancing';
 import { GuEc2AppExperimental } from '@guardian/cdk/lib/experimental/patterns/ec2-app';
 import type { App } from 'aws-cdk-lib';
 import { CfnOutput, Duration } from 'aws-cdk-lib';
@@ -196,20 +197,24 @@ export class CdkPlayground extends GuStack {
 		);
 
 		// AWS::ElasticLoadBalancingV2::TargetGroup (can now be wired up with existing load balancer)
-		// TODO - could we use the GuApplicationTargetGroup construct here?
-		const ecsTargetGroup = new ApplicationTargetGroup(this, 'EcsTargetGroup', {
-			vpc,
-			port: 9000,
-			protocol: ApplicationProtocol.HTTP,
-			targetType: TargetType.IP,
-			healthCheck: {
-				path: '/healthcheck',
-				interval: Duration.seconds(10),
-				timeout: Duration.seconds(5),
-				healthyThresholdCount: 5,
-				unhealthyThresholdCount: 2,
+		const ecsTargetGroup = new GuApplicationTargetGroup(
+			this,
+			'EcsTargetGroup',
+			{
+				vpc,
+				app: ecsApp,
+				port: 9000,
+				protocol: ApplicationProtocol.HTTP,
+				targetType: TargetType.IP,
+				healthCheck: {
+					path: '/healthcheck',
+					interval: Duration.seconds(10),
+					timeout: Duration.seconds(5),
+					healthyThresholdCount: 5,
+					unhealthyThresholdCount: 2,
+				},
 			},
-		});
+		);
 
 		// AWS::ECS::Service
 		// AWS::EC2::SecurityGroup (this is what's allowing outbound traffic by default)

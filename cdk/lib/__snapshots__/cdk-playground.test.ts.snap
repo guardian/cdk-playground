@@ -30,6 +30,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "GuParameter",
       "GuParameter",
       "GuParameterStoreReadPolicy",
+      "GuApplicationTargetGroup",
       "GuApiLambda",
       "GuCertificate",
       "GuCname",
@@ -463,7 +464,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
             "ContainerName": "cdk-playground",
             "ContainerPort": 9000,
             "TargetGroupArn": {
-              "Ref": "EcsTargetGroup06D481F9",
+              "Ref": "EcsTargetGroupCdkplaygroundecsF5A8D17A",
             },
           },
         ],
@@ -568,15 +569,20 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
-    "EcsTargetGroup06D481F9": {
+    "EcsTargetGroupCdkplaygroundecsF5A8D17A": {
       "Properties": {
         "HealthCheckIntervalSeconds": 10,
         "HealthCheckPath": "/healthcheck",
+        "HealthCheckProtocol": "HTTP",
         "HealthCheckTimeoutSeconds": 5,
         "HealthyThresholdCount": 5,
         "Port": 9000,
         "Protocol": "HTTP",
         "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground-ecs",
+          },
           {
             "Key": "gu:cdk:version",
             "Value": "TEST",
@@ -595,6 +601,10 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
           },
         ],
         "TargetGroupAttributes": [
+          {
+            "Key": "deregistration_delay.timeout_seconds",
+            "Value": "30",
+          },
           {
             "Key": "stickiness.enabled",
             "Value": "false",
@@ -1049,7 +1059,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
                 },
                 {
                   "TargetGroupArn": {
-                    "Ref": "EcsTargetGroup06D481F9",
+                    "Ref": "EcsTargetGroupCdkplaygroundecsF5A8D17A",
                   },
                   "Weight": 50,
                 },
