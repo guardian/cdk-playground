@@ -16,9 +16,19 @@ import {
 	Vpc,
 } from 'aws-cdk-lib/aws-ec2';
 import { Repository } from 'aws-cdk-lib/aws-ecr';
-import { ContainerImage } from 'aws-cdk-lib/aws-ecs';
-import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns';
-import { ApplicationProtocol } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import {
+	Cluster,
+	ContainerImage,
+	FargateService,
+	FargateTaskDefinition,
+	LogDriver,
+} from 'aws-cdk-lib/aws-ecs';
+import type { CfnListener } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import {
+	ApplicationProtocol,
+	ApplicationTargetGroup,
+	TargetType,
+} from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
 interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
@@ -44,12 +54,16 @@ export class CdkPlayground extends GuStack {
 		const { buildIdentifier } = props;
 
 		const ec2AppDomainName = 'cdk-playground.code.dev-gutools.co.uk';
-		const ecsDomainName = 'cdk-playground-ecs.code.dev-gutools.co.uk';
 		const lambdaDomainName = 'cdk-playground-lambda.code.dev-gutools.co.uk';
 
 		const ec2App = 'cdk-playground';
 
-		const { loadBalancer, autoScalingGroup } = new GuEc2AppExperimental(this, {
+		const {
+			loadBalancer,
+			autoScalingGroup,
+			listener,
+			targetGroup: ec2TargetGroup,
+		} = new GuEc2AppExperimental(this, {
 			buildIdentifier,
 			applicationPort: 9000,
 			app: ec2App,
@@ -152,69 +166,78 @@ export class CdkPlayground extends GuStack {
 			// buildIdentifier,
 		);
 
-		// EC2 app pattern creates this for us
-		const certificate = new GuCertificate(this, {
-			app: ecsApp,
-			domainName: ecsDomainName,
-		});
-
-		// ## Potential Issues
+		// ## Potential ECS Issues
 		// * Load balancer deletion protection is false (to match pattern this should be true)
 		// * Allows all outbound traffic by default (to match pattern this would be HTTPs only)
 		// * Logging - ships to CloudWatch by default and https://github.com/guardian/cloudwatch-logs-management can be
 		//   configured to pick up from there
 		// * Deployment?
-		//
-		// ## CFN resources
-		// AWS::ECS::Cluster (can pass in your own)
-		// AWS::ECS::Service
-		// AWS::ECS::TaskDefinition
-		// AWS::Logs::LogGroup
-		// AWS::IAM::Role ('execution role' - used for pulling image etc. - can pass in your own)
-		// AWS::IAM::Role ('task role' - used for application's runtime permissions e.g. reading config from SSM - can pass in your own)
-		// AWS::IAM::Policy
-		// AWS::ElasticLoadBalancingV2::LoadBalancer (present in GuEc2App; no need to duplicate)
-		// AWS::ElasticLoadBalancingV2::Listener (present in GuEc2App; no need to duplicate)
-		// AWS::ElasticLoadBalancingV2::TargetGroup (present in GuEc2App; need new dedicated group)
-		// AWS::EC2::SecurityGroups and AWS::EC2::SecurityGroupEgress / AWS::EC2::SecurityGroupIngress (from memory, aws-cdk auto-generates these anyway)
 
-		const loadBalancedEcs = new ApplicationLoadBalancedFargateService(
-			this,
-			'FargateServiceWithCluster',
-			{
-				vpc,
-				protocol: ApplicationProtocol.HTTPS,
-				certificate,
-				// healthCheckGracePeriod - should we define this? AWS CDK is defaulting to 1 minute
-				// https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service_definition_parameters.html#sd-networkconfiguration
-				taskImageOptions: {
-					image,
-					containerName: 'cdk-playground',
-					containerPort: 9000,
-				},
-			},
-		);
+		// AWS::ECS::Cluster
+		const cluster = new Cluster(this, 'EcsCluster', { vpc });
+
+		// AWS::ECS::TaskDefinition
+		// AWS::IAM::Role ('execution role' - used for pulling image etc.)
+		// AWS::IAM::Role ('task role' - used for application's runtime permissions e.g. reading config from SSM)
+		const taskDefinition = new FargateTaskDefinition(this, 'EcsTaskDefinition');
+
+		taskDefinition.addContainer('cdk-playground', {
+			image,
+			portMappings: [{ containerPort: 9000 }],
+			// AWS::Logs::LogGroup
+			logging: LogDriver.awsLogs({
+				streamPrefix: 'cdk-playground-ecs',
+			}),
+		});
 
 		// EC2 pattern helps with this wiring and provides useful default permissions, although most of these are irrelevant when running in ECS
 		new GuParameterStoreReadPolicy(this, { app: ecsApp }).attachToRole(
-			loadBalancedEcs.taskDefinition.taskRole,
+			taskDefinition.taskRole,
 		);
 
-		loadBalancedEcs.targetGroup.configureHealthCheck({
-			path: '/healthcheck',
-			interval: Duration.seconds(10),
-			timeout: Duration.seconds(5),
-			healthyThresholdCount: 5,
-			unhealthyThresholdCount: 2,
+		// AWS::ElasticLoadBalancingV2::TargetGroup (can now be wired up with existing load balancer)
+		const ecsTargetGroup = new ApplicationTargetGroup(this, 'EcsTargetGroup', {
+			vpc,
+			port: 9000,
+			protocol: ApplicationProtocol.HTTP,
+			targetType: TargetType.IP,
+			healthCheck: {
+				path: '/healthcheck',
+				interval: Duration.seconds(10),
+				timeout: Duration.seconds(5),
+				healthyThresholdCount: 5,
+				unhealthyThresholdCount: 2,
+			},
 		});
 
-		// Let's create a separate GuCname for now, but we could use the existing one to perform a migration if desired
-		new GuCname(this, 'EcsDns', {
-			app: ecsApp,
-			ttl: Duration.minutes(1),
-			domainName: ecsDomainName,
-			resourceRecord: loadBalancedEcs.loadBalancer.loadBalancerDnsName,
+		// AWS::ECS::Service
+		// AWS::EC2::SecurityGroup (this is what's allowing outbound traffic by default)
+		const ecsService = new FargateService(this, 'EcsService', {
+			cluster,
+			taskDefinition,
 		});
+
+		ecsTargetGroup.addTarget(ecsService);
+
+		// In the future we could do this within the pattern code, so we wouldn't need escape hatches
+		const cfnListener = listener.node.defaultChild as CfnListener;
+		cfnListener.defaultActions = [
+			{
+				type: 'forward',
+				forwardConfig: {
+					targetGroups: [
+						{
+							targetGroupArn: ec2TargetGroup.targetGroupArn,
+							weight: 50,
+						},
+						{
+							targetGroupArn: ecsTargetGroup.targetGroupArn,
+							weight: 50,
+						},
+					],
+				},
+			},
+		];
 
 		const lambdaApp = 'cdk-playground-lambda';
 

@@ -29,9 +29,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "GuParameter",
       "GuParameter",
       "GuParameter",
-      "GuCertificate",
       "GuParameterStoreReadPolicy",
-      "GuCname",
       "GuApiLambda",
       "GuCertificate",
       "GuCname",
@@ -43,30 +41,6 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
     "AutoscalingGroupName": {
       "Value": {
         "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
-      },
-    },
-    "FargateServiceWithClusterLoadBalancerDNS13D5ADEE": {
-      "Value": {
-        "Fn::GetAtt": [
-          "FargateServiceWithClusterLBC0F3A1A2",
-          "DNSName",
-        ],
-      },
-    },
-    "FargateServiceWithClusterServiceURLA598AD71": {
-      "Value": {
-        "Fn::Join": [
-          "",
-          [
-            "https://",
-            {
-              "Fn::GetAtt": [
-                "FargateServiceWithClusterLBC0F3A1A2",
-                "DNSName",
-              ],
-            },
-          ],
-        ],
       },
     },
     "LoadBalancerCdkplaygroundDnsName": {
@@ -362,41 +336,6 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "Type": "AWS::CertificateManager::Certificate",
       "UpdateReplacePolicy": "Retain",
     },
-    "CertificateCdkplaygroundecsD6C69B43": {
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "DomainName": "cdk-playground-ecs.code.dev-gutools.co.uk",
-        "Tags": [
-          {
-            "Key": "App",
-            "Value": "cdk-playground-ecs",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/cdk-playground",
-          },
-          {
-            "Key": "Name",
-            "Value": "CdkPlayground-CODE/CertificateCdkplaygroundecs",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-        "ValidationMethod": "DNS",
-      },
-      "Type": "AWS::CertificateManager::Certificate",
-      "UpdateReplacePolicy": "Retain",
-    },
     "CertificateCdkplaygroundlambda82D0BE4D": {
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -475,7 +414,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       },
       "Type": "Guardian::DNS::RecordSet",
     },
-    "EcsDefaultClusterMnL3mNNYNVpc18E0451A": {
+    "EcsCluster97242B84": {
       "Properties": {
         "Tags": [
           {
@@ -498,42 +437,50 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       },
       "Type": "AWS::ECS::Cluster",
     },
-    "EcsDns": {
+    "EcsService81FC6EF6": {
+      "DependsOn": [
+        "EcsTaskDefinitionTaskRoleB7B6D8DD",
+      ],
       "Properties": {
-        "Name": "cdk-playground-ecs.code.dev-gutools.co.uk",
-        "RecordType": "CNAME",
-        "ResourceRecords": [
+        "Cluster": {
+          "Ref": "EcsCluster97242B84",
+        },
+        "DeploymentConfiguration": {
+          "Alarms": {
+            "AlarmNames": [],
+            "Enable": false,
+            "Rollback": false,
+          },
+          "MaximumPercent": 200,
+          "MinimumHealthyPercent": 50,
+        },
+        "EnableECSManagedTags": false,
+        "HealthCheckGracePeriodSeconds": 60,
+        "LaunchType": "FARGATE",
+        "LoadBalancers": [
           {
-            "Fn::GetAtt": [
-              "FargateServiceWithClusterLBC0F3A1A2",
-              "DNSName",
+            "ContainerName": "cdk-playground",
+            "ContainerPort": 9000,
+            "TargetGroupArn": {
+              "Ref": "EcsTargetGroup06D481F9",
+            },
+          },
+        ],
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "AssignPublicIp": "DISABLED",
+            "SecurityGroups": [
+              {
+                "Fn::GetAtt": [
+                  "EcsServiceSecurityGroup8FDFD52F",
+                  "GroupId",
+                ],
+              },
             ],
+            "Subnets": {
+              "Ref": "VpcPrivateParam",
+            },
           },
-        ],
-        "Stage": "CODE",
-        "TTL": 60,
-      },
-      "Type": "Guardian::DNS::RecordSet",
-    },
-    "FargateServiceWithClusterLBC0F3A1A2": {
-      "Properties": {
-        "LoadBalancerAttributes": [
-          {
-            "Key": "deletion_protection.enabled",
-            "Value": "false",
-          },
-        ],
-        "Scheme": "internet-facing",
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "FargateServiceWithClusterLBSecurityGroupC2837562",
-              "GroupId",
-            ],
-          },
-        ],
-        "Subnets": {
-          "Ref": "VpcPublicParam",
         },
         "Tags": [
           {
@@ -553,42 +500,56 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
             "Value": "CODE",
           },
         ],
-        "Type": "application",
-      },
-      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
-    },
-    "FargateServiceWithClusterLBPublicListenerC7225768": {
-      "Properties": {
-        "Certificates": [
-          {
-            "CertificateArn": {
-              "Ref": "CertificateCdkplaygroundecsD6C69B43",
-            },
-          },
-        ],
-        "DefaultActions": [
-          {
-            "TargetGroupArn": {
-              "Ref": "FargateServiceWithClusterLBPublicListenerECSGroupC7B6A4A8",
-            },
-            "Type": "forward",
-          },
-        ],
-        "LoadBalancerArn": {
-          "Ref": "FargateServiceWithClusterLBC0F3A1A2",
+        "TaskDefinition": {
+          "Ref": "EcsTaskDefinition63157ED3",
         },
-        "Port": 443,
-        "Protocol": "HTTPS",
       },
-      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+      "Type": "AWS::ECS::Service",
     },
-    "FargateServiceWithClusterLBPublicListenerECSGroupC7B6A4A8": {
+    "EcsServiceSecurityGroup8FDFD52F": {
+      "DependsOn": [
+        "EcsTaskDefinitionTaskRoleB7B6D8DD",
+      ],
+      "Properties": {
+        "GroupDescription": "CdkPlayground-CODE/EcsService/SecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcIdParam",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "EcsTargetGroup06D481F9": {
       "Properties": {
         "HealthCheckIntervalSeconds": 10,
         "HealthCheckPath": "/healthcheck",
         "HealthCheckTimeoutSeconds": 5,
         "HealthyThresholdCount": 5,
-        "Port": 80,
+        "Port": 9000,
         "Protocol": "HTTP",
         "Tags": [
           {
@@ -622,196 +583,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       },
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
     },
-    "FargateServiceWithClusterLBSecurityGroupC2837562": {
-      "Properties": {
-        "GroupDescription": "Automatically created Security Group for ELB CdkPlaygroundCODEFargateServiceWithClusterLB0054D6CB",
-        "SecurityGroupIngress": [
-          {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow from anyone on port 443",
-            "FromPort": 443,
-            "IpProtocol": "tcp",
-            "ToPort": 443,
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/cdk-playground",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-        "VpcId": {
-          "Ref": "VpcIdParam",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
-    "FargateServiceWithClusterLBSecurityGrouptoCdkPlaygroundCODEFargateServiceWithClusterServiceSecurityGroup9E89F2FB9000E419D184": {
-      "Properties": {
-        "Description": "Load balancer to target",
-        "DestinationSecurityGroupId": {
-          "Fn::GetAtt": [
-            "FargateServiceWithClusterServiceSecurityGroupC199044E",
-            "GroupId",
-          ],
-        },
-        "FromPort": 9000,
-        "GroupId": {
-          "Fn::GetAtt": [
-            "FargateServiceWithClusterLBSecurityGroupC2837562",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "ToPort": 9000,
-      },
-      "Type": "AWS::EC2::SecurityGroupEgress",
-    },
-    "FargateServiceWithClusterServiceEC3A63FF": {
-      "DependsOn": [
-        "FargateServiceWithClusterLBPublicListenerECSGroupC7B6A4A8",
-        "FargateServiceWithClusterLBPublicListenerC7225768",
-        "FargateServiceWithClusterTaskDefTaskRole6DACF8B7",
-      ],
-      "Properties": {
-        "Cluster": {
-          "Ref": "EcsDefaultClusterMnL3mNNYNVpc18E0451A",
-        },
-        "DeploymentConfiguration": {
-          "Alarms": {
-            "AlarmNames": [],
-            "Enable": false,
-            "Rollback": false,
-          },
-          "MaximumPercent": 200,
-          "MinimumHealthyPercent": 50,
-        },
-        "EnableECSManagedTags": false,
-        "HealthCheckGracePeriodSeconds": 60,
-        "LaunchType": "FARGATE",
-        "LoadBalancers": [
-          {
-            "ContainerName": "cdk-playground",
-            "ContainerPort": 9000,
-            "TargetGroupArn": {
-              "Ref": "FargateServiceWithClusterLBPublicListenerECSGroupC7B6A4A8",
-            },
-          },
-        ],
-        "NetworkConfiguration": {
-          "AwsvpcConfiguration": {
-            "AssignPublicIp": "DISABLED",
-            "SecurityGroups": [
-              {
-                "Fn::GetAtt": [
-                  "FargateServiceWithClusterServiceSecurityGroupC199044E",
-                  "GroupId",
-                ],
-              },
-            ],
-            "Subnets": {
-              "Ref": "VpcPrivateParam",
-            },
-          },
-        },
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/cdk-playground",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-        "TaskDefinition": {
-          "Ref": "FargateServiceWithClusterTaskDefADD1A9C3",
-        },
-      },
-      "Type": "AWS::ECS::Service",
-    },
-    "FargateServiceWithClusterServiceSecurityGroupC199044E": {
-      "DependsOn": [
-        "FargateServiceWithClusterTaskDefTaskRole6DACF8B7",
-      ],
-      "Properties": {
-        "GroupDescription": "CdkPlayground-CODE/FargateServiceWithCluster/Service/SecurityGroup",
-        "SecurityGroupEgress": [
-          {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow all outbound traffic by default",
-            "IpProtocol": "-1",
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/cdk-playground",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-        "VpcId": {
-          "Ref": "VpcIdParam",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
-    "FargateServiceWithClusterServiceSecurityGroupfromCdkPlaygroundCODEFargateServiceWithClusterLBSecurityGroup8854CFAF900044BA2FDA": {
-      "DependsOn": [
-        "FargateServiceWithClusterTaskDefTaskRole6DACF8B7",
-      ],
-      "Properties": {
-        "Description": "Load balancer to target",
-        "FromPort": 9000,
-        "GroupId": {
-          "Fn::GetAtt": [
-            "FargateServiceWithClusterServiceSecurityGroupC199044E",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": {
-          "Fn::GetAtt": [
-            "FargateServiceWithClusterLBSecurityGroupC2837562",
-            "GroupId",
-          ],
-        },
-        "ToPort": 9000,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
-    },
-    "FargateServiceWithClusterTaskDefADD1A9C3": {
+    "EcsTaskDefinition63157ED3": {
       "Properties": {
         "ContainerDefinitions": [
           {
@@ -835,10 +607,10 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "FargateServiceWithClusterTaskDefcdkplaygroundLogGroup4AEF846A",
+                  "Ref": "EcsTaskDefinitioncdkplaygroundLogGroupF3F5A754",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "FargateServiceWithCluster",
+                "awslogs-stream-prefix": "cdk-playground-ecs",
               },
             },
             "Name": "cdk-playground",
@@ -853,11 +625,11 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         "Cpu": "256",
         "ExecutionRoleArn": {
           "Fn::GetAtt": [
-            "FargateServiceWithClusterTaskDefExecutionRole4ED71D3B",
+            "EcsTaskDefinitionExecutionRoleBE450C73",
             "Arn",
           ],
         },
-        "Family": "CdkPlaygroundCODEFargateServiceWithClusterTaskDef754180B4",
+        "Family": "CdkPlaygroundCODEEcsTaskDefinition427433B1",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -883,14 +655,14 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "FargateServiceWithClusterTaskDefTaskRole6DACF8B7",
+            "EcsTaskDefinitionTaskRoleB7B6D8DD",
             "Arn",
           ],
         },
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "FargateServiceWithClusterTaskDefExecutionRole4ED71D3B": {
+    "EcsTaskDefinitionExecutionRoleBE450C73": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -925,7 +697,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "FargateServiceWithClusterTaskDefExecutionRoleDefaultPolicy390D6692": {
+    "EcsTaskDefinitionExecutionRoleDefaultPolicy1611A942": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -966,7 +738,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "FargateServiceWithClusterTaskDefcdkplaygroundLogGroup4AEF846A",
+                  "EcsTaskDefinitioncdkplaygroundLogGroupF3F5A754",
                   "Arn",
                 ],
               },
@@ -974,16 +746,16 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "FargateServiceWithClusterTaskDefExecutionRoleDefaultPolicy390D6692",
+        "PolicyName": "EcsTaskDefinitionExecutionRoleDefaultPolicy1611A942",
         "Roles": [
           {
-            "Ref": "FargateServiceWithClusterTaskDefExecutionRole4ED71D3B",
+            "Ref": "EcsTaskDefinitionExecutionRoleBE450C73",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "FargateServiceWithClusterTaskDefTaskRole6DACF8B7": {
+    "EcsTaskDefinitionTaskRoleB7B6D8DD": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -1018,7 +790,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "FargateServiceWithClusterTaskDefcdkplaygroundLogGroup4AEF846A": {
+    "EcsTaskDefinitioncdkplaygroundLogGroupF3F5A754": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "Tags": [
@@ -1242,8 +1014,21 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         ],
         "DefaultActions": [
           {
-            "TargetGroupArn": {
-              "Ref": "TargetGroupCdkplayground7A453FC2",
+            "ForwardConfig": {
+              "TargetGroups": [
+                {
+                  "TargetGroupArn": {
+                    "Ref": "TargetGroupCdkplayground7A453FC2",
+                  },
+                  "Weight": 50,
+                },
+                {
+                  "TargetGroupArn": {
+                    "Ref": "EcsTargetGroup06D481F9",
+                  },
+                  "Weight": 50,
+                },
+              ],
             },
             "Type": "forward",
           },
@@ -1482,7 +1267,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         "PolicyName": "parameter-store-read-policy",
         "Roles": [
           {
-            "Ref": "FargateServiceWithClusterTaskDefTaskRole6DACF8B7",
+            "Ref": "EcsTaskDefinitionTaskRoleB7B6D8DD",
           },
         ],
       },
