@@ -185,6 +185,8 @@ export class CdkPlayground extends GuStack {
 				vpc,
 				protocol: ApplicationProtocol.HTTPS,
 				certificate,
+				// Can pass this in from the EC2 app but we end up with 2 listeners for port 443; presumably this won't work
+				loadBalancer,
 				// healthCheckGracePeriod - should we define this? AWS CDK is defaulting to 1 minute
 				// https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service_definition_parameters.html#sd-networkconfiguration
 				taskImageOptions: {
