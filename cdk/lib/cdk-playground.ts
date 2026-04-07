@@ -220,7 +220,11 @@ export class CdkPlayground extends GuStack {
 
 		ecsTargetGroup.addTarget(ecsService);
 
-		// In the future we could do this within the pattern code, so we wouldn't need escape hatches
+		// If we build this into the pattern we should be able to modify GuHttpsApplicationListener to do something
+		// along these lines but in a cleaner way
+		listener.addTargetGroups('AddEcsTargetGroup', {
+			targetGroups: [ecsTargetGroup],
+		});
 		const cfnListener = listener.node.defaultChild as CfnListener;
 		cfnListener.defaultActions = [
 			{

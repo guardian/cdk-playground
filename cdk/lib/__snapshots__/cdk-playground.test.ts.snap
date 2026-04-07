@@ -440,6 +440,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
     "EcsService81FC6EF6": {
       "DependsOn": [
         "EcsTaskDefinitionTaskRoleB7B6D8DD",
+        "ListenerCdkplaygroundA8D9CA6F",
       ],
       "Properties": {
         "Cluster": {
@@ -542,6 +543,30 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
+    },
+    "EcsServiceSecurityGroupfromCdkPlaygroundCODELoadBalancerCdkplaygroundSecurityGroup0DBDF6109000264BBAE2": {
+      "DependsOn": [
+        "EcsTaskDefinitionTaskRoleB7B6D8DD",
+      ],
+      "Properties": {
+        "Description": "Load balancer to target",
+        "FromPort": 9000,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "EcsServiceSecurityGroup8FDFD52F",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+            "GroupId",
+          ],
+        },
+        "ToPort": 9000,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
     },
     "EcsTargetGroup06D481F9": {
       "Properties": {
@@ -1149,6 +1174,27 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
+    },
+    "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEEcsServiceSecurityGroup0CE266049000AE7040B8": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": {
+          "Fn::GetAtt": [
+            "EcsServiceSecurityGroup8FDFD52F",
+            "GroupId",
+          ],
+        },
+        "FromPort": 9000,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 9000,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
     },
     "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63": {
       "Properties": {
