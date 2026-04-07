@@ -4,6 +4,7 @@ import { GuCertificate } from '@guardian/cdk/lib/constructs/acm';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuParameter, GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
+import { GuHttpsEgressSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { GuParameterStoreReadPolicy } from '@guardian/cdk/lib/constructs/iam';
 import { GuEc2AppExperimental } from '@guardian/cdk/lib/experimental/patterns/ec2-app';
 import type { App } from 'aws-cdk-lib';
@@ -160,7 +161,6 @@ export class CdkPlayground extends GuStack {
 
 		// ## Potential Issues
 		// * Load balancer deletion protection is false (to match pattern this should be true)
-		// * Allows all outbound traffic by default (to match pattern this would be HTTPs only)
 		// * Logging - ships to CloudWatch by default and https://github.com/guardian/cloudwatch-logs-management can be
 		//   configured to pick up from there
 		// * Deployment?
@@ -184,6 +184,13 @@ export class CdkPlayground extends GuStack {
 			{
 				vpc,
 				protocol: ApplicationProtocol.HTTPS,
+				// By default, AWS will create a new security group which allows all outbound traffic
+				// We don't want this so explicitly allow outbound HTTPS only
+				// This is what we do for the current GuEc2App pattern:
+				// https://github.com/guardian/cdk/blob/3b5688637024642055ed0bf576f668e56e40830d/src/constructs/autoscaling/asg.ts#L143-L145
+				securityGroups: [
+					GuHttpsEgressSecurityGroup.forVpc(this, { app: ecsApp, vpc }),
+				],
 				certificate,
 				// healthCheckGracePeriod - should we define this? AWS CDK is defaulting to 1 minute
 				// https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service_definition_parameters.html#sd-networkconfiguration

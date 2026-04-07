@@ -30,6 +30,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "GuParameter",
       "GuParameter",
       "GuCertificate",
+      "GuHttpsEgressSecurityGroup",
       "GuParameterStoreReadPolicy",
       "GuCname",
       "GuApiLambda",
@@ -658,12 +659,12 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "FargateServiceWithClusterLBSecurityGrouptoCdkPlaygroundCODEFargateServiceWithClusterServiceSecurityGroup9E89F2FB9000E419D184": {
+    "FargateServiceWithClusterLBSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C90002EEA96AE": {
       "Properties": {
         "Description": "Load balancer to target",
         "DestinationSecurityGroupId": {
           "Fn::GetAtt": [
-            "FargateServiceWithClusterServiceSecurityGroupC199044E",
+            "GuHttpsEgressSecurityGroupCdkplaygroundecs59F0C490",
             "GroupId",
           ],
         },
@@ -716,7 +717,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
             "SecurityGroups": [
               {
                 "Fn::GetAtt": [
-                  "FargateServiceWithClusterServiceSecurityGroupC199044E",
+                  "GuHttpsEgressSecurityGroupCdkplaygroundecs59F0C490",
                   "GroupId",
                 ],
               },
@@ -749,67 +750,6 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         },
       },
       "Type": "AWS::ECS::Service",
-    },
-    "FargateServiceWithClusterServiceSecurityGroupC199044E": {
-      "DependsOn": [
-        "FargateServiceWithClusterTaskDefTaskRole6DACF8B7",
-      ],
-      "Properties": {
-        "GroupDescription": "CdkPlayground-CODE/FargateServiceWithCluster/Service/SecurityGroup",
-        "SecurityGroupEgress": [
-          {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow all outbound traffic by default",
-            "IpProtocol": "-1",
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/cdk-playground",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-        "VpcId": {
-          "Ref": "VpcIdParam",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
-    "FargateServiceWithClusterServiceSecurityGroupfromCdkPlaygroundCODEFargateServiceWithClusterLBSecurityGroup8854CFAF900044BA2FDA": {
-      "DependsOn": [
-        "FargateServiceWithClusterTaskDefTaskRole6DACF8B7",
-      ],
-      "Properties": {
-        "Description": "Load balancer to target",
-        "FromPort": 9000,
-        "GroupId": {
-          "Fn::GetAtt": [
-            "FargateServiceWithClusterServiceSecurityGroupC199044E",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": {
-          "Fn::GetAtt": [
-            "FargateServiceWithClusterLBSecurityGroupC2837562",
-            "GroupId",
-          ],
-        },
-        "ToPort": 9000,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
     },
     "FargateServiceWithClusterTaskDefADD1A9C3": {
       "Properties": {
@@ -1114,6 +1054,67 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
+    },
+    "GuHttpsEgressSecurityGroupCdkplaygroundecs59F0C490": {
+      "Properties": {
+        "GroupDescription": "Allow all outbound HTTPS traffic",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound HTTPS traffic",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground-ecs",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcIdParam",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "GuHttpsEgressSecurityGroupCdkplaygroundecsfromCdkPlaygroundCODEFargateServiceWithClusterLBSecurityGroup8854CFAF9000045A2181": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "FromPort": 9000,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "GuHttpsEgressSecurityGroupCdkplaygroundecs59F0C490",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "FargateServiceWithClusterLBSecurityGroupC2837562",
+            "GroupId",
+          ],
+        },
+        "ToPort": 9000,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
     },
     "GuHttpsEgressSecurityGroupCdkplaygroundfromCdkPlaygroundCODELoadBalancerCdkplaygroundSecurityGroup0DBDF6109000EA378CBA": {
       "Properties": {
