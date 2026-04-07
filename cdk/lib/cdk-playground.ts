@@ -196,6 +196,7 @@ export class CdkPlayground extends GuStack {
 		);
 
 		// AWS::ElasticLoadBalancingV2::TargetGroup (can now be wired up with existing load balancer)
+		// TODO - can we use the GuCDK construct here?
 		const ecsTargetGroup = new ApplicationTargetGroup(this, 'EcsTargetGroup', {
 			vpc,
 			port: 9000,
