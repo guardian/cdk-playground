@@ -27,15 +27,17 @@ lazy val root = (project in file("."))
       "-unchecked",
       "-Xfatal-warnings"
     ),
-    Universal / javaOptions ++= Seq(
-      s"-Dpidfile.path=/dev/null",
-      s"-J-Dlogs.home=/var/log/${packageName.value}",
-      s"-J-Xlog:gc*:file=/var/log/${packageName.value}/gc.log:time,uptime,level,tags",
-    ),
 
-    libraryDependencies ++= jacksonOverrides
-      ++ akkaSerializationJacksonOverrides
-      ++ Seq(
+    assemblyMergeStrategy := {
+      case PathList("META-INF", "services", _*) => MergeStrategy.first
+      case PathList("META-INF", xs @ _*)        => MergeStrategy.discard
+      case "reference.conf"                     => MergeStrategy.concat
+      case _                                    => MergeStrategy.first
+    },
+
+    libraryDependencies ++= jacksonOverrides ++
+      akkaSerializationJacksonOverrides ++
+      Seq(
         "net.logstash.logback" % "logstash-logback-encoder" % "8.1",
         // Transient dependency of Play. No newer version of Play 2.9 or Play 3.0 with this vulnerability fixed.
         "ch.qos.logback" % "logback-classic" % "1.5.32",
