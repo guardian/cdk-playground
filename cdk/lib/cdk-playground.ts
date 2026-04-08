@@ -140,7 +140,7 @@ export class CdkPlayground extends GuStack {
 			'Vpc',
 			{
 				vpcId: vpcFromEc2AppPattern.vpcId,
-				// We have to provide public subnet ids to get passed a validation error, but they are unused
+				// We have to provide public subnet ids to avoid a validation error, but they are unused
 				publicSubnetIds: [''],
 				// This seems to be the important bit that is missing from the IVpc that the pattern provides
 				privateSubnetIds: privateSubnetIds.valueAsList,
