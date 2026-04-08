@@ -223,9 +223,13 @@ export class CdkPlayground extends GuStack {
 
 		// If we build this into the pattern we should be able to modify GuHttpsApplicationListener to do something
 		// along these lines but in a cleaner way
+
+		// This creates the requisite ingress/egress rules between the load balancer and the targets
 		listener.addTargetGroups('AddEcsTargetGroup', {
 			targetGroups: [ecsTargetGroup],
 		});
+
+		// And this splits the traffic evenly between EC2 and ECS
 		const cfnListener = listener.node.defaultChild as CfnListener;
 		cfnListener.defaultActions = [
 			{
