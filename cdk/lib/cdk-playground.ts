@@ -163,8 +163,7 @@ export class CdkPlayground extends GuStack {
 			// buildIdentifier,
 		);
 
-		// ## Potential ECS Issues
-		// * Load balancer deletion protection is false (to match pattern this should be true)
+		// ## TODO
 		// * Logging - ships to CloudWatch by default and https://github.com/guardian/cloudwatch-logs-management can be
 		//   configured to pick up from there
 		// * Deployment?
