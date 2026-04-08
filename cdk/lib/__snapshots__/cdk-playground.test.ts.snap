@@ -553,7 +553,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         "TargetType": "ip",
         "UnhealthyThresholdCount": 2,
         "VpcId": {
-          "Ref": "VpcIdParam",
+          "Ref": "VpcId",
         },
       },
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
@@ -897,7 +897,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
           },
         ],
         "VpcId": {
-          "Ref": "VpcIdParam",
+          "Ref": "VpcId",
         },
       },
       "Type": "AWS::EC2::SecurityGroup",

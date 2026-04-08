@@ -56,10 +56,11 @@ export class CdkPlayground extends GuStack {
 		const ec2App = 'cdk-playground';
 
 		const {
-			loadBalancer,
 			autoScalingGroup,
 			listener,
+			loadBalancer,
 			targetGroup: ec2TargetGroup,
+			vpc: vpcFromEc2AppPattern,
 		} = new GuEc2AppExperimental(this, {
 			buildIdentifier,
 			applicationPort: 9000,
@@ -145,13 +146,22 @@ export class CdkPlayground extends GuStack {
 			type: 'List<String>',
 		});
 
-		// Trying to use the vpc that is available via the pattern fails with the following error:
-		// ValidationError: There are no 'Public' subnet groups in this VPC. Available types:
-		const vpc = Vpc.fromVpcAttributes(this, 'Vpc', {
-			vpcId: vpcId.valueAsString,
-			publicSubnetIds: publicSubnetIds.valueAsList,
-			privateSubnetIds: privateSubnetIds.valueAsList,
-			availabilityZones: [''], // The type system forces us to provide this but it doesn't actually seem to be needed
+		const vpcThatEcsClusterConstructWillAccept = Vpc.fromVpcAttributes(
+			this,
+			'Vpc',
+			{
+				vpcId: vpcId.valueAsString,
+				publicSubnetIds: publicSubnetIds.valueAsList,
+				privateSubnetIds: privateSubnetIds.valueAsList,
+				availabilityZones: [''], // The type system forces us to provide this, but it doesn't actually seem to be needed
+			},
+		);
+
+		// AWS::ECS::Cluster
+		const cluster = new Cluster(this, 'EcsCluster', {
+			// Trying to use vpcFromEc2AppPattern fails with the following error:
+			// ValidationError: There are no 'Public' subnet groups in this VPC. Available types:
+			vpc: vpcThatEcsClusterConstructWillAccept,
 		});
 
 		// Need to figure out how to make this cross-account, but this is fine for
@@ -162,14 +172,6 @@ export class CdkPlayground extends GuStack {
 			'bd1737b461371a7e956eae24f12188946946c55f',
 			// buildIdentifier,
 		);
-
-		// ## TODO
-		// * Logging - ships to CloudWatch by default and https://github.com/guardian/cloudwatch-logs-management can be
-		//   configured to pick up from there
-		// * Deployment?
-
-		// AWS::ECS::Cluster
-		const cluster = new Cluster(this, 'EcsCluster', { vpc });
 
 		// AWS::ECS::TaskDefinition
 		// AWS::IAM::Role ('execution role' - used for pulling image etc.)
@@ -195,7 +197,7 @@ export class CdkPlayground extends GuStack {
 			this,
 			'EcsTargetGroup',
 			{
-				vpc,
+				vpc: vpcFromEc2AppPattern,
 				app: ecsApp,
 				port: 9000,
 			},
@@ -210,7 +212,10 @@ export class CdkPlayground extends GuStack {
 			// This is what we do for the current GuEc2App pattern:
 			// https://github.com/guardian/cdk/blob/3b5688637024642055ed0bf576f668e56e40830d/src/constructs/autoscaling/asg.ts#L143-L145
 			securityGroups: [
-				GuHttpsEgressSecurityGroup.forVpc(this, { app: ecsApp, vpc }),
+				GuHttpsEgressSecurityGroup.forVpc(this, {
+					app: ecsApp,
+					vpc: vpcFromEc2AppPattern,
+				}),
 			],
 		});
 
@@ -239,6 +244,11 @@ export class CdkPlayground extends GuStack {
 				},
 			},
 		];
+
+		// ## TODO for ECS infrastructure
+		// * Logging - ships to CloudWatch by default and https://github.com/guardian/cloudwatch-logs-management can be
+		//   configured to pick up from there
+		// * Deployment?
 
 		const lambdaApp = 'cdk-playground-lambda';
 
