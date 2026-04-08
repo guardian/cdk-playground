@@ -50,7 +50,11 @@ export class CdkPlayground extends GuStack {
 
 		const ec2App = 'cdk-playground';
 
-		const { loadBalancer, autoScalingGroup } = new GuEc2AppExperimental(this, {
+		const {
+			loadBalancer,
+			autoScalingGroup,
+			vpc: vpcFromEc2AppPattern,
+		} = new GuEc2AppExperimental(this, {
 			buildIdentifier,
 			applicationPort: 9000,
 			app: ec2App,
@@ -116,33 +120,32 @@ export class CdkPlayground extends GuStack {
 
 		const ecsApp = 'cdk-playground-ecs';
 
-		// The EC2 app pattern hides all of this VPC wiring for us
-		const vpcId = new GuParameter(this, 'VpcIdParam', {
-			fromSSM: true,
-			default: `/account/vpc/primary/id`,
-			description: 'The VPC to deploy the structuriser to',
-		});
-
-		const publicSubnetIds = new GuParameter(this, 'VpcPublicParam', {
+		const publicSubnetIds = new GuParameter(this, 'VpcPublicSubnetsParam', {
 			fromSSM: true,
 			default: '/account/vpc/primary/subnets/public',
 			type: 'List<String>',
 		});
 
-		const privateSubnetIds = new GuParameter(this, 'VpcPrivateParam', {
+		const privateSubnetIds = new GuParameter(this, 'VpcPrivateSubnetsParam', {
 			fromSSM: true,
 			default: '/account/vpc/primary/subnets/private',
 			type: 'List<String>',
 		});
 
-		// Trying to use the vpc that is available via the pattern fails with the following error:
+		// Trying to use vpcFromEc2AppPattern fails with the following error:
 		// ValidationError: There are no 'Public' subnet groups in this VPC. Available types:
-		const vpc = Vpc.fromVpcAttributes(this, 'Vpc', {
-			vpcId: vpcId.valueAsString,
-			publicSubnetIds: publicSubnetIds.valueAsList,
-			privateSubnetIds: privateSubnetIds.valueAsList,
-			availabilityZones: [''], // The type system forces us to provide this but it doesn't actually seem to be needed
-		});
+		const vpcThatEcsClusterConstructWillAccept = Vpc.fromVpcAttributes(
+			this,
+			'Vpc',
+			{
+				vpcId: vpcFromEc2AppPattern.vpcId,
+				// This is required in this case where the ECS pattern creates a public load balancer
+				publicSubnetIds: publicSubnetIds.valueAsList,
+				// This seems to be the important bit that is missing from the IVpc that the pattern provides
+				privateSubnetIds: privateSubnetIds.valueAsList,
+				availabilityZones: [''], // The type system forces us to provide this, but it doesn't actually seem to be needed
+			},
+		);
 
 		// Need to figure out how to make this cross-account, but this is fine for
 		// the simple case where the app and the repo are both in Deploy Tools
@@ -182,14 +185,17 @@ export class CdkPlayground extends GuStack {
 			this,
 			'FargateServiceWithCluster',
 			{
-				vpc,
+				vpc: vpcThatEcsClusterConstructWillAccept,
 				protocol: ApplicationProtocol.HTTPS,
 				// By default, AWS will create a new security group which allows all outbound traffic
 				// We don't want this so explicitly allow outbound HTTPS only
 				// This is what we do for the current GuEc2App pattern:
 				// https://github.com/guardian/cdk/blob/3b5688637024642055ed0bf576f668e56e40830d/src/constructs/autoscaling/asg.ts#L143-L145
 				securityGroups: [
-					GuHttpsEgressSecurityGroup.forVpc(this, { app: ecsApp, vpc }),
+					GuHttpsEgressSecurityGroup.forVpc(this, {
+						app: ecsApp,
+						vpc: vpcFromEc2AppPattern,
+					}),
 				],
 				certificate,
 				// healthCheckGracePeriod - should we define this? AWS CDK is defaulting to 1 minute

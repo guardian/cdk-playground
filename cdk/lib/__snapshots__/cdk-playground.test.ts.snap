@@ -28,7 +28,6 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "GuCname",
       "GuParameter",
       "GuParameter",
-      "GuParameter",
       "GuCertificate",
       "GuHttpsEgressSecurityGroup",
       "GuParameterStoreReadPolicy",
@@ -150,16 +149,11 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
-    "VpcIdParam": {
-      "Default": "/account/vpc/primary/id",
-      "Description": "The VPC to deploy the structuriser to",
-      "Type": "AWS::SSM::Parameter::Value<String>",
-    },
-    "VpcPrivateParam": {
+    "VpcPrivateSubnetsParam": {
       "Default": "/account/vpc/primary/subnets/private",
       "Type": "AWS::SSM::Parameter::Value<List<String>>",
     },
-    "VpcPublicParam": {
+    "VpcPublicSubnetsParam": {
       "Default": "/account/vpc/primary/subnets/public",
       "Type": "AWS::SSM::Parameter::Value<List<String>>",
     },
@@ -534,7 +528,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
           },
         ],
         "Subnets": {
-          "Ref": "VpcPublicParam",
+          "Ref": "VpcPublicSubnetsParam",
         },
         "Tags": [
           {
@@ -618,7 +612,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         "TargetType": "ip",
         "UnhealthyThresholdCount": 2,
         "VpcId": {
-          "Ref": "VpcIdParam",
+          "Ref": "VpcId",
         },
       },
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
@@ -654,7 +648,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
           },
         ],
         "VpcId": {
-          "Ref": "VpcIdParam",
+          "Ref": "VpcId",
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
@@ -723,7 +717,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
               },
             ],
             "Subnets": {
-              "Ref": "VpcPrivateParam",
+              "Ref": "VpcPrivateSubnetsParam",
             },
           },
         },
@@ -1090,7 +1084,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
           },
         ],
         "VpcId": {
-          "Ref": "VpcIdParam",
+          "Ref": "VpcId",
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
