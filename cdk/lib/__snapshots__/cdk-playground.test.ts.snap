@@ -27,8 +27,6 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "GuRiffRaffDeploymentIdParameter",
       "GuCname",
       "GuParameter",
-      "GuParameter",
-      "GuParameter",
       "GuParameterStoreReadPolicy",
       "GuApplicationTargetGroup",
       "GuHttpsEgressSecurityGroup",
@@ -125,17 +123,8 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
-    "VpcIdParam": {
-      "Default": "/account/vpc/primary/id",
-      "Description": "The VPC to deploy the structuriser to",
-      "Type": "AWS::SSM::Parameter::Value<String>",
-    },
-    "VpcPrivateParam": {
+    "VpcPrivateSubnetsParam": {
       "Default": "/account/vpc/primary/subnets/private",
-      "Type": "AWS::SSM::Parameter::Value<List<String>>",
-    },
-    "VpcPublicParam": {
-      "Default": "/account/vpc/primary/subnets/public",
       "Type": "AWS::SSM::Parameter::Value<List<String>>",
     },
     "cdkplaygroundPrivateSubnets": {
@@ -481,7 +470,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
               },
             ],
             "Subnets": {
-              "Ref": "VpcPrivateParam",
+              "Ref": "VpcPrivateSubnetsParam",
             },
           },
         },

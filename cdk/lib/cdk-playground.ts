@@ -127,31 +127,22 @@ export class CdkPlayground extends GuStack {
 
 		const ecsApp = 'cdk-playground-ecs';
 
-		// The EC2 app pattern hides all of this VPC wiring for us
-		const vpcId = new GuParameter(this, 'VpcIdParam', {
-			fromSSM: true,
-			default: `/account/vpc/primary/id`,
-			description: 'The VPC to deploy the structuriser to',
-		});
-
-		const publicSubnetIds = new GuParameter(this, 'VpcPublicParam', {
-			fromSSM: true,
-			default: '/account/vpc/primary/subnets/public',
-			type: 'List<String>',
-		});
-
-		const privateSubnetIds = new GuParameter(this, 'VpcPrivateParam', {
+		const privateSubnetIds = new GuParameter(this, 'VpcPrivateSubnetsParam', {
 			fromSSM: true,
 			default: '/account/vpc/primary/subnets/private',
 			type: 'List<String>',
 		});
 
+		// Trying to use vpcFromEc2AppPattern fails with the following error:
+		// ValidationError: There are no 'Public' subnet groups in this VPC. Available types:
 		const vpcThatEcsClusterConstructWillAccept = Vpc.fromVpcAttributes(
 			this,
 			'Vpc',
 			{
-				vpcId: vpcId.valueAsString,
-				publicSubnetIds: publicSubnetIds.valueAsList,
+				vpcId: vpcFromEc2AppPattern.vpcId,
+				// We have to provide public subnet ids to get passed a validation error, but they are unused
+				publicSubnetIds: [''],
+				// This seems to be the important bit that is missing from the IVpc that the pattern provides
 				privateSubnetIds: privateSubnetIds.valueAsList,
 				availabilityZones: [''], // The type system forces us to provide this, but it doesn't actually seem to be needed
 			},
@@ -159,8 +150,8 @@ export class CdkPlayground extends GuStack {
 
 		// AWS::ECS::Cluster
 		const cluster = new Cluster(this, 'EcsCluster', {
-			// Trying to use vpcFromEc2AppPattern fails with the following error:
-			// ValidationError: There are no 'Public' subnet groups in this VPC. Available types:
+			// We have to pass in an IVpc here, but the generated CFN only actually references the private subnets ids when
+			// setting up the ECS service.
 			vpc: vpcThatEcsClusterConstructWillAccept,
 		});
 
