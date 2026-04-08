@@ -48,3 +48,34 @@ jobs:
               - lambda/cdk-playground-lambda.zip
             event-forwarder:
               - cdk/dist/event-forwarder.zip
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6.0.0
+        with:
+          role-to-assume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
+          aws-region: eu-west-1
+          mask-aws-account-id: 'true'
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2.1.1
+        with:
+          mask-password: 'true'
+
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }} # TODO Update https://github.com/guardian/riffraff-platform to add the ECR repository URI as a repository secret. This would allow us to login exactly before push, and no earlier.
+          REPOSITORY: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          BUILD_NUMBER: ${{ github.run_number }}
+          ORIGINAL_BRANCH_NAME: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref || 'unknown' }}
+        run: |
+          # Remove "refs/heads/" prefix from ORIGINAL_BRANCH_NAME
+          TRIMMED_BRANCH_NAME="${ORIGINAL_BRANCH_NAME#refs/heads/}"
+
+          # Replace / with - and export it to make it available to sbt
+          export BRANCH_NAME=${TRIMMED_BRANCH_NAME//\//-}
+
+          sbt Docker/publishLocal
+
+          docker push $REGISTRY/$REPOSITORY --all-tags

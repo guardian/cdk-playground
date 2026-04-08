@@ -15,7 +15,7 @@ val akkaSerializationJacksonOverrides = Seq(
 def env(propName: String): Option[String] = sys.env.get(propName).filter(_.trim.nonEmpty)
 
 lazy val root = (project in file("."))
-  .enablePlugins(PlayScala, BuildInfoPlugin, JDebPackaging, SystemdPlugin)
+  .enablePlugins(PlayScala, BuildInfoPlugin, JDebPackaging, SystemdPlugin, DockerPlugin, AshScriptPlugin)
   .settings(
     name := """cdk-playground""",
     version := "1.0-SNAPSHOT",
@@ -29,13 +29,11 @@ lazy val root = (project in file("."))
     ),
     Universal / javaOptions ++= Seq(
       s"-Dpidfile.path=/dev/null",
-      s"-J-Dlogs.home=/var/log/${packageName.value}",
-      s"-J-Xlog:gc*:file=/var/log/${packageName.value}/gc.log:time,uptime,level,tags",
     ),
 
-    libraryDependencies ++= jacksonOverrides
-      ++ akkaSerializationJacksonOverrides
-      ++ Seq(
+    libraryDependencies ++= jacksonOverrides ++
+      akkaSerializationJacksonOverrides ++
+      Seq(
         "net.logstash.logback" % "logstash-logback-encoder" % "8.1",
         // Transient dependency of Play. No newer version of Play 2.9 or Play 3.0 with this vulnerability fixed.
         "ch.qos.logback" % "logback-classic" % "1.5.32",
@@ -62,5 +60,20 @@ lazy val root = (project in file("."))
     buildInfoOptions := Seq(
       BuildInfoOption.Traits("management.BuildInfo"),
       BuildInfoOption.ToJson
-    )
+    ),
+
+    dockerBaseImage := "amazoncorretto:21-alpine",
+    dockerBuildxPlatforms := Seq("linux/amd64"),
+    dockerAliases := Seq(
+      "sha"    -> env("COMMIT_SHA").getOrElse("dev"),
+      "build"  -> env("BUILD_NUMBER").getOrElse("dev"),
+      "branch" -> env("BRANCH_NAME").getOrElse("dev")
+    ).map { case (prefix, value) =>
+      DockerAlias(
+        name = name.value,
+        registryHost = Some(s"${env("REGISTRY").getOrElse("dev")}/guardian"),
+        username = None,
+        tag = Some(s"$prefix-$value"),
+      )
+    }
   )
