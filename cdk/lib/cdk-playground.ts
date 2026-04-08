@@ -164,9 +164,8 @@ export class CdkPlayground extends GuStack {
 			domainName: ecsDomainName,
 		});
 
-		// ## Potential Issues
-		// * Load balancer deletion protection is false (to match pattern this should be true)
-		// * Allows all outbound traffic by default (to match pattern this would be HTTPs only)
+		// ## TODO
+		// * This currently allows all outbound traffic by default (to match pattern this would be HTTPs only)
 		// * Logging - ships to CloudWatch by default and https://github.com/guardian/cloudwatch-logs-management can be
 		//   configured to pick up from there
 		// * Deployment?
@@ -179,8 +178,6 @@ export class CdkPlayground extends GuStack {
 		// AWS::IAM::Role ('execution role' - used for pulling image etc. - can pass in your own)
 		// AWS::IAM::Role ('task role' - used for application's runtime permissions e.g. reading config from SSM - can pass in your own)
 		// AWS::IAM::Policy
-		// AWS::ElasticLoadBalancingV2::LoadBalancer (present in GuEc2App; no need to duplicate)
-		// AWS::ElasticLoadBalancingV2::Listener (present in GuEc2App; no need to duplicate)
 		// AWS::ElasticLoadBalancingV2::TargetGroup (present in GuEc2App; need new dedicated group)
 		// AWS::EC2::SecurityGroups and AWS::EC2::SecurityGroupEgress / AWS::EC2::SecurityGroupIngress (from memory, aws-cdk auto-generates these anyway)
 
