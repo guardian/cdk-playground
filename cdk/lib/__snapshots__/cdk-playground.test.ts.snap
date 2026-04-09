@@ -563,7 +563,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/cdk-playground:bd1737b461371a7e956eae24f12188946946c55f",
+                  "/guardian/cdk-playground:build-TEST",
                 ],
               ],
             },
