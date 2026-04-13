@@ -125,7 +125,6 @@ export class CdkPlayground extends GuStack {
 					containerName: 'cdk-playground',
 					containerPort: 9000,
 				},
-				desiredCount: 3,
 				minHealthyPercent: 100,
 				circuitBreaker: {
 					enable: true,
@@ -145,6 +144,15 @@ export class CdkPlayground extends GuStack {
 			timeout: Duration.seconds(5),
 			healthyThresholdCount: 5,
 			unhealthyThresholdCount: 2,
+		});
+
+		const scalableTarget = loadBalancedEcs.service.autoScaleTaskCount({
+			minCapacity: 3,
+			maxCapacity: 12,
+		});
+
+		scalableTarget.scaleOnCpuUtilization('CpuScaling', {
+			targetUtilizationPercent: 50,
 		});
 
 		// Let's create a separate GuCname for now, but we could use the existing one to perform a migration if desired

@@ -321,7 +321,6 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         "DeploymentController": {
           "Type": "ECS",
         },
-        "DesiredCount": 3,
         "EnableECSManagedTags": false,
         "HealthCheckGracePeriodSeconds": 60,
         "LaunchType": "FARGATE",
@@ -373,6 +372,71 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         },
       },
       "Type": "AWS::ECS::Service",
+    },
+    "FargateServiceWithClusterServiceTaskCountTarget26482495": {
+      "DependsOn": [
+        "FargateServiceWithClusterTaskDefTaskRole6DACF8B7",
+      ],
+      "Properties": {
+        "MaxCapacity": 12,
+        "MinCapacity": 3,
+        "ResourceId": {
+          "Fn::Join": [
+            "",
+            [
+              "service/",
+              {
+                "Ref": "EcsDefaultClusterMnL3mNNYNVpc18E0451A",
+              },
+              "/",
+              {
+                "Fn::GetAtt": [
+                  "FargateServiceWithClusterServiceEC3A63FF",
+                  "Name",
+                ],
+              },
+            ],
+          ],
+        },
+        "RoleARN": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":iam::",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService",
+            ],
+          ],
+        },
+        "ScalableDimension": "ecs:service:DesiredCount",
+        "ServiceNamespace": "ecs",
+      },
+      "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
+    },
+    "FargateServiceWithClusterServiceTaskCountTargetCpuScalingF815F376": {
+      "DependsOn": [
+        "FargateServiceWithClusterTaskDefTaskRole6DACF8B7",
+      ],
+      "Properties": {
+        "PolicyName": "CdkPlaygroundCODEFargateServiceWithClusterServiceTaskCountTargetCpuScaling4B6F8169",
+        "PolicyType": "TargetTrackingScaling",
+        "ScalingTargetId": {
+          "Ref": "FargateServiceWithClusterServiceTaskCountTarget26482495",
+        },
+        "TargetTrackingScalingPolicyConfiguration": {
+          "PredefinedMetricSpecification": {
+            "PredefinedMetricType": "ECSServiceAverageCPUUtilization",
+          },
+          "TargetValue": 50,
+        },
+      },
+      "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
     },
     "FargateServiceWithClusterTaskDefADD1A9C3": {
       "Properties": {
