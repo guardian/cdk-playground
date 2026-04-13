@@ -1,26 +1,19 @@
-import { GuApiLambda } from '@guardian/cdk';
-import { AccessScope } from '@guardian/cdk/lib/constants/access';
 import { GuCertificate } from '@guardian/cdk/lib/constructs/acm';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuParameter, GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
-import { GuHttpsEgressSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
-import { GuParameterStoreReadPolicy } from '@guardian/cdk/lib/constructs/iam';
-import { GuEc2AppExperimental } from '@guardian/cdk/lib/experimental/patterns/ec2-app';
-import type { App } from 'aws-cdk-lib';
-import { CfnOutput, Duration } from 'aws-cdk-lib';
-import { CfnScalingPolicy } from 'aws-cdk-lib/aws-autoscaling';
 import {
-	InstanceClass,
-	InstanceSize,
-	InstanceType,
-	Vpc,
-} from 'aws-cdk-lib/aws-ec2';
+	GuHttpsEgressSecurityGroup,
+	GuVpc,
+} from '@guardian/cdk/lib/constructs/ec2';
+import { GuParameterStoreReadPolicy } from '@guardian/cdk/lib/constructs/iam';
+import type { App } from 'aws-cdk-lib';
+import { Duration } from 'aws-cdk-lib';
+import { Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Repository } from 'aws-cdk-lib/aws-ecr';
 import { ContainerImage } from 'aws-cdk-lib/aws-ecs';
 import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns';
 import { ApplicationProtocol } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
-import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
 interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 	/**
@@ -44,80 +37,7 @@ export class CdkPlayground extends GuStack {
 
 		const { buildIdentifier } = props;
 
-		const ec2AppDomainName = 'cdk-playground.code.dev-gutools.co.uk';
 		const ecsDomainName = 'cdk-playground-ecs.code.dev-gutools.co.uk';
-		const lambdaDomainName = 'cdk-playground-lambda.code.dev-gutools.co.uk';
-
-		const ec2App = 'cdk-playground';
-
-		const {
-			loadBalancer,
-			autoScalingGroup,
-			vpc: vpcFromEc2AppPattern,
-		} = new GuEc2AppExperimental(this, {
-			buildIdentifier,
-			applicationPort: 9000,
-			app: ec2App,
-			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
-			access: { scope: AccessScope.PUBLIC },
-			userData: {
-				distributable: {
-					fileName: `${ec2App}-${buildIdentifier}.deb`,
-					executionStatement: `dpkg -i /${ec2App}/${ec2App}-${buildIdentifier}.deb`,
-				},
-			},
-			certificateProps: {
-				domainName: ec2AppDomainName,
-			},
-			monitoringConfiguration: { noMonitoring: true },
-			scaling: {
-				minimumInstances: 1,
-				maximumInstances: 10,
-			},
-			applicationLogging: {
-				enabled: true,
-				systemdUnitName: 'cdk-playground',
-			},
-			imageRecipe: 'arm64-jammy-java21-deploy-infrastructure',
-			instanceMetricGranularity: '5Minute',
-		});
-
-		const scaleOutPolicy = new CfnScalingPolicy(autoScalingGroup, 'ScaleOut', {
-			autoScalingGroupName: autoScalingGroup.autoScalingGroupName,
-			policyType: 'SimpleScaling',
-			adjustmentType: 'ChangeInCapacity',
-			scalingAdjustment: 1,
-		});
-
-		const scaleInPolicy = new CfnScalingPolicy(autoScalingGroup, 'ScaleIn', {
-			autoScalingGroupName: autoScalingGroup.autoScalingGroupName,
-			policyType: 'SimpleScaling',
-			adjustmentType: 'ChangeInCapacity',
-			scalingAdjustment: -1,
-		});
-
-		new CfnOutput(this, 'ScaleOutArn', {
-			key: 'ScaleOutArn',
-			value: scaleOutPolicy.attrArn,
-		});
-
-		new CfnOutput(this, 'ScaleInArn', {
-			key: 'ScaleInArn',
-			value: scaleInPolicy.attrArn,
-		});
-
-		new CfnOutput(this, 'AutoscalingGroupName', {
-			key: 'AutoscalingGroupName',
-			value: autoScalingGroup.autoScalingGroupName,
-		});
-
-		new GuCname(this, 'EC2AppDNS', {
-			app: ec2App,
-			ttl: Duration.hours(1),
-			domainName: ec2AppDomainName,
-			resourceRecord: loadBalancer.loadBalancerDnsName,
-		});
-
 		const ecsApp = 'cdk-playground-ecs';
 
 		const publicSubnetIds = new GuParameter(this, 'VpcPublicSubnetsParam', {
@@ -132,13 +52,15 @@ export class CdkPlayground extends GuStack {
 			type: 'List<String>',
 		});
 
+		const vpc = GuVpc.fromIdParameter(this, 'GuVpc');
+
 		// Trying to use vpcFromEc2AppPattern fails with the following error:
 		// ValidationError: There are no 'Public' subnet groups in this VPC. Available types:
 		const vpcThatEcsClusterConstructWillAccept = Vpc.fromVpcAttributes(
 			this,
 			'Vpc',
 			{
-				vpcId: vpcFromEc2AppPattern.vpcId,
+				vpcId: vpc.vpcId,
 				// This is required in this case where the ECS pattern creates a public load balancer
 				publicSubnetIds: publicSubnetIds.valueAsList,
 				// This seems to be the important bit that is missing from the IVpc that the pattern provides
@@ -192,7 +114,7 @@ export class CdkPlayground extends GuStack {
 				securityGroups: [
 					GuHttpsEgressSecurityGroup.forVpc(this, {
 						app: ecsApp,
-						vpc: vpcFromEc2AppPattern,
+						vpc,
 					}),
 				],
 				certificate,
@@ -203,6 +125,7 @@ export class CdkPlayground extends GuStack {
 					containerName: 'cdk-playground',
 					containerPort: 9000,
 				},
+				desiredCount: 3,
 			},
 		);
 
@@ -225,37 +148,6 @@ export class CdkPlayground extends GuStack {
 			ttl: Duration.minutes(1),
 			domainName: ecsDomainName,
 			resourceRecord: loadBalancedEcs.loadBalancer.loadBalancerDnsName,
-		});
-
-		const lambdaApp = 'cdk-playground-lambda';
-
-		const lambda = new GuApiLambda(this, 'lambda', {
-			fileName: `cdk-playground-lambda.zip`,
-			handler: 'handler.main',
-			runtime: Runtime.NODEJS_24_X,
-			monitoringConfiguration: {
-				noMonitoring: true,
-			},
-			app: lambdaApp,
-			api: {
-				id: `${lambdaApp}-api`,
-				description: lambdaApp,
-			},
-		});
-
-		const domain = lambda.api.addDomainName('domain', {
-			domainName: lambdaDomainName,
-			certificate: new GuCertificate(this, {
-				app: lambdaApp,
-				domainName: lambdaDomainName,
-			}),
-		});
-
-		new GuCname(this, 'LambdaDNS', {
-			app: lambdaApp,
-			ttl: Duration.hours(1),
-			domainName: lambdaDomainName,
-			resourceRecord: domain.domainNameAliasDomainName,
 		});
 	}
 }
