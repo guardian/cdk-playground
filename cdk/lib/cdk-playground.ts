@@ -126,6 +126,7 @@ export class CdkPlayground extends GuStack {
 					containerPort: 9000,
 				},
 				desiredCount: 3,
+				minHealthyPercent: 100,
 			},
 		);
 
