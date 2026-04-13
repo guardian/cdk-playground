@@ -311,8 +311,15 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
             "Enable": false,
             "Rollback": false,
           },
+          "DeploymentCircuitBreaker": {
+            "Enable": true,
+            "Rollback": true,
+          },
           "MaximumPercent": 200,
           "MinimumHealthyPercent": 100,
+        },
+        "DeploymentController": {
+          "Type": "ECS",
         },
         "DesiredCount": 3,
         "EnableECSManagedTags": false,

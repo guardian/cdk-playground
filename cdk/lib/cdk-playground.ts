@@ -127,6 +127,10 @@ export class CdkPlayground extends GuStack {
 				},
 				desiredCount: 3,
 				minHealthyPercent: 100,
+				circuitBreaker: {
+					enable: true,
+					rollback: true,
+				},
 			},
 		);
 
