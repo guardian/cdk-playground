@@ -22,7 +22,7 @@ interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 	buildIdentifier: string;
 }
 
-export class CdkPlayground extends GuStack {
+export class CdkPlaygroundEc2 extends GuStack {
 	constructor(scope: App, id: string, props: CdkPlaygroundProps) {
 		super(scope, id, {
 			...props,
@@ -34,11 +34,10 @@ export class CdkPlayground extends GuStack {
 		const { buildIdentifier } = props;
 
 		const ec2AppDomainName = 'cdk-playground.code.dev-gutools.co.uk';
-		const lambdaDomainName = 'cdk-playground-lambda.code.dev-gutools.co.uk';
 
 		const ec2App = 'cdk-playground';
 
-		const { loadBalancer, autoScalingGroup } = new GuEc2AppExperimental(this, {
+		const { loadBalancer } = new GuEc2AppExperimental(this, {
 			buildIdentifier,
 			applicationPort: 9000,
 			app: ec2App,
@@ -101,7 +100,19 @@ export class CdkPlayground extends GuStack {
 			domainName: ec2AppDomainName,
 			resourceRecord: loadBalancer.loadBalancerDnsName,
 		});
+	}
+}
 
+export class CdkPlaygroundLambda extends GuStack {
+	constructor(scope: App, id: string, props: CdkPlaygroundProps) {
+		super(scope, id, {
+			...props,
+			stack: 'deploy',
+			stage: 'CODE',
+			env: { region: 'eu-west-1' },
+		});
+
+		const lambdaDomainName = 'cdk-playground-lambda.code.dev-gutools.co.uk';
 		const lambdaApp = 'cdk-playground-lambda';
 
 		const lambda = new GuApiLambda(this, 'lambda', {
