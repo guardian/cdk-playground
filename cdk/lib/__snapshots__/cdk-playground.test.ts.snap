@@ -1300,7 +1300,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             ],
           },
         ],
-        "Cpu": "256",
+        "Cpu": "1024",
         "ExecutionRoleArn": {
           "Fn::GetAtt": [
             "EcsTaskDefinitionExecutionRoleBE450C73",
@@ -1308,7 +1308,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           ],
         },
         "Family": "CdkPlaygroundEcsCODEEcsTaskDefinitionF3F230E3",
-        "Memory": "512",
+        "Memory": "2048",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",

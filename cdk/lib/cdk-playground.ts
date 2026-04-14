@@ -196,7 +196,11 @@ export class CdkPlaygroundEcs extends GuStack {
 		// AWS::ECS::TaskDefinition
 		// AWS::IAM::Role ('execution role' - used for pulling image etc.)
 		// AWS::IAM::Role ('task role' - used for application's runtime permissions e.g. reading config from SSM)
-		const taskDefinition = new FargateTaskDefinition(this, 'EcsTaskDefinition');
+		const taskDefinition = new FargateTaskDefinition(
+			this,
+			'EcsTaskDefinition',
+			{ memoryLimitMiB: 2048, cpu: 1024 },
+		);
 
 		taskDefinition.addContainer('cdk-playground', {
 			image,
@@ -205,7 +209,6 @@ export class CdkPlaygroundEcs extends GuStack {
 			logging: LogDriver.awsLogs({
 				streamPrefix: 'cdk-playground-ecs',
 			}),
-			// Memory and cpu values can be defined here if needed
 		});
 
 		// Here's an example of providing custom IAM permissions to the task role. cdk-playground doesn't actually need any
