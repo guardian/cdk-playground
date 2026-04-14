@@ -1,6 +1,10 @@
 import 'source-map-support/register';
 import { GuRoot } from '@guardian/cdk/lib/constructs/root';
-import { CdkPlaygroundEc2, CdkPlaygroundLambda } from '../lib/cdk-playground';
+import {
+	CdkPlaygroundEc2,
+	CdkPlaygroundEcs,
+	CdkPlaygroundLambda,
+} from '../lib/cdk-playground';
 import { EventForwarder } from '../lib/event-forwarder';
 
 const app = new GuRoot();
@@ -14,6 +18,11 @@ const ec2Stack = new CdkPlaygroundEc2(app, 'CdkPlaygroundEc2-CODE', {
 
 new CdkPlaygroundLambda(app, 'CdkPlaygroundLambda-CODE', {
 	cloudFormationStackName: 'deploy-CODE-cdk-playground-lambda',
+	buildIdentifier: process.env.GITHUB_RUN_NUMBER ?? 'DEV',
+});
+
+new CdkPlaygroundEcs(app, 'CdkPlaygroundEcs-CODE', {
+	cloudFormationStackName: 'deploy-CODE-cdk-playground-ecs',
 	buildIdentifier: process.env.GITHUB_RUN_NUMBER ?? 'DEV',
 });
 

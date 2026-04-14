@@ -962,6 +962,15 @@ echo "Launch template last updated by Riff-Raff deployment ID: ",
 }
 `;
 
+exports[`The cdk-playground infrastructure definition matches the snapshot for ECS 1`] = `
+{
+  "Metadata": {
+    "gu:cdk:constructs": [],
+    "gu:cdk:version": "TEST",
+  },
+}
+`;
+
 exports[`The cdk-playground infrastructure definition matches the snapshot for Lambda 1`] = `
 {
   "Metadata": {

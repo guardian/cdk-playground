@@ -115,3 +115,14 @@ export class CdkPlaygroundLambda extends GuStack {
 		});
 	}
 }
+
+export class CdkPlaygroundEcs extends GuStack {
+	constructor(scope: App, id: string, props: CdkPlaygroundProps) {
+		super(scope, id, {
+			...props,
+			stack: 'deploy',
+			stage: 'CODE',
+			env: { region: 'eu-west-1' },
+		});
+	}
+}
