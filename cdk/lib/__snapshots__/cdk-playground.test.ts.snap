@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`The Deploy stack matches the snapshot for CODE 1`] = `
+exports[`The cdk-playground infrastructure definition matches the snapshot for EC2 1`] = `
 {
   "Metadata": {
     "gu:cdk:constructs": [
@@ -26,63 +26,16 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "GuHttpsApplicationListener",
       "GuRiffRaffDeploymentIdParameter",
       "GuCname",
-      "GuApiLambda",
-      "GuCertificate",
-      "GuCname",
-      "GuAsgMinInstancesInServiceParameterExperimental",
     ],
     "gu:cdk:version": "TEST",
   },
   "Outputs": {
-    "AutoscalingGroupName": {
-      "Value": {
-        "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
-      },
-    },
     "LoadBalancerCdkplaygroundDnsName": {
       "Description": "DNS entry for LoadBalancerCdkplayground",
       "Value": {
         "Fn::GetAtt": [
           "LoadBalancerCdkplayground7C6B4D97",
           "DNSName",
-        ],
-      },
-    },
-    "ScaleInArn": {
-      "Value": {
-        "Fn::GetAtt": [
-          "AutoScalingGroupCdkplaygroundScaleIn24F0C6B8",
-          "Arn",
-        ],
-      },
-    },
-    "ScaleOutArn": {
-      "Value": {
-        "Fn::GetAtt": [
-          "AutoScalingGroupCdkplaygroundScaleOutA06BF2EE",
-          "Arn",
-        ],
-      },
-    },
-    "lambdacdkplaygroundlambdaapiEndpoint0E1DFC5F": {
-      "Value": {
-        "Fn::Join": [
-          "",
-          [
-            "https://",
-            {
-              "Ref": "lambdacdkplaygroundlambdaapi061BB942",
-            },
-            ".execute-api.eu-west-1.",
-            {
-              "Ref": "AWS::URLSuffix",
-            },
-            "/",
-            {
-              "Ref": "lambdacdkplaygroundlambdaapiDeploymentStageprod4C07895E",
-            },
-            "/",
-          ],
         ],
       },
     },
@@ -106,9 +59,6 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "Default": "/account/services/logging.stream.name",
       "Description": "SSM parameter containing the Name (not ARN) on the kinesis stream",
       "Type": "AWS::SSM::Parameter::Value<String>",
-    },
-    "MinInstancesInServiceForcdkplayground": {
-      "Type": "Number",
     },
     "RiffRaffDeploymentId": {
       "Description": "Used by Riff-Raff to inject the deployment ID.",
@@ -173,6 +123,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
         "AsgRollingUpdatePolicy2A1DDC6F",
       ],
       "Properties": {
+        "DesiredCapacity": "1",
         "HealthCheckGracePeriod": 120,
         "HealthCheckType": "ELB",
         "LaunchTemplate": {
@@ -245,9 +196,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       "UpdatePolicy": {
         "AutoScalingRollingUpdate": {
           "MaxBatchSize": 10,
-          "MinInstancesInService": {
-            "Ref": "MinInstancesInServiceForcdkplayground",
-          },
+          "MinInstancesInService": 1,
           "MinSuccessfulInstancesPercent": 100,
           "PauseTime": "PT3M",
           "SuspendProcesses": [
@@ -261,28 +210,6 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
           "WaitOnResourceSignals": true,
         },
       },
-    },
-    "AutoScalingGroupCdkplaygroundScaleIn24F0C6B8": {
-      "Properties": {
-        "AdjustmentType": "ChangeInCapacity",
-        "AutoScalingGroupName": {
-          "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
-        },
-        "PolicyType": "SimpleScaling",
-        "ScalingAdjustment": -1,
-      },
-      "Type": "AWS::AutoScaling::ScalingPolicy",
-    },
-    "AutoScalingGroupCdkplaygroundScaleOutA06BF2EE": {
-      "Properties": {
-        "AdjustmentType": "ChangeInCapacity",
-        "AutoScalingGroupName": {
-          "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
-        },
-        "PolicyType": "SimpleScaling",
-        "ScalingAdjustment": 1,
-      },
-      "Type": "AWS::AutoScaling::ScalingPolicy",
     },
     "CertificateCdkplayground47FCF7D9": {
       "DeletionPolicy": "Retain",
@@ -303,42 +230,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
           },
           {
             "Key": "Name",
-            "Value": "CdkPlayground-CODE/CertificateCdkplayground",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-        "ValidationMethod": "DNS",
-      },
-      "Type": "AWS::CertificateManager::Certificate",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "CertificateCdkplaygroundlambda82D0BE4D": {
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "DomainName": "cdk-playground-lambda.code.dev-gutools.co.uk",
-        "Tags": [
-          {
-            "Key": "App",
-            "Value": "cdk-playground-lambda",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/cdk-playground",
-          },
-          {
-            "Key": "Name",
-            "Value": "CdkPlayground-CODE/CertificateCdkplaygroundlambda",
+            "Value": "CdkPlaygroundEc2-CODE/CertificateCdkplayground",
           },
           {
             "Key": "Stack",
@@ -469,7 +361,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "GuHttpsEgressSecurityGroupCdkplaygroundfromCdkPlaygroundCODELoadBalancerCdkplaygroundSecurityGroup0DBDF6109000EA378CBA": {
+    "GuHttpsEgressSecurityGroupCdkplaygroundfromCdkPlaygroundEc2CODELoadBalancerCdkplaygroundSecurityGroup18287D7A9000703932FA": {
       "Properties": {
         "Description": "Load balancer to target",
         "FromPort": 9000,
@@ -568,23 +460,6 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "LambdaDNS": {
-      "Properties": {
-        "Name": "cdk-playground-lambda.code.dev-gutools.co.uk",
-        "RecordType": "CNAME",
-        "ResourceRecords": [
-          {
-            "Fn::GetAtt": [
-              "lambdacdkplaygroundlambdaapidomainD1A8D46F",
-              "RegionalDomainName",
-            ],
-          },
-        ],
-        "Stage": "CODE",
-        "TTL": 3600,
-      },
-      "Type": "Guardian::DNS::RecordSet",
-    },
     "ListenerCdkplaygroundA8D9CA6F": {
       "Properties": {
         "Certificates": [
@@ -681,7 +556,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
     },
     "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05": {
       "Properties": {
-        "GroupDescription": "Automatically created Security Group for ELB CdkPlaygroundCODELoadBalancerCdkplaygroundACDA30E1",
+        "GroupDescription": "Automatically created Security Group for ELB CdkPlaygroundEc2CODELoadBalancerCdkplayground1F3A3E79",
         "SecurityGroupIngress": [
           {
             "CidrIp": "0.0.0.0/0",
@@ -719,7 +594,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63": {
+    "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundEc2CODEGuHttpsEgressSecurityGroupCdkplayground0BB5710F9000BBED7E0F": {
       "Properties": {
         "Description": "Load balancer to target",
         "DestinationSecurityGroupId": {
@@ -931,7 +806,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
                 },
                 {
                   "Key": "Name",
-                  "Value": "CdkPlayground-CODE/deploy-CODE-cdk-playground",
+                  "Value": "CdkPlaygroundEc2-CODE/deploy-CODE-cdk-playground",
                 },
                 {
                   "Key": "Stack",
@@ -964,7 +839,7 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
                 },
                 {
                   "Key": "Name",
-                  "Value": "CdkPlayground-CODE/deploy-CODE-cdk-playground",
+                  "Value": "CdkPlaygroundEc2-CODE/deploy-CODE-cdk-playground",
                 },
                 {
                   "Key": "Stack",
@@ -1057,7 +932,7 @@ echo "Launch template last updated by Riff-Raff deployment ID: ",
               },
               {
                 "Key": "Name",
-                "Value": "CdkPlayground-CODE/deploy-CODE-cdk-playground",
+                "Value": "CdkPlaygroundEc2-CODE/deploy-CODE-cdk-playground",
               },
               {
                 "Key": "Stack",
@@ -1082,6 +957,105 @@ echo "Launch template last updated by Riff-Raff deployment ID: ",
         ],
       },
       "Type": "AWS::IAM::InstanceProfile",
+    },
+  },
+}
+`;
+
+exports[`The cdk-playground infrastructure definition matches the snapshot for Lambda 1`] = `
+{
+  "Metadata": {
+    "gu:cdk:constructs": [
+      "GuDistributionBucketParameter",
+      "GuApiLambda",
+      "GuCertificate",
+      "GuCname",
+    ],
+    "gu:cdk:version": "TEST",
+  },
+  "Outputs": {
+    "lambdacdkplaygroundlambdaapiEndpoint0E1DFC5F": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://",
+            {
+              "Ref": "lambdacdkplaygroundlambdaapi061BB942",
+            },
+            ".execute-api.eu-west-1.",
+            {
+              "Ref": "AWS::URLSuffix",
+            },
+            "/",
+            {
+              "Ref": "lambdacdkplaygroundlambdaapiDeploymentStageprod4C07895E",
+            },
+            "/",
+          ],
+        ],
+      },
+    },
+  },
+  "Parameters": {
+    "DistributionBucketName": {
+      "Default": "/account/services/artifact.bucket",
+      "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "CertificateCdkplaygroundlambda82D0BE4D": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "DomainName": "cdk-playground-lambda.code.dev-gutools.co.uk",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground-lambda",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Name",
+            "Value": "CdkPlaygroundLambda-CODE/CertificateCdkplaygroundlambda",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "ValidationMethod": "DNS",
+      },
+      "Type": "AWS::CertificateManager::Certificate",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "LambdaDNS": {
+      "Properties": {
+        "Name": "cdk-playground-lambda.code.dev-gutools.co.uk",
+        "RecordType": "CNAME",
+        "ResourceRecords": [
+          {
+            "Fn::GetAtt": [
+              "lambdacdkplaygroundlambdaapidomainD1A8D46F",
+              "RegionalDomainName",
+            ],
+          },
+        ],
+        "Stage": "CODE",
+        "TTL": 3600,
+      },
+      "Type": "Guardian::DNS::RecordSet",
     },
     "lambda8B5974B5": {
       "DependsOn": [
@@ -1353,7 +1327,7 @@ echo "Launch template last updated by Riff-Raff deployment ID: ",
       },
       "Type": "AWS::ApiGateway::Method",
     },
-    "lambdacdkplaygroundlambdaapiANYApiPermissionCdkPlaygroundCODElambdacdkplaygroundlambdaapi4F3304E8ANYC109836E": {
+    "lambdacdkplaygroundlambdaapiANYApiPermissionCdkPlaygroundLambdaCODElambdacdkplaygroundlambdaapi34277BEBANYC425F854": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -1390,7 +1364,7 @@ echo "Launch template last updated by Riff-Raff deployment ID: ",
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "lambdacdkplaygroundlambdaapiANYApiPermissionTestCdkPlaygroundCODElambdacdkplaygroundlambdaapi4F3304E8ANYB41263D8": {
+    "lambdacdkplaygroundlambdaapiANYApiPermissionTestCdkPlaygroundLambdaCODElambdacdkplaygroundlambdaapi34277BEBANY8D210438": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -1584,7 +1558,7 @@ echo "Launch template last updated by Riff-Raff deployment ID: ",
       },
       "Type": "AWS::ApiGateway::DomainName",
     },
-    "lambdacdkplaygroundlambdaapidomainMapCdkPlaygroundCODElambdacdkplaygroundlambdaapi4F3304E8E22B777C": {
+    "lambdacdkplaygroundlambdaapidomainMapCdkPlaygroundLambdaCODElambdacdkplaygroundlambdaapi34277BEB1FBC9448": {
       "Properties": {
         "DomainName": {
           "Ref": "lambdacdkplaygroundlambdaapidomainD1A8D46F",
@@ -1598,7 +1572,7 @@ echo "Launch template last updated by Riff-Raff deployment ID: ",
       },
       "Type": "AWS::ApiGateway::BasePathMapping",
     },
-    "lambdacdkplaygroundlambdaapiproxyANYApiPermissionCdkPlaygroundCODElambdacdkplaygroundlambdaapi4F3304E8ANYproxyD3A0C3C8": {
+    "lambdacdkplaygroundlambdaapiproxyANYApiPermissionCdkPlaygroundLambdaCODElambdacdkplaygroundlambdaapi34277BEBANYproxyCC311E10": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -1635,7 +1609,7 @@ echo "Launch template last updated by Riff-Raff deployment ID: ",
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "lambdacdkplaygroundlambdaapiproxyANYApiPermissionTestCdkPlaygroundCODElambdacdkplaygroundlambdaapi4F3304E8ANYproxyD0C7A195": {
+    "lambdacdkplaygroundlambdaapiproxyANYApiPermissionTestCdkPlaygroundLambdaCODElambdacdkplaygroundlambdaapi34277BEBANYproxy0AFC0599": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {

@@ -1,11 +1,18 @@
 import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import { CdkPlayground } from './cdk-playground';
+import { CdkPlaygroundEc2, CdkPlaygroundLambda } from './cdk-playground';
 
-describe('The Deploy stack', () => {
-	it('matches the snapshot for CODE', () => {
+describe('The cdk-playground infrastructure definition', () => {
+	it('matches the snapshot for EC2', () => {
 		const app = new App({ outdir: '/tmp/cdk.out' });
-		const stack = new CdkPlayground(app, 'CdkPlayground-CODE', {
+		const stack = new CdkPlaygroundEc2(app, 'CdkPlaygroundEc2-CODE', {
+			buildIdentifier: 'TEST',
+		});
+		expect(Template.fromStack(stack).toJSON()).toMatchSnapshot();
+	});
+	it('matches the snapshot for Lambda', () => {
+		const app = new App({ outdir: '/tmp/cdk.out' });
+		const stack = new CdkPlaygroundLambda(app, 'CdkPlaygroundLambda-CODE', {
 			buildIdentifier: 'TEST',
 		});
 		expect(Template.fromStack(stack).toJSON()).toMatchSnapshot();

@@ -6,8 +6,7 @@ import { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuEc2AppExperimental } from '@guardian/cdk/lib/experimental/patterns/ec2-app';
 import type { App } from 'aws-cdk-lib';
-import { CfnOutput, Duration } from 'aws-cdk-lib';
-import { CfnScalingPolicy } from 'aws-cdk-lib/aws-autoscaling';
+import { Duration } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
@@ -22,7 +21,7 @@ interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 	buildIdentifier: string;
 }
 
-export class CdkPlayground extends GuStack {
+export class CdkPlaygroundEc2 extends GuStack {
 	constructor(scope: App, id: string, props: CdkPlaygroundProps) {
 		super(scope, id, {
 			...props,
@@ -34,11 +33,10 @@ export class CdkPlayground extends GuStack {
 		const { buildIdentifier } = props;
 
 		const ec2AppDomainName = 'cdk-playground.code.dev-gutools.co.uk';
-		const lambdaDomainName = 'cdk-playground-lambda.code.dev-gutools.co.uk';
 
 		const ec2App = 'cdk-playground';
 
-		const { loadBalancer, autoScalingGroup } = new GuEc2AppExperimental(this, {
+		const { loadBalancer } = new GuEc2AppExperimental(this, {
 			buildIdentifier,
 			applicationPort: 9000,
 			app: ec2App,
@@ -66,42 +64,25 @@ export class CdkPlayground extends GuStack {
 			instanceMetricGranularity: '5Minute',
 		});
 
-		const scaleOutPolicy = new CfnScalingPolicy(autoScalingGroup, 'ScaleOut', {
-			autoScalingGroupName: autoScalingGroup.autoScalingGroupName,
-			policyType: 'SimpleScaling',
-			adjustmentType: 'ChangeInCapacity',
-			scalingAdjustment: 1,
-		});
-
-		const scaleInPolicy = new CfnScalingPolicy(autoScalingGroup, 'ScaleIn', {
-			autoScalingGroupName: autoScalingGroup.autoScalingGroupName,
-			policyType: 'SimpleScaling',
-			adjustmentType: 'ChangeInCapacity',
-			scalingAdjustment: -1,
-		});
-
-		new CfnOutput(this, 'ScaleOutArn', {
-			key: 'ScaleOutArn',
-			value: scaleOutPolicy.attrArn,
-		});
-
-		new CfnOutput(this, 'ScaleInArn', {
-			key: 'ScaleInArn',
-			value: scaleInPolicy.attrArn,
-		});
-
-		new CfnOutput(this, 'AutoscalingGroupName', {
-			key: 'AutoscalingGroupName',
-			value: autoScalingGroup.autoScalingGroupName,
-		});
-
 		new GuCname(this, 'EC2AppDNS', {
 			app: ec2App,
 			ttl: Duration.hours(1),
 			domainName: ec2AppDomainName,
 			resourceRecord: loadBalancer.loadBalancerDnsName,
 		});
+	}
+}
 
+export class CdkPlaygroundLambda extends GuStack {
+	constructor(scope: App, id: string, props: CdkPlaygroundProps) {
+		super(scope, id, {
+			...props,
+			stack: 'deploy',
+			stage: 'CODE',
+			env: { region: 'eu-west-1' },
+		});
+
+		const lambdaDomainName = 'cdk-playground-lambda.code.dev-gutools.co.uk';
 		const lambdaApp = 'cdk-playground-lambda';
 
 		const lambda = new GuApiLambda(this, 'lambda', {
