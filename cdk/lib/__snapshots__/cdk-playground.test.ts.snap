@@ -229,6 +229,10 @@ exports[`The Deploy stack matches the snapshot for CODE 1`] = `
             "Key": "stickiness.enabled",
             "Value": "false",
           },
+          {
+            "Key": "deregistration_delay.timeout_seconds",
+            "Value": "30",
+          },
         ],
         "TargetType": "ip",
         "UnhealthyThresholdCount": 2,

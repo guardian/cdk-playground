@@ -146,6 +146,11 @@ export class CdkPlayground extends GuStack {
 			unhealthyThresholdCount: 2,
 		});
 
+		loadBalancedEcs.targetGroup.setAttribute(
+			'deregistration_delay.timeout_seconds',
+			'30',
+		);
+
 		const scalableTarget = loadBalancedEcs.service.autoScaleTaskCount({
 			minCapacity: 3,
 			maxCapacity: 12,
