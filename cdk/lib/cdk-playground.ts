@@ -199,6 +199,9 @@ export class CdkPlaygroundEcs extends GuStack {
 		const taskDefinition = new FargateTaskDefinition(
 			this,
 			'EcsTaskDefinition',
+			// The defaults from AWS CDK are extremely low so it probably makes sense for us to encode something different
+			// via our pattern - we already do this for Lambda:
+			// https://github.com/guardian/cdk/blob/b567f1219dab416680a68981a488bbbf3564fe2d/src/constructs/lambda/lambda.ts#L65-L76
 			{ memoryLimitMiB: 2048, cpu: 1024 },
 		);
 
