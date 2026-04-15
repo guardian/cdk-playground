@@ -1217,7 +1217,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         "HealthCheckPath": "/healthcheck",
         "HealthCheckProtocol": "HTTP",
         "HealthCheckTimeoutSeconds": 5,
-        "HealthyThresholdCount": 5,
+        "HealthyThresholdCount": 2,
         "Name": "cdk-playground-ecs",
         "Port": 9000,
         "Protocol": "HTTP",
