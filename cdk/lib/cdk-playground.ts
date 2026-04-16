@@ -224,10 +224,12 @@ export class CdkPlaygroundEcs extends GuStack {
 		const ecsService = new FargateService(this, 'EcsService', {
 			cluster,
 			taskDefinition,
+			// Will this speed things up at all or just make deployments less stable?
+			healthCheckGracePeriod: Duration.seconds(30),
 			// Important for service deployments; with the AWS defaults the service can be scaled down when deploying
 			minHealthyPercent: 100,
 			// Also important for service deployments; with the AWS defaults we don't get a fast failure when deploying a 'bad' build
-			circuitBreaker: { enable: true, rollback: true }, // This is
+			circuitBreaker: { enable: true, rollback: true },
 			// By default, AWS will create a new security group which allows all outbound traffic
 			// We don't want this so explicitly allow outbound HTTPS only
 			// This is what we do for the current GuEc2App pattern:
