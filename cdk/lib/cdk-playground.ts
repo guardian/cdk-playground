@@ -228,6 +228,7 @@ export class CdkPlaygroundEcs extends GuStack {
 			healthCheckGracePeriod: Duration.seconds(30),
 			// Important for service deployments; with the AWS defaults the service can be scaled down when deploying
 			minHealthyPercent: 100,
+			maxHealthyPercent: 300,
 			// Also important for service deployments; with the AWS defaults we don't get a fast failure when deploying a 'bad' build
 			circuitBreaker: { enable: true, rollback: true },
 			// By default, AWS will create a new security group which allows all outbound traffic
@@ -270,8 +271,14 @@ export class CdkPlaygroundEcs extends GuStack {
 			port: 9000,
 			targetGroupName: ecsApp, // Add the name here to make it more easily identifiable in the console etc.
 			targets: [ecsService],
-			healthCheck: { healthyThresholdCount: 2 },
+			healthCheck: {
+				healthyThresholdCount: 2,
+				interval: Duration.seconds(5),
+				timeout: Duration.seconds(2),
+			},
 		});
+
+		targetGroup.setAttribute('deregistration_delay.timeout_seconds', '10');
 
 		// We create a dedicated listener, but we could also share a listener with the EC2 infrastructure for migrations
 		new GuHttpsApplicationListener(this, 'Listener', {

@@ -1107,7 +1107,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             "Enable": true,
             "Rollback": true,
           },
-          "MaximumPercent": 200,
+          "MaximumPercent": 300,
           "MinimumHealthyPercent": 100,
         },
         "DeploymentController": {
@@ -1213,10 +1213,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
     },
     "EcsTargetGroupCdkplaygroundecsF5A8D17A": {
       "Properties": {
-        "HealthCheckIntervalSeconds": 10,
+        "HealthCheckIntervalSeconds": 5,
         "HealthCheckPath": "/healthcheck",
         "HealthCheckProtocol": "HTTP",
-        "HealthCheckTimeoutSeconds": 5,
+        "HealthCheckTimeoutSeconds": 2,
         "HealthyThresholdCount": 2,
         "Name": "cdk-playground-ecs",
         "Port": 9000,
@@ -1246,7 +1246,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         "TargetGroupAttributes": [
           {
             "Key": "deregistration_delay.timeout_seconds",
-            "Value": "30",
+            "Value": "10",
           },
           {
             "Key": "stickiness.enabled",
