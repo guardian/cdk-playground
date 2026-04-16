@@ -1246,7 +1246,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         "TargetGroupAttributes": [
           {
             "Key": "deregistration_delay.timeout_seconds",
-            "Value": "10",
+            "Value": "600",
           },
           {
             "Key": "stickiness.enabled",

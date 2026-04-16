@@ -278,7 +278,7 @@ export class CdkPlaygroundEcs extends GuStack {
 			},
 		});
 
-		targetGroup.setAttribute('deregistration_delay.timeout_seconds', '10');
+		targetGroup.setAttribute('deregistration_delay.timeout_seconds', '600');
 
 		// We create a dedicated listener, but we could also share a listener with the EC2 infrastructure for migrations
 		new GuHttpsApplicationListener(this, 'Listener', {
