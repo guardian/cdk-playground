@@ -240,13 +240,6 @@ export class CdkPlaygroundEcs extends GuStack {
 			],
 		});
 
-		// Can also set 'desiredCount' via the Fargate Service, but apparently this can lead to accidental scale downs
-		// (this seems roughly equivalent to setting min/max, rather than desired at the ASG level).
-		ecsService.autoScaleTaskCount({
-			minCapacity: 3,
-			maxCapacity: 6,
-		});
-
 		// Create a dedicated load balancer for now, but we could share a load balancer with the EC2 infrastructure for migrations
 		const loadBalancer = new GuApplicationLoadBalancer(this, 'LoadBalancer', {
 			app: ecsApp,
@@ -289,6 +282,18 @@ export class CdkPlaygroundEcs extends GuStack {
 			ttl: Duration.minutes(1),
 			domainName: ecsDomainName,
 			resourceRecord: loadBalancer.loadBalancerDnsName,
+		});
+
+		// Can also set 'desiredCount' via the Fargate Service, but apparently this can lead to accidental scale downs
+		// (this seems roughly equivalent to setting min/max, rather than desired at the ASG level).
+		const scaling = ecsService.autoScaleTaskCount({
+			minCapacity: 3,
+			maxCapacity: 12,
+		});
+
+		scaling.scaleOnRequestCount('ScaleOnRequests', {
+			requestsPerTarget: 1,
+			targetGroup,
 		});
 	}
 }
