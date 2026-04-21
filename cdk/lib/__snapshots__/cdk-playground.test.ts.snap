@@ -1213,10 +1213,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
     },
     "EcsTargetGroupCdkplaygroundecsF5A8D17A": {
       "Properties": {
-        "HealthCheckIntervalSeconds": 10,
+        "HealthCheckIntervalSeconds": 5,
         "HealthCheckPath": "/healthcheck",
         "HealthCheckProtocol": "HTTP",
-        "HealthCheckTimeoutSeconds": 5,
+        "HealthCheckTimeoutSeconds": 2,
         "HealthyThresholdCount": 5,
         "Name": "cdk-playground-ecs",
         "Port": 9000,

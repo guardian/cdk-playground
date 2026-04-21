@@ -268,6 +268,10 @@ export class CdkPlaygroundEcs extends GuStack {
 			port: 9000,
 			targetGroupName: ecsApp, // Add the name here to make it more easily identifiable in the console etc.
 			targets: [ecsService],
+			healthCheck: {
+				interval: Duration.seconds(5),
+				timeout: Duration.seconds(2),
+			},
 		});
 
 		// We create a dedicated listener, but we could also share a listener with the EC2 infrastructure for migrations
