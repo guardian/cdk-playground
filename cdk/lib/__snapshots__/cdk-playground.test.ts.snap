@@ -1298,6 +1298,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                 "Protocol": "tcp",
               },
             ],
+            "VersionConsistency": "disabled",
           },
         ],
         "Cpu": "1024",
