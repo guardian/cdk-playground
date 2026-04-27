@@ -2,8 +2,7 @@ import { GuApiLambda } from '@guardian/cdk';
 import { AccessScope } from '@guardian/cdk/lib/constants/access';
 import { GuCertificate } from '@guardian/cdk/lib/constructs/acm';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
-import { GuParameter } from '@guardian/cdk/lib/constructs/core';
-import { GuStack } from '@guardian/cdk/lib/constructs/core';
+import { GuParameter, GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import {
 	GuHttpsEgressSecurityGroup,
@@ -32,6 +31,7 @@ import {
 	FargateService,
 	FargateTaskDefinition,
 	LogDriver,
+	VersionConsistency,
 } from 'aws-cdk-lib/aws-ecs';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
@@ -207,6 +207,9 @@ export class CdkPlaygroundEcs extends GuStack {
 
 		taskDefinition.addContainer('cdk-playground', {
 			image,
+			// This speeds up deployment, but we should probably only use it in conjunction with immutable tags
+			// https://aws.amazon.com/blogs/containers/announcing-software-version-consistency-for-amazon-ecs-services/
+			versionConsistency: VersionConsistency.DISABLED,
 			portMappings: [{ containerPort: 9000 }],
 			// AWS::Logs::LogGroup
 			logging: LogDriver.awsLogs({
@@ -227,7 +230,7 @@ export class CdkPlaygroundEcs extends GuStack {
 			// Important for service deployments; with the AWS defaults the service can be scaled down when deploying
 			minHealthyPercent: 100,
 			// Also important for service deployments; with the AWS defaults we don't get a fast failure when deploying a 'bad' build
-			circuitBreaker: { enable: true, rollback: true }, // This is
+			circuitBreaker: { enable: true, rollback: true },
 			// By default, AWS will create a new security group which allows all outbound traffic
 			// We don't want this so explicitly allow outbound HTTPS only
 			// This is what we do for the current GuEc2App pattern:
