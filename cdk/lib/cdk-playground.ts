@@ -215,6 +215,7 @@ export class CdkPlaygroundEcs extends GuStack {
 			logging: LogDriver.awsLogs({
 				streamPrefix: 'cdk-playground-ecs',
 			}),
+			readonlyRootFilesystem: true,
 		});
 
 		// Here's an example of providing custom IAM permissions to the task role. cdk-playground doesn't actually need any
