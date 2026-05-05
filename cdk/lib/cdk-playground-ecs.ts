@@ -1,5 +1,6 @@
 import { GuCertificate } from '@guardian/cdk/lib/constructs/acm';
 import {
+	GuLoggingStreamNameParameter,
 	GuParameter,
 	GuStack,
 	type GuStackProps,
@@ -25,9 +26,14 @@ import {
 	ContainerImage,
 	FargateService,
 	FargateTaskDefinition,
+	FireLensLogDriver,
+	FirelensLogRouterType,
 	LogDriver,
 	VersionConsistency,
 } from 'aws-cdk-lib/aws-ecs';
+import type { Volume } from 'aws-cdk-lib/aws-ecs';
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 
 interface CdkPlaygroundEcsProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 	/**
@@ -50,6 +56,13 @@ export class CdkPlaygroundEcs extends GuStack {
 			stage: 'CODE',
 			env: { region: 'eu-west-1' },
 		});
+
+		const {
+			stack,
+			stage,
+			repositoryName = 'guardian/cdk-playground',
+			region,
+		} = this;
 
 		const { buildIdentifier } = props;
 		const ecsApp = 'cdk-playground-ecs';
@@ -92,6 +105,18 @@ export class CdkPlaygroundEcs extends GuStack {
 			`build-${buildIdentifier}`,
 		);
 
+		const loggingStreamName =
+			GuLoggingStreamNameParameter.getInstance(this).valueAsString;
+
+		const fireLensLogDriver = new FireLensLogDriver({
+			options: {
+				Name: `kinesis_streams`,
+				region,
+				stream: loggingStreamName,
+				retry_limit: '2',
+			},
+		});
+
 		// AWS::ECS::TaskDefinition
 		// AWS::IAM::Role ('execution role' - used for pulling image etc.)
 		// AWS::IAM::Role ('task role' - used for application's runtime permissions e.g. reading config from SSM)
@@ -110,12 +135,22 @@ export class CdkPlaygroundEcs extends GuStack {
 			// https://aws.amazon.com/blogs/containers/announcing-software-version-consistency-for-amazon-ecs-services/
 			versionConsistency: VersionConsistency.DISABLED,
 			portMappings: [{ containerPort: 9000 }],
-			// AWS::Logs::LogGroup
-			logging: LogDriver.awsLogs({
-				streamPrefix: 'cdk-playground-ecs',
-			}),
+			logging: fireLensLogDriver,
 			readonlyRootFilesystem: true,
 		});
+
+		const logShippingPolicy = new PolicyStatement({
+			actions: ['kinesis:Describe*', 'kinesis:Put*'],
+			effect: Effect.ALLOW,
+			resources: [
+				this.formatArn({
+					service: 'kinesis',
+					resource: 'stream',
+					resourceName: loggingStreamName,
+				}),
+			],
+		});
+		taskDefinition.addToTaskRolePolicy(logShippingPolicy);
 
 		// Here's an example of providing custom IAM permissions to the task role. cdk-playground doesn't actually need any
 		// but our pattern should provide some useful defaults, such as reading from parameter store
@@ -192,6 +227,44 @@ export class CdkPlaygroundEcs extends GuStack {
 			ttl: Duration.minutes(1),
 			domainName: ecsDomainName,
 			resourceRecord: loadBalancer.loadBalancerDnsName,
+		});
+
+		const logRouter = taskDefinition.addFirelensLogRouter('LogShipping', {
+			// See https://github.com/guardian/devx-logs
+			image: ContainerImage.fromRegistry('ghcr.io/guardian/devx-logs:2.1.0'),
+
+			// Required by https://github.com/guardian/devx-logs
+			environment: {
+				STACK: stack,
+				STAGE: stage,
+				APP: ecsApp,
+				GU_REPO: repositoryName,
+				TASK_NAME: ecsApp,
+			},
+
+			// Send this container's logs to CloudWatch logs, retained for 1 day
+			logging: LogDriver.awsLogs({
+				streamPrefix: [stack, stage, ecsApp].join('/'),
+				logRetention: RetentionDays.ONE_DAY,
+			}),
+
+			firelensConfig: {
+				type: FirelensLogRouterType.FLUENTBIT,
+			},
+
+			// To comply with FSBP ECS.5
+			readonlyRootFilesystem: true,
+		});
+
+		const logVolume: Volume = {
+			name: 'logging-volume',
+		};
+		taskDefinition.addVolume(logVolume);
+
+		logRouter.addMountPoints({
+			containerPath: '/init',
+			sourceVolume: logVolume.name,
+			readOnly: false,
 		});
 	}
 }
