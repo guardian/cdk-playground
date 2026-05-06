@@ -152,6 +152,35 @@ export class CdkPlaygroundEcs extends GuStack {
 		});
 		taskDefinition.addToTaskRolePolicy(logShippingPolicy);
 
+		/*
+		GuardDuty is enabled at the organisation level and runs as a sidecar.
+		We need to add specific permissions to allow pulling the GuardDuty image.
+		See https://docs.aws.amazon.com/guardduty/latest/ug/prereq-runtime-monitoring-ecs-support.html.
+		 */
+		const guardDutyPolicies = [
+			new PolicyStatement({
+				effect: Effect.ALLOW,
+				actions: ['ecr:GetAuthorizationToken'],
+				resources: ['*'],
+			}),
+			new PolicyStatement({
+				effect: Effect.ALLOW,
+				actions: [
+					'ecr:BatchCheckLayerAvailability',
+					'ecr:GetDownloadUrlForLayer',
+					'ecr:BatchGetImage',
+				],
+				resources: [
+					// See https://docs.aws.amazon.com/guardduty/latest/ug/runtime-monitoring-ecr-repository-gdu-agent.html
+					'arn:aws:ecr:eu-west-1:694911143906:repository/aws-guardduty-agent-fargate',
+				],
+			}),
+		];
+
+		guardDutyPolicies.forEach((policy) =>
+			taskDefinition.addToExecutionRolePolicy(policy),
+		);
+
 		// Here's an example of providing custom IAM permissions to the task role. cdk-playground doesn't actually need any
 		// but our pattern should provide some useful defaults, such as reading from parameter store
 		new GuParameterStoreReadPolicy(this, { app: ecsApp }).attachToRole(
