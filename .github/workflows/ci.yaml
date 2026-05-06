@@ -90,6 +90,15 @@ jobs:
 
           sbt Docker/publishLocal
 
+      - name: Export image digest
+        env:
+          REGISTRY: ${{ secrets.GU_ECR_REGISTRY }} # TODO provision this secret with https://github.com/guardian/riffraff-platform
+          REPOSITORY: ${{ github.repository }}
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: |
+          IMAGE_DIGEST=$(docker inspect "$REGISTRY/$REPOSITORY:build-$BUILD_NUMBER" --format "{{.Id}}")
+          echo "IMAGE_DIGEST=${IMAGE_DIGEST}" >> $GITHUB_ENV
+
       - name: Push docker image to Amazon ECR
         env:
           REGISTRY: ${{ secrets.GU_ECR_REGISTRY }} # TODO provision this secret with https://github.com/guardian/riffraff-platform
