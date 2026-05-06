@@ -20,7 +20,7 @@ new CdkPlaygroundLambda(app, 'CdkPlaygroundLambda-CODE', {
 
 new CdkPlaygroundEcs(app, 'CdkPlaygroundEcs-CODE', {
 	cloudFormationStackName: 'deploy-CODE-cdk-playground-ecs',
-	buildIdentifier: process.env.GITHUB_RUN_NUMBER ?? 'DEV',
+	imageDigest: process.env.IMAGE_DIGEST ?? 'DEV',
 });
 
 // Configure Riff-Raff to deploy the application stack after the EventForwarder stack has finished.

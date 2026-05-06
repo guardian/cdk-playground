@@ -42,6 +42,30 @@ jobs:
 
       - uses: guardian/setup-scala@v1
 
+      - name: Build and tag docker image
+        env:
+          REGISTRY: ${{ secrets.GU_ECR_REGISTRY }} # TODO provision this secret with https://github.com/guardian/riffraff-platform
+          COMMIT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          BUILD_NUMBER: ${{ github.run_number }}
+          ORIGINAL_BRANCH_NAME: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref || 'unknown' }}
+        run: |
+          # Remove "refs/heads/" prefix from ORIGINAL_BRANCH_NAME
+          TRIMMED_BRANCH_NAME="${ORIGINAL_BRANCH_NAME#refs/heads/}"
+
+          # Replace / with - and export it to make it available to sbt
+          export BRANCH_NAME=${TRIMMED_BRANCH_NAME//\//-}
+
+          sbt Docker/publishLocal
+
+      - name: Export image digest
+        env:
+          REGISTRY: ${{ secrets.GU_ECR_REGISTRY }} # TODO provision this secret with https://github.com/guardian/riffraff-platform
+          REPOSITORY: ${{ github.repository }}
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: |
+          DIGEST=$(docker inspect "$REGISTRY/$REPOSITORY:build-$BUILD_NUMBER" --format "{{.Id}}")
+          echo "IMAGE_DIGEST=${DIGEST}" >> $GITHUB_ENV
+
       # Build CDK and Play (in sequence)
       - run: ./script/ci
 
@@ -62,28 +86,6 @@ jobs:
             event-forwarder:
               - cdk/dist/event-forwarder.zip
 
-      - name: Build and tag docker image
-        env:
-          REGISTRY: ${{ secrets.GU_ECR_REPOSITORY_URI }} # TODO provision this secret with https://github.com/guardian/riffraff-platform
-          COMMIT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
-          BUILD_NUMBER: ${{ github.run_number }}
-          ORIGINAL_BRANCH_NAME: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref || 'unknown' }}
-        run: |
-          # Remove "refs/heads/" prefix from ORIGINAL_BRANCH_NAME
-          TRIMMED_BRANCH_NAME="${ORIGINAL_BRANCH_NAME#refs/heads/}"
-
-          # Replace / with - and export it to make it available to sbt
-          export BRANCH_NAME=${TRIMMED_BRANCH_NAME//\//-}
-
-          sbt Docker/publishLocal
-
-      - name: Print image digest
-        env:
-          REGISTRY: ${{ secrets.GU_ECR_REPOSITORY_URI }} # TODO provision this secret with https://github.com/guardian/riffraff-platform
-          REPOSITORY: ${{ github.repository }}
-        run: |
-          echo docker inspect $REGISTRY:branch-dev --format "{{.Id}}"
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6.1.0
         with:
@@ -97,7 +99,7 @@ jobs:
           mask-password: 'true'
       - name: Push docker image to Amazon ECR
         env:
-          REGISTRY: ${{ secrets.GU_ECR_REPOSITORY_URI }} # TODO provision this secret with https://github.com/guardian/riffraff-platform
+          REGISTRY: ${{ secrets.GU_ECR_REGISTRY }} # TODO provision this secret with https://github.com/guardian/riffraff-platform
           REPOSITORY: ${{ github.repository }}
         run: |
           docker push $REGISTRY/$REPOSITORY --all-tags

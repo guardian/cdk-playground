@@ -36,14 +36,7 @@ import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 
 interface CdkPlaygroundEcsProps extends Omit<GuStackProps, 'stack' | 'stage'> {
-	/**
-	 * Which application build to run.
-	 * This will typically match the build number provided by CI.
-	 *
-	 * @example
-	 * process.env.GITHUB_RUN_NUMBER
-	 */
-	buildIdentifier: string;
+	imageDigest: string;
 }
 
 // For now, we provision all of this infrastructure via constructs as part of this repo.
@@ -64,7 +57,7 @@ export class CdkPlaygroundEcs extends GuStack {
 			region,
 		} = this;
 
-		const { buildIdentifier } = props;
+		const { imageDigest } = props;
 		const ecsApp = 'cdk-playground-ecs';
 		const ecsDomainName = 'cdk-playground-ecs.code.dev-gutools.co.uk';
 
@@ -102,7 +95,7 @@ export class CdkPlaygroundEcs extends GuStack {
 		// ECR repo are both in the Deploy Tools accoutn
 		const image = ContainerImage.fromEcrRepository(
 			Repository.fromRepositoryName(this, 'Repo', this.repositoryName!),
-			`build-${buildIdentifier}`,
+			imageDigest,
 		);
 
 		const loggingStreamName =
