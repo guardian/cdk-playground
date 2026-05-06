@@ -77,6 +77,13 @@ jobs:
 
           sbt Docker/publishLocal
 
+      - name: Print image digest
+        env:
+          REGISTRY: ${{ secrets.GU_ECR_REPOSITORY_URI }} # TODO provision this secret with https://github.com/guardian/riffraff-platform
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          echo docker inspect $REGISTRY:branch-dev --format "{{.Id}}"
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6.1.0
         with:
