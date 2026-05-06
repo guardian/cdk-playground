@@ -6,6 +6,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
     "gu:cdk:constructs": [
       "GuVpcParameter",
       "GuParameter",
+      "GuLoggingStreamNameParameter",
       "GuParameterStoreReadPolicy",
       "GuHttpsEgressSecurityGroup",
       "GuSubnetListParameter",
@@ -33,6 +34,11 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
     "AccessLoggingBucket": {
       "Default": "/account/services/access-logging/bucket",
       "Description": "S3 bucket to store your access logs",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "LoggingStreamName": {
+      "Default": "/account/services/logging.stream.name",
+      "Description": "SSM parameter containing the Name (not ARN) on the kinesis stream",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "VpcId": {
@@ -128,6 +134,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
     },
     "EcsService81FC6EF6": {
       "DependsOn": [
+        "EcsTaskDefinitionTaskRoleDefaultPolicy1FD2F057",
         "EcsTaskDefinitionTaskRoleB7B6D8DD",
         "ListenerCdkplaygroundecs3194EDCD",
       ],
@@ -205,6 +212,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
     },
     "EcsServiceTaskCountTarget02FCCE22": {
       "DependsOn": [
+        "EcsTaskDefinitionTaskRoleDefaultPolicy1FD2F057",
         "EcsTaskDefinitionTaskRoleB7B6D8DD",
       ],
       "Properties": {
@@ -320,13 +328,14 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
               ],
             },
             "LogConfiguration": {
-              "LogDriver": "awslogs",
+              "LogDriver": "awsfirelens",
               "Options": {
-                "awslogs-group": {
-                  "Ref": "EcsTaskDefinitioncdkplaygroundLogGroupF3F5A754",
+                "Name": "kinesis_streams",
+                "region": "eu-west-1",
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
                 },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "cdk-playground-ecs",
               },
             },
             "Name": "cdk-playground",
@@ -338,6 +347,54 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             ],
             "ReadonlyRootFilesystem": true,
             "VersionConsistency": "disabled",
+          },
+          {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "CODE",
+              },
+              {
+                "Name": "APP",
+                "Value": "cdk-playground-ecs",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/cdk-playground",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "cdk-playground-ecs",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "EcsTaskDefinitionLogShippingLogGroup0E405BD0",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/CODE/cdk-playground-ecs/devx-logs-sidecar",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "logging-volume",
+              },
+            ],
+            "Name": "LogShipping",
+            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "1024",
@@ -377,6 +434,11 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "logging-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -456,7 +518,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "EcsTaskDefinitioncdkplaygroundLogGroupF3F5A754",
+                  "EcsTaskDefinitionLogShippingLogGroup0E405BD0",
                   "Arn",
                 ],
               },
@@ -472,6 +534,32 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "EcsTaskDefinitionLogShippingLogGroup0E405BD0": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
     },
     "EcsTaskDefinitionTaskRoleB7B6D8DD": {
       "Properties": {
@@ -508,30 +596,47 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       },
       "Type": "AWS::IAM::Role",
     },
-    "EcsTaskDefinitioncdkplaygroundLogGroupF3F5A754": {
-      "DeletionPolicy": "Retain",
+    "EcsTaskDefinitionTaskRoleDefaultPolicy1FD2F057": {
       "Properties": {
-        "Tags": [
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "kinesis:Describe*",
+                "kinesis:Put*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":kinesis:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":stream/",
+                    {
+                      "Ref": "LoggingStreamName",
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "EcsTaskDefinitionTaskRoleDefaultPolicy1FD2F057",
+        "Roles": [
           {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/cdk-playground",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
+            "Ref": "EcsTaskDefinitionTaskRoleB7B6D8DD",
           },
         ],
       },
-      "Type": "AWS::Logs::LogGroup",
-      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::IAM::Policy",
     },
     "GuHttpsEgressSecurityGroupCdkplaygroundecs59F0C490": {
       "Properties": {
