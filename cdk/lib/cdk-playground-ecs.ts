@@ -244,7 +244,7 @@ export class CdkPlaygroundEcs extends GuStack {
 
 			// Send this container's logs to CloudWatch logs, retained for 1 day
 			logging: LogDriver.awsLogs({
-				streamPrefix: [stack, stage, ecsApp].join('/'),
+				streamPrefix: [stack, stage, ecsApp, 'devx-logs-sidecar'].join('/'),
 				logRetention: RetentionDays.ONE_DAY,
 			}),
 

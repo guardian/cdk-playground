@@ -383,7 +383,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                   "Ref": "EcsTaskDefinitionLogShippingLogGroup0E405BD0",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/CODE/cdk-playground-ecs",
+                "awslogs-stream-prefix": "deploy/CODE/cdk-playground-ecs/devx-logs-sidecar",
               },
             },
             "MountPoints": [
