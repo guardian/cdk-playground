@@ -32,6 +32,44 @@ jobs:
           echo "BRANCH_NAME=${TRIMMED_BRANCH_NAME}" >> $GITHUB_OUTPUT
           echo "BRANCH_NAME_FOR_ECR=${BRANCH_NAME_FOR_ECR}" >> $GITHUB_OUTPUT
 
+  ci-image:
+    runs-on: ubuntu-latest
+    needs: [facts]
+    permissions:
+      contents: read
+      id-token: write # Required to exchange for AWS credentials using OIDC
+    env:
+      REGISTRY: ${{ secrets.GU_ECR_REGISTRY }} # TODO provision this secret with https://github.com/guardian/riffraff-platform
+      REPOSITORY: ${{ github.repository }}
+      COMMIT_SHA: ${{ needs.facts.outputs.COMMIT_SHA }}
+      BUILD_NUMBER: ${{ needs.facts.outputs.BUILD_NUMBER }}
+      BRANCH_NAME: ${{ needs.facts.outputs.BRANCH_NAME_FOR_ECR }}
+    outputs:
+      IMAGE_DIGEST: ${{ steps.obtain-image-digest.outputs.IMAGE_DIGEST }}
+    steps:
+      # Checkout the branch
+      - uses: actions/checkout@v6.0.2
+      - uses: guardian/setup-scala@v1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6.1.0
+        with:
+          role-to-assume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
+          aws-region: eu-west-1
+          mask-aws-account-id: 'true'
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2.1.3
+        with:
+          mask-password: 'true'
+      - name: Build, tag, and push docker image to Amazon ECR
+        run: |
+          sbt Docker/publishLocal
+          docker push $REGISTRY/$REPOSITORY --all-tags
+      - name: Obtain image digest
+        id: obtain-image-digest
+        run: |
+          IMAGE_DIGEST=$(docker manifest inspect $REGISTRY/$REPOSITORY:sha-$COMMIT_SHA --verbose | jq -r '.Descriptor.digest')
+          echo "IMAGE_DIGEST=${IMAGE_DIGEST}" >> $GITHUB_OUTPUT
   CI:
     runs-on: ubuntu-latest
     needs:
@@ -79,28 +117,3 @@ jobs:
               - lambda/cdk-playground-lambda.zip
             event-forwarder:
               - cdk/dist/event-forwarder.zip
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v6.1.0
-        with:
-          role-to-assume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
-          aws-region: eu-west-1
-          mask-aws-account-id: 'true'
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2.1.3
-        with:
-          mask-password: 'true'
-
-      - name: Build, tag, and push docker image to Amazon ECR
-        env:
-          REGISTRY: ${{ secrets.GU_ECR_REGISTRY }} # TODO provision this secret with https://github.com/guardian/riffraff-platform
-          REPOSITORY: ${{ github.repository }}
-          COMMIT_SHA: ${{ needs.facts.outputs.COMMIT_SHA }}
-          BUILD_NUMBER: ${{ needs.facts.outputs.BUILD_NUMBER }}
-          BRANCH_NAME: ${{ needs.facts.outputs.BRANCH_NAME_FOR_ECR }}
-        run: |
-          sbt Docker/publishLocal
-
-          docker push $REGISTRY/$REPOSITORY --all-tags
