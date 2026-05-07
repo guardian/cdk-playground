@@ -74,6 +74,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - facts
+      - ci-image
     permissions:
       contents: read
 
@@ -100,6 +101,7 @@ jobs:
           COMMIT_SHA: ${{ needs.facts.outputs.COMMIT_SHA }}
           BUILD_NUMBER: ${{ needs.facts.outputs.BUILD_NUMBER }}
           BRANCH_NAME: ${{ needs.facts.outputs.BRANCH_NAME }}
+          IMAGE_DIGEST: ${{ needs.ci-image.outputs.IMAGE_DIGEST }}
 
       # Upload our build artifacts to Riff-Raff (well, S3)
       - uses: guardian/actions-riff-raff@v4
