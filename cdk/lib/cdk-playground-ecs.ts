@@ -98,7 +98,7 @@ export class CdkPlaygroundEcs extends GuStack {
 		});
 
 		// Need to figure out how to make this cross-account, but this is fine for the simple case where the app and the
-		// ECR repo are both in the Deploy Tools accoutn
+		// ECR repo are both in the Deploy Tools account
 		const image = ContainerImage.fromEcrRepository(
 			Repository.fromRepositoryName(this, 'Repo', this.repositoryName!),
 			imageIdentifier,
