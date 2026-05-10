@@ -65,6 +65,10 @@ exports[`The EventForwarder stack matches the snapshot for CODE 1`] = `
             "Value": "guardian/cdk-playground",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "devx::cdk-playground",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -149,6 +153,10 @@ exports[`The EventForwarder stack matches the snapshot for CODE 1`] = `
             "Value": "guardian/cdk-playground",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "devx::cdk-playground",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -216,6 +224,10 @@ exports[`The EventForwarder stack matches the snapshot for CODE 1`] = `
             "Value": "guardian/cdk-playground",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "devx::cdk-playground",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -268,6 +280,10 @@ exports[`The EventForwarder stack matches the snapshot for CODE 1`] = `
           {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "devx::cdk-playground",
           },
           {
             "Key": "Stack",

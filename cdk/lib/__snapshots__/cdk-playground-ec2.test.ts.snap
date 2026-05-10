@@ -161,6 +161,11 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             "Value": "guardian/cdk-playground",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "PropagateAtLaunch": true,
+            "Value": "devx::cdk-playground",
+          },
+          {
             "Key": "LogKinesisStreamName",
             "PropagateAtLaunch": true,
             "Value": {
@@ -227,6 +232,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "devx::cdk-playground",
           },
           {
             "Key": "Name",
@@ -347,6 +356,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             "Value": "guardian/cdk-playground",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "devx::cdk-playground",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -449,6 +462,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             "Value": "guardian/cdk-playground",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "devx::cdk-playground",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -542,6 +559,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             "Value": "guardian/cdk-playground",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "devx::cdk-playground",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -578,6 +599,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "devx::cdk-playground",
           },
           {
             "Key": "Stack",
@@ -725,6 +750,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             "Value": "guardian/cdk-playground",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "devx::cdk-playground",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -805,6 +834,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                   "Value": "guardian/cdk-playground",
                 },
                 {
+                  "Key": "gu:riff-raff-project",
+                  "Value": "devx::cdk-playground",
+                },
+                {
                   "Key": "Name",
                   "Value": "CdkPlaygroundEc2-CODE/deploy-CODE-cdk-playground",
                 },
@@ -836,6 +869,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                 {
                   "Key": "gu:repo",
                   "Value": "guardian/cdk-playground",
+                },
+                {
+                  "Key": "gu:riff-raff-project",
+                  "Value": "devx::cdk-playground",
                 },
                 {
                   "Key": "Name",
@@ -929,6 +966,10 @@ echo "Launch template last updated by Riff-Raff deployment ID: ",
               {
                 "Key": "gu:repo",
                 "Value": "guardian/cdk-playground",
+              },
+              {
+                "Key": "gu:riff-raff-project",
+                "Value": "devx::cdk-playground",
               },
               {
                 "Key": "Name",

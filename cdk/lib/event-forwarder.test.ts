@@ -5,7 +5,9 @@ import { EventForwarder } from './event-forwarder';
 describe('The EventForwarder stack', () => {
 	it('matches the snapshot for CODE', () => {
 		const app = new App({ outdir: '/tmp/cdk.out' });
-		const stack = new EventForwarder(app, 'EventForwarder-CODE');
+		const stack = new EventForwarder(app, 'EventForwarder-CODE', {
+			riffRaffProjectName: 'devx::cdk-playground',
+		});
 		const template = Template.fromStack(stack);
 		expect(template.toJSON()).toMatchSnapshot();
 	});

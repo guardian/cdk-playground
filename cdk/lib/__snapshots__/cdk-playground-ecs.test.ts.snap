@@ -80,6 +80,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             "Value": "guardian/cdk-playground",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "devx::cdk-playground",
+          },
+          {
             "Key": "Name",
             "Value": "CdkPlaygroundEcs-CODE/CertificateCdkplaygroundecs",
           },
@@ -107,6 +111,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "devx::cdk-playground",
           },
           {
             "Key": "Stack",
@@ -201,6 +209,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             "Value": "guardian/cdk-playground",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "devx::cdk-playground",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -284,6 +296,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "devx::cdk-playground",
           },
           {
             "Key": "Stack",
@@ -430,6 +446,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             "Value": "guardian/cdk-playground",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "devx::cdk-playground",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -474,6 +494,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "devx::cdk-playground",
           },
           {
             "Key": "Stack",
@@ -568,6 +592,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             "Value": "guardian/cdk-playground",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "devx::cdk-playground",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -602,6 +630,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "devx::cdk-playground",
           },
           {
             "Key": "Stack",
@@ -681,6 +713,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "devx::cdk-playground",
           },
           {
             "Key": "Stack",
@@ -800,6 +836,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             "Value": "guardian/cdk-playground",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "devx::cdk-playground",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -836,6 +876,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           {
             "Key": "gu:repo",
             "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "devx::cdk-playground",
           },
           {
             "Key": "Stack",
