@@ -59,13 +59,12 @@ class GuRiffRaffDeploymentIdParameter extends CfnParameter {
 
 interface CdkPlaygroundEcsProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 	/**
-	 * Which application build to run.
-	 * This will typically match the build number provided by CI.
+	 * Which image to run.
+	 * This should be the image digest (e.g. 'sha256:abc123') to ensure immutable deployments.
 	 *
-	 * @example
-	 * process.env.GITHUB_RUN_NUMBER
+	 * @see https://docs.docker.com/dhi/core-concepts/digests
 	 */
-	buildIdentifier: string;
+	imageIdentifier: string;
 }
 
 // For now, we provision all of this infrastructure via constructs as part of this repo.
@@ -86,7 +85,7 @@ export class CdkPlaygroundEcs extends GuStack {
 			region,
 		} = this;
 
-		const { buildIdentifier } = props;
+		const { imageIdentifier } = props;
 		const ecsApp = 'cdk-playground-ecs';
 		const ecsDomainName = 'cdk-playground-ecs.code.dev-gutools.co.uk';
 
@@ -121,10 +120,10 @@ export class CdkPlaygroundEcs extends GuStack {
 		});
 
 		// Need to figure out how to make this cross-account, but this is fine for the simple case where the app and the
-		// ECR repo are both in the Deploy Tools accoutn
+		// ECR repo are both in the Deploy Tools account
 		const image = ContainerImage.fromEcrRepository(
 			Repository.fromRepositoryName(this, 'Repo', this.repositoryName!),
-			`build-${buildIdentifier}`,
+			imageIdentifier,
 		);
 
 		const loggingStreamName =
