@@ -6,9 +6,75 @@ on:
     branches:
       - main
 jobs:
+  facts:
+    runs-on: ubuntu-slim
+    permissions: {} # This job doesn't need any permissions. Explicitly set it to an empty object to avoid inheriting any default permissions of the workflow.
+    outputs:
+      BRANCH_NAME: ${{ steps.set-facts.outputs.BRANCH_NAME }}
+      BRANCH_NAME_FOR_ECR: ${{ steps.set-facts.outputs.BRANCH_NAME_FOR_ECR }}
+      BUILD_NUMBER: ${{ steps.set-facts.outputs.BUILD_NUMBER }}
+      COMMIT_SHA: ${{ steps.set-facts.outputs.COMMIT_SHA }}
+    steps:
+      - name: Build facts
+        id: set-facts
+        env:
+          RAW_BRANCH_NAME: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref || 'unknown' }}
+          BUILD_NUMBER: ${{ github.run_number }}
+          COMMIT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }} # When invoked from `pull_request`, `github.sha` is not the latest commit of the feature branch. All other times, it is.
+        run: |
+          echo "BUILD_NUMBER=${BUILD_NUMBER}" >> $GITHUB_OUTPUT
+          echo "COMMIT_SHA=${COMMIT_SHA}" >> $GITHUB_OUTPUT
+
+          # Remove "refs/heads/" prefix from RAW_BRANCH_NAME
+          TRIMMED_BRANCH_NAME="${RAW_BRANCH_NAME#refs/heads/}"
+          BRANCH_NAME_FOR_ECR=${TRIMMED_BRANCH_NAME//\//-}
+
+          echo "BRANCH_NAME=${TRIMMED_BRANCH_NAME}" >> $GITHUB_OUTPUT
+          echo "BRANCH_NAME_FOR_ECR=${BRANCH_NAME_FOR_ECR}" >> $GITHUB_OUTPUT
+
+  ci-image:
+    runs-on: ubuntu-latest
+    needs: [facts]
+    permissions:
+      contents: read
+      id-token: write # Required to exchange for AWS credentials using OIDC
+    env:
+      REGISTRY: ${{ secrets.GU_ECR_REGISTRY }} # TODO provision this secret with https://github.com/guardian/riffraff-platform
+      REPOSITORY: ${{ github.repository }}
+      COMMIT_SHA: ${{ needs.facts.outputs.COMMIT_SHA }}
+      BUILD_NUMBER: ${{ needs.facts.outputs.BUILD_NUMBER }}
+      BRANCH_NAME: ${{ needs.facts.outputs.BRANCH_NAME_FOR_ECR }}
+    outputs:
+      IMAGE_DIGEST: ${{ steps.obtain-image-digest.outputs.IMAGE_DIGEST }}
+    steps:
+      # Checkout the branch
+      - uses: actions/checkout@v6.0.2
+      - uses: guardian/setup-scala@v1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6.1.0
+        with:
+          role-to-assume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
+          aws-region: eu-west-1
+          mask-aws-account-id: 'true'
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2.1.3
+        with:
+          mask-password: 'true'
+      - name: Build, tag, and push docker image to Amazon ECR
+        run: |
+          sbt Docker/publishLocal
+          docker push $REGISTRY/$REPOSITORY --all-tags
+      - name: Obtain image digest
+        id: obtain-image-digest
+        run: |
+          IMAGE_DIGEST=$(docker manifest inspect $REGISTRY/$REPOSITORY:sha-$COMMIT_SHA --verbose | jq -r '.Descriptor.digest')
+          echo "IMAGE_DIGEST=${IMAGE_DIGEST}" >> $GITHUB_OUTPUT
   CI:
     runs-on: ubuntu-latest
-
+    needs:
+      - facts
+      - ci-image
     permissions:
       contents: read
 
@@ -17,19 +83,6 @@ jobs:
       pull-requests: write #...to comment on PRs
 
     steps:
-      - name: Build facts
-        env:
-          RAW_BRANCH_NAME: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref || 'unknown' }}
-          BUILD_NUMBER: ${{ github.run_number }}
-          COMMIT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }} # When invoked from `pull_request`, `github.sha` is not the latest commit of the feature branch. All other times, it is.
-        run: |
-          # Remove "refs/heads/" prefix from RAW_BRANCH_NAME
-          BRANCH_NAME="${RAW_BRANCH_NAME#refs/heads/}"
-
-          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
-          echo "BUILD_NUMBER=${BUILD_NUMBER}" >> $GITHUB_ENV
-          echo "COMMIT_SHA=${COMMIT_SHA}" >> $GITHUB_ENV
-
       # Checkout the branch
       - uses: actions/checkout@v6.0.2
 
@@ -44,6 +97,11 @@ jobs:
 
       # Build CDK and Play (in sequence)
       - run: ./script/ci
+        env:
+          COMMIT_SHA: ${{ needs.facts.outputs.COMMIT_SHA }}
+          BUILD_NUMBER: ${{ needs.facts.outputs.BUILD_NUMBER }}
+          BRANCH_NAME: ${{ needs.facts.outputs.BRANCH_NAME }}
+          IMAGE_DIGEST: ${{ needs.ci-image.outputs.IMAGE_DIGEST }}
 
       # Upload our build artifacts to Riff-Raff (well, S3)
       - uses: guardian/actions-riff-raff@v4
@@ -61,34 +119,3 @@ jobs:
               - lambda/cdk-playground-lambda.zip
             event-forwarder:
               - cdk/dist/event-forwarder.zip
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v6.1.0
-        with:
-          role-to-assume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
-          aws-region: eu-west-1
-          mask-aws-account-id: 'true'
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2.1.3
-        with:
-          mask-password: 'true'
-
-      - name: Build, tag, and push docker image to Amazon ECR
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }} # TODO Update https://github.com/guardian/riffraff-platform to add the ECR repository URI as a repository secret. This would allow us to login exactly before push, and no earlier.
-          REPOSITORY: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
-          BUILD_NUMBER: ${{ github.run_number }}
-          ORIGINAL_BRANCH_NAME: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref || 'unknown' }}
-        run: |
-          # Remove "refs/heads/" prefix from ORIGINAL_BRANCH_NAME
-          TRIMMED_BRANCH_NAME="${ORIGINAL_BRANCH_NAME#refs/heads/}"
-
-          # Replace / with - and export it to make it available to sbt
-          export BRANCH_NAME=${TRIMMED_BRANCH_NAME//\//-}
-
-          sbt Docker/publishLocal
-
-          docker push $REGISTRY/$REPOSITORY --all-tags
