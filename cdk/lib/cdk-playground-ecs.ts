@@ -17,8 +17,9 @@ import {
 	GuApplicationTargetGroup,
 	GuHttpsApplicationListener,
 } from '@guardian/cdk/lib/constructs/loadbalancing';
+import { isSingletonPresentInStack } from '@guardian/cdk/lib/utils/singleton';
 import type { App } from 'aws-cdk-lib';
-import { Duration } from 'aws-cdk-lib';
+import { CfnParameter, Duration } from 'aws-cdk-lib';
 import { Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Repository } from 'aws-cdk-lib/aws-ecr';
 import {
@@ -35,15 +36,35 @@ import type { Volume } from 'aws-cdk-lib/aws-ecs';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 
+// This construct is already present in GuCDK as part of `GuEc2AppExperimental`, however it is not exported.
+// TODO Update GuCDK to export this construct.
+class GuRiffRaffDeploymentIdParameter extends CfnParameter {
+	private static instance: GuRiffRaffDeploymentIdParameter | undefined;
+
+	private constructor(scope: GuStack) {
+		super(scope, 'RiffRaffDeploymentId', {
+			type: 'String',
+			description: 'Used by Riff-Raff to inject the deployment ID.',
+		});
+	}
+
+	public static getInstance(stack: GuStack): GuRiffRaffDeploymentIdParameter {
+		if (!this.instance || !isSingletonPresentInStack(stack, this.instance)) {
+			this.instance = new GuRiffRaffDeploymentIdParameter(stack);
+		}
+
+		return this.instance;
+	}
+}
+
 interface CdkPlaygroundEcsProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 	/**
-	 * Which application build to run.
-	 * This will typically match the build number provided by CI.
+	 * Which image to run.
+	 * This should be the image digest (e.g. 'sha256:abc123') to ensure immutable deployments.
 	 *
-	 * @example
-	 * process.env.GITHUB_RUN_NUMBER
+	 * @see https://docs.docker.com/dhi/core-concepts/digests
 	 */
-	buildIdentifier: string;
+	imageIdentifier: string;
 }
 
 // For now, we provision all of this infrastructure via constructs as part of this repo.
@@ -64,7 +85,7 @@ export class CdkPlaygroundEcs extends GuStack {
 			region,
 		} = this;
 
-		const { buildIdentifier } = props;
+		const { imageIdentifier } = props;
 		const ecsApp = 'cdk-playground-ecs';
 		const ecsDomainName = 'cdk-playground-ecs.code.dev-gutools.co.uk';
 
@@ -99,10 +120,10 @@ export class CdkPlaygroundEcs extends GuStack {
 		});
 
 		// Need to figure out how to make this cross-account, but this is fine for the simple case where the app and the
-		// ECR repo are both in the Deploy Tools accoutn
+		// ECR repo are both in the Deploy Tools account
 		const image = ContainerImage.fromEcrRepository(
 			Repository.fromRepositoryName(this, 'Repo', this.repositoryName!),
-			`build-${buildIdentifier}`,
+			imageIdentifier,
 		);
 
 		const loggingStreamName =
@@ -131,6 +152,10 @@ export class CdkPlaygroundEcs extends GuStack {
 
 		taskDefinition.addContainer('cdk-playground', {
 			image,
+			dockerLabels: {
+				RiffRaffDeploymentId:
+					GuRiffRaffDeploymentIdParameter.getInstance(this).valueAsString,
+			},
 			// This speeds up deployment, but we should probably only use it in conjunction with immutable tags
 			// https://aws.amazon.com/blogs/containers/announcing-software-version-consistency-for-amazon-ecs-services/
 			versionConsistency: VersionConsistency.DISABLED,
