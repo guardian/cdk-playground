@@ -24,7 +24,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       "GuAccessLoggingBucketParameter",
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
-      "GuRiffRaffDeploymentIdParameter",
+      "GuRiffRaffDeploymentIdParameterExperimental",
       "GuCname",
     ],
     "gu:cdk:version": "TEST",
