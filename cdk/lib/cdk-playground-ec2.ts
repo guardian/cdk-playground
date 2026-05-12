@@ -85,9 +85,8 @@ export class CdkPlaygroundEc2 extends GuStack {
 				loadBalancer: ec2App.loadBalancer,
 				listener: ec2App.listener,
 				targetGroup: ec2App.targetGroup,
-				// Although to begin with we send 0% traffic to the ECS target group; I think we need an initial deploy to
-				// get some healthy tasks before we start routing traffic to them
-				weightForEcsTargetGroup: 0,
+				// Route ~50% of traffic to the ECS target group
+				weightForEcsTargetGroup: 500,
 			},
 		});
 
