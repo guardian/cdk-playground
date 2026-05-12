@@ -11,7 +11,6 @@ const eventForwarder = new EventForwarder(app, 'EventForwarder-CODE');
 
 const ec2Stack = new CdkPlaygroundEc2(app, 'CdkPlaygroundEc2-CODE', {
 	cloudFormationStackName: 'deploy-CODE-cdk-playground-ec2',
-	buildIdentifier: process.env.GITHUB_RUN_NUMBER ?? 'DEV',
 	imageIdentifier: process.env.IMAGE_DIGEST ?? 'DEV',
 });
 
