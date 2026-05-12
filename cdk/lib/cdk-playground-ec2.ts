@@ -85,8 +85,8 @@ export class CdkPlaygroundEc2 extends GuStack {
 				loadBalancer: ec2App.loadBalancer,
 				listener: ec2App.listener,
 				targetGroup: ec2App.targetGroup,
-				// Route ~50% of traffic to the ECS target group
-				weightForEcsTargetGroup: 500,
+				// Route 100% of traffic to the ECS target group
+				weightForEcsTargetGroup: 999,
 			},
 		});
 
