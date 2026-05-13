@@ -99,6 +99,12 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
     },
     "EcsCluster97242B84": {
       "Properties": {
+        "ClusterSettings": [
+          {
+            "Name": "containerInsights",
+            "Value": "enabled",
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",

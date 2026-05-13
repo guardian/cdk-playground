@@ -22,9 +22,11 @@ import type { App } from 'aws-cdk-lib';
 import { CfnParameter, Duration } from 'aws-cdk-lib';
 import { Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Repository } from 'aws-cdk-lib/aws-ecr';
+import type { Volume } from 'aws-cdk-lib/aws-ecs';
 import {
 	Cluster,
 	ContainerImage,
+	ContainerInsights,
 	FargateService,
 	FargateTaskDefinition,
 	FireLensLogDriver,
@@ -32,7 +34,6 @@ import {
 	LogDriver,
 	VersionConsistency,
 } from 'aws-cdk-lib/aws-ecs';
-import type { Volume } from 'aws-cdk-lib/aws-ecs';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 
@@ -117,6 +118,7 @@ export class CdkPlaygroundEcs extends GuStack {
 			// We have to pass in an IVpc here, but the generated CFN only actually references the private subnets ids when
 			// setting up the ECS service.
 			vpc: vpcThatEcsClusterConstructWillAccept,
+			containerInsightsV2: ContainerInsights.ENABLED,
 		});
 
 		// Need to figure out how to make this cross-account, but this is fine for the simple case where the app and the
