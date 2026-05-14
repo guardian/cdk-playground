@@ -6,7 +6,15 @@ import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 
-type CdkPlaygroundEc2Props = Omit<GuStackProps, 'stack' | 'stage'>;
+interface CdkPlaygroundEc2Props extends Omit<GuStackProps, 'stack' | 'stage'> {
+	/**
+	 * Which image to run.
+	 * This should be the image digest (e.g. 'sha256:abc123') to ensure immutable deployments.
+	 *
+	 * @see https://docs.docker.com/dhi/core-concepts/digests
+	 */
+	imageIdentifier: string;
+}
 
 export class CdkPlaygroundEc2 extends GuStack {
 	constructor(scope: App, id: string, props: CdkPlaygroundEc2Props) {
@@ -16,6 +24,8 @@ export class CdkPlaygroundEc2 extends GuStack {
 			stage: 'CODE',
 			env: { region: 'eu-west-1' },
 		});
+
+		const { imageIdentifier } = props;
 
 		const ec2AppDomainName = 'cdk-playground.code.dev-gutools.co.uk';
 
@@ -47,6 +57,17 @@ export class CdkPlaygroundEc2 extends GuStack {
 						executionStatement: `dpkg -i /${ec2App}/${ec2App}.deb`,
 					},
 				},
+			},
+			ecsProps: {
+				cpu: 1024,
+				imageIdentifier,
+				memoryLimitMiB: 2048,
+				repositoryName: 'guardian/cdk-playground',
+				scaling: { minimumTasks: 1, maximumTasks: 10 },
+			},
+			targetGroupWeights: {
+				ec2: 999,
+				ecs: 0,
 			},
 		});
 
