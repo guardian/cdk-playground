@@ -7,7 +7,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       "GuVpcParameter",
       "GuSubnetListParameter",
       "GuSubnetListParameter",
-      "GuEc2AppExperimental",
+      "GuEc2App",
       "GuDistributionBucketParameter",
       "GuCertificate",
       "GuInstanceRole",
@@ -24,7 +24,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       "GuAccessLoggingBucketParameter",
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
-      "GuRiffRaffDeploymentIdParameter",
       "GuCname",
     ],
     "gu:cdk:version": "TEST",
@@ -60,10 +59,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       "Description": "SSM parameter containing the Name (not ARN) on the kinesis stream",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "RiffRaffDeploymentId": {
-      "Description": "Used by Riff-Raff to inject the deployment ID.",
-      "Type": "String",
-    },
     "VpcId": {
       "Default": "/account/vpc/primary/id",
       "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
@@ -81,49 +76,8 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
     },
   },
   "Resources": {
-    "AsgRollingUpdatePolicy2A1DDC6F": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "cloudformation:SignalResource",
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "AWS::StackId",
-              },
-            },
-            {
-              "Action": "elasticloadbalancing:DescribeTargetHealth",
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "AsgRollingUpdatePolicy2A1DDC6F",
-        "Roles": [
-          {
-            "Ref": "InstanceRoleCdkplaygroundC280027A",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "AutoScalingGroupCdkplaygroundASGD6E49F0F": {
-      "CreationPolicy": {
-        "AutoScalingCreationPolicy": {
-          "MinSuccessfulInstancesPercent": 100,
-        },
-        "ResourceSignal": {
-          "Count": 1,
-          "Timeout": "PT3M",
-        },
-      },
-      "DependsOn": [
-        "AsgRollingUpdatePolicy2A1DDC6F",
-      ],
       "Properties": {
-        "DesiredCapacity": "1",
         "HealthCheckGracePeriod": 120,
         "HealthCheckType": "ELB",
         "LaunchTemplate": {
@@ -198,23 +152,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         },
       },
       "Type": "AWS::AutoScaling::AutoScalingGroup",
-      "UpdatePolicy": {
-        "AutoScalingRollingUpdate": {
-          "MaxBatchSize": 10,
-          "MinInstancesInService": 1,
-          "MinSuccessfulInstancesPercent": 100,
-          "PauseTime": "PT3M",
-          "SuspendProcesses": [
-            "AlarmNotification",
-            "AZRebalance",
-            "HealthCheck",
-            "InstanceRefresh",
-            "ReplaceUnhealthy",
-            "ScheduledActions",
-          ],
-          "WaitOnResourceSignals": true,
-        },
-      },
     },
     "CertificateCdkplayground47FCF7D9": {
       "DeletionPolicy": "Retain",
@@ -822,10 +759,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                   "Value": "cdk-playground",
                 },
                 {
-                  "Key": "gu:build-identifier",
-                  "Value": "TEST",
-                },
-                {
                   "Key": "gu:cdk:version",
                   "Value": "TEST",
                 },
@@ -857,10 +790,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                 {
                   "Key": "App",
                   "Value": "cdk-playground",
-                },
-                {
-                  "Key": "gu:build-identifier",
-                  "Value": "TEST",
                 },
                 {
                   "Key": "gu:cdk:version",
@@ -895,53 +824,13 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                 "",
                 [
                   "#!/bin/bash
-function exitTrap(){
-exitCode=$?
-
-        cfn-signal --stack ",
-                  {
-                    "Ref": "AWS::StackId",
-                  },
-                  "           --resource AutoScalingGroupCdkplaygroundASGD6E49F0F           --region eu-west-1           --exit-code $exitCode || echo 'Failed to send Cloudformation Signal'
-        
-}
-trap exitTrap EXIT
-mkdir -p $(dirname '/cdk-playground/cdk-playground-TEST.deb')
+mkdir -p $(dirname '/cdk-playground/cdk-playground.deb')
 aws s3 cp 's3://",
                   {
                     "Ref": "DistributionBucketName",
                   },
-                  "/deploy/CODE/cdk-playground/cdk-playground-TEST.deb' '/cdk-playground/cdk-playground-TEST.deb'
-dpkg -i /cdk-playground/cdk-playground-TEST.deb
-echo "Launch template last updated by Riff-Raff deployment ID: ",
-                  {
-                    "Ref": "RiffRaffDeploymentId",
-                  },
-                  ""
-# GuEc2AppExperimental Instance Health Check Start
-
-      TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-      INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/instance-id")
-
-      STATE=$(aws elbv2 describe-target-health         --target-group-arn ",
-                  {
-                    "Ref": "TargetGroupCdkplayground7A453FC2",
-                  },
-                  "         --region eu-west-1         --targets Id=$INSTANCE_ID,Port=9000         --query "TargetHealthDescriptions[0].TargetHealth.State")
-
-      until [ "$STATE" == "\\"healthy\\"" ]; do
-        echo "Instance running build TEST not yet healthy within target group. Current state $STATE. Sleeping..."
-        sleep 5
-        STATE=$(aws elbv2 describe-target-health           --target-group-arn ",
-                  {
-                    "Ref": "TargetGroupCdkplayground7A453FC2",
-                  },
-                  "           --region eu-west-1           --targets Id=$INSTANCE_ID,Port=9000           --query "TargetHealthDescriptions[0].TargetHealth.State")
-      done
-
-      echo "Instance running build TEST is healthy in target group."
-      
-# GuEc2AppExperimental Instance Health Check End",
+                  "/deploy/CODE/cdk-playground/cdk-playground.deb' '/cdk-playground/cdk-playground.deb'
+dpkg -i /cdk-playground/cdk-playground.deb",
                 ],
               ],
             },
@@ -954,10 +843,6 @@ echo "Launch template last updated by Riff-Raff deployment ID: ",
               {
                 "Key": "App",
                 "Value": "cdk-playground",
-              },
-              {
-                "Key": "gu:build-identifier",
-                "Value": "TEST",
               },
               {
                 "Key": "gu:cdk:version",
