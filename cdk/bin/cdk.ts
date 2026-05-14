@@ -5,22 +5,29 @@ import { CdkPlaygroundEcs } from '../lib/cdk-playground-ecs';
 import { CdkPlaygroundLambda } from '../lib/cdk-playground-lambda';
 import { EventForwarder } from '../lib/event-forwarder';
 
+const riffRaffProjectName = 'devx::cdk-playground';
+
 const app = new GuRoot();
 
-const eventForwarder = new EventForwarder(app, 'EventForwarder-CODE');
+const eventForwarder = new EventForwarder(app, 'EventForwarder-CODE', {
+	riffRaffProjectName,
+});
 
 const ec2Stack = new CdkPlaygroundEc2(app, 'CdkPlaygroundEc2-CODE', {
 	cloudFormationStackName: 'deploy-CODE-cdk-playground-ec2',
 	buildIdentifier: process.env.GITHUB_RUN_NUMBER ?? 'DEV',
+	riffRaffProjectName,
 });
 
 new CdkPlaygroundLambda(app, 'CdkPlaygroundLambda-CODE', {
 	cloudFormationStackName: 'deploy-CODE-cdk-playground-lambda',
+	riffRaffProjectName,
 });
 
 new CdkPlaygroundEcs(app, 'CdkPlaygroundEcs-CODE', {
 	cloudFormationStackName: 'deploy-CODE-cdk-playground-ecs',
 	imageIdentifier: process.env.IMAGE_DIGEST ?? 'DEV',
+	riffRaffProjectName,
 });
 
 // Configure Riff-Raff to deploy the application stack after the EventForwarder stack has finished.
