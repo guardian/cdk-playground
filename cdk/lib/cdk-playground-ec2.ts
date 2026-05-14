@@ -1,7 +1,7 @@
-import { GuEc2App } from '@guardian/cdk';
 import { AccessScope } from '@guardian/cdk/lib/constants/access';
 import { GuStack, type GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
+import { GuLoadBalancedAppExperimental } from '@guardian/cdk/lib/experimental/patterns/gu-load-balanced-app';
 import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
@@ -21,31 +21,33 @@ export class CdkPlaygroundEc2 extends GuStack {
 
 		const ec2App = 'cdk-playground';
 
-		const { loadBalancer } = new GuEc2App(this, {
+		const { loadBalancer } = new GuLoadBalancedAppExperimental(this, {
 			applicationPort: 9000,
 			app: ec2App,
-			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
 			access: { scope: AccessScope.PUBLIC },
-			userData: {
-				distributable: {
-					fileName: `${ec2App}.deb`,
-					executionStatement: `dpkg -i /${ec2App}/${ec2App}.deb`,
-				},
-			},
 			certificateProps: {
 				domainName: ec2AppDomainName,
 			},
 			monitoringConfiguration: { noMonitoring: true },
-			scaling: {
-				minimumInstances: 1,
-				maximumInstances: 10,
+			ec2Props: {
+				scaling: {
+					minimumInstances: 1,
+					maximumInstances: 10,
+				},
+				applicationLogging: {
+					enabled: true,
+					systemdUnitName: 'cdk-playground',
+				},
+				imageRecipe: 'arm64-jammy-java21-deploy-infrastructure',
+				instanceMetricGranularity: '5Minute',
+				instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
+				userData: {
+					distributable: {
+						fileName: `${ec2App}.deb`,
+						executionStatement: `dpkg -i /${ec2App}/${ec2App}.deb`,
+					},
+				},
 			},
-			applicationLogging: {
-				enabled: true,
-				systemdUnitName: 'cdk-playground',
-			},
-			imageRecipe: 'arm64-jammy-java21-deploy-infrastructure',
-			instanceMetricGranularity: '5Minute',
 		});
 
 		new GuCname(this, 'EC2AppDNS', {
