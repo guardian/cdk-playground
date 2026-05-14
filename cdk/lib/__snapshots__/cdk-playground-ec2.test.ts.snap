@@ -8,18 +8,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       "GuSubnetListParameter",
       "GuSubnetListParameter",
       "GuLoadBalancedAppExperimental",
-      "GuDistributionBucketParameter",
-      "GuInstanceRole",
-      "GuSsmSshPolicy",
-      "GuDescribeEC2Policy",
       "GuLoggingStreamNameParameter",
-      "GuLogShippingPolicy",
-      "GuGetDistributablePolicy",
-      "GuParameterStoreReadPolicy",
-      "GuAmiParameter",
-      "GuHttpsEgressSecurityGroup",
-      "GuAutoScalingGroup",
-      "GuApplicationTargetGroup",
       "GuRiffRaffDeploymentIdParameterExperimental",
       "GuParameterStoreReadPolicy",
       "GuHttpsEgressSecurityGroup",
@@ -44,18 +33,9 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
     },
   },
   "Parameters": {
-    "AMICdkplayground": {
-      "Description": "Amazon Machine Image ID for the app cdk-playground. Use this in conjunction with AMIgo to keep AMIs up to date.",
-      "Type": "AWS::EC2::Image::Id",
-    },
     "AccessLoggingBucket": {
       "Default": "/account/services/access-logging/bucket",
       "Description": "S3 bucket to store your access logs",
-      "Type": "AWS::SSM::Parameter::Value<String>",
-    },
-    "DistributionBucketName": {
-      "Default": "/account/services/artifact.bucket",
-      "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "LoggingStreamName": {
@@ -84,83 +64,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
     },
   },
   "Resources": {
-    "AutoScalingGroupCdkplaygroundASGD6E49F0F": {
-      "Properties": {
-        "HealthCheckGracePeriod": 120,
-        "HealthCheckType": "ELB",
-        "LaunchTemplate": {
-          "LaunchTemplateId": {
-            "Ref": "deployCODEcdkplaygroundCA0A63B1",
-          },
-          "Version": {
-            "Fn::GetAtt": [
-              "deployCODEcdkplaygroundCA0A63B1",
-              "LatestVersionNumber",
-            ],
-          },
-        },
-        "MaxSize": "10",
-        "MetricsCollection": [
-          {
-            "Granularity": "1Minute",
-          },
-        ],
-        "MinSize": "1",
-        "Tags": [
-          {
-            "Key": "App",
-            "PropagateAtLaunch": true,
-            "Value": "cdk-playground",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "PropagateAtLaunch": true,
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "PropagateAtLaunch": true,
-            "Value": "guardian/cdk-playground",
-          },
-          {
-            "Key": "gu:riff-raff-project",
-            "PropagateAtLaunch": true,
-            "Value": "devx::cdk-playground",
-          },
-          {
-            "Key": "LogKinesisStreamName",
-            "PropagateAtLaunch": true,
-            "Value": {
-              "Ref": "LoggingStreamName",
-            },
-          },
-          {
-            "Key": "Stack",
-            "PropagateAtLaunch": true,
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "PropagateAtLaunch": true,
-            "Value": "CODE",
-          },
-          {
-            "Key": "SystemdUnit",
-            "PropagateAtLaunch": true,
-            "Value": "cdk-playground.service",
-          },
-        ],
-        "TargetGroupARNs": [
-          {
-            "Ref": "TargetGroupCdkplayground7A453FC2",
-          },
-        ],
-        "VPCZoneIdentifier": {
-          "Ref": "cdkplaygroundPrivateSubnets",
-        },
-      },
-      "Type": "AWS::AutoScaling::AutoScalingGroup",
-    },
     "CertificateCdkplayground47FCF7D9": {
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -199,32 +102,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       },
       "Type": "AWS::CertificateManager::Certificate",
       "UpdateReplacePolicy": "Retain",
-    },
-    "DescribeEC2PolicyFF5F9295": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "autoscaling:DescribeAutoScalingInstances",
-                "autoscaling:DescribeAutoScalingGroups",
-                "ec2:DescribeTags",
-                "ec2:DescribeInstances",
-              ],
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "describe-ec2-policy",
-        "Roles": [
-          {
-            "Ref": "InstanceRoleCdkplaygroundC280027A",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
     },
     "EC2AppDNS": {
       "Properties": {
@@ -814,82 +691,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       },
       "Type": "AWS::IAM::Policy",
     },
-    "GetDistributablePolicyCdkplaygroundBFB4D02B": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "s3:GetObject",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:s3:::",
-                    {
-                      "Ref": "DistributionBucketName",
-                    },
-                    "/deploy/CODE/cdk-playground/*",
-                  ],
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "GetDistributablePolicyCdkplaygroundBFB4D02B",
-        "Roles": [
-          {
-            "Ref": "InstanceRoleCdkplaygroundC280027A",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "GuHttpsEgressSecurityGroupCdkplaygroundAF9827C8": {
-      "Properties": {
-        "GroupDescription": "Allow all outbound HTTPS traffic",
-        "SecurityGroupEgress": [
-          {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow all outbound HTTPS traffic",
-            "FromPort": 443,
-            "IpProtocol": "tcp",
-            "ToPort": 443,
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "App",
-            "Value": "cdk-playground",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/cdk-playground",
-          },
-          {
-            "Key": "gu:riff-raff-project",
-            "Value": "devx::cdk-playground",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-        "VpcId": {
-          "Ref": "VpcId",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
     "GuHttpsEgressSecurityGroupCdkplaygroundecs59F0C490": {
       "Properties": {
         "GroupDescription": "Allow all outbound HTTPS traffic",
@@ -955,109 +756,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
-    "GuHttpsEgressSecurityGroupCdkplaygroundfromCdkPlaygroundEc2CODELoadBalancerCdkplaygroundSecurityGroup18287D7A9000703932FA": {
-      "Properties": {
-        "Description": "Load balancer to target",
-        "FromPort": 9000,
-        "GroupId": {
-          "Fn::GetAtt": [
-            "GuHttpsEgressSecurityGroupCdkplaygroundAF9827C8",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": {
-          "Fn::GetAtt": [
-            "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
-            "GroupId",
-          ],
-        },
-        "ToPort": 9000,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
-    },
-    "GuLogShippingPolicy981BFE5A": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "kinesis:Describe*",
-                "kinesis:Put*",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:kinesis:eu-west-1:",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":stream/",
-                    {
-                      "Ref": "LoggingStreamName",
-                    },
-                  ],
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "GuLogShippingPolicy981BFE5A",
-        "Roles": [
-          {
-            "Ref": "InstanceRoleCdkplaygroundC280027A",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "InstanceRoleCdkplaygroundC280027A": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "ec2.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Path": "/",
-        "Tags": [
-          {
-            "Key": "App",
-            "Value": "cdk-playground",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/cdk-playground",
-          },
-          {
-            "Key": "gu:riff-raff-project",
-            "Value": "devx::cdk-playground",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
     "ListenerCdkplaygroundA8D9CA6F": {
       "Properties": {
         "Certificates": [
@@ -1069,21 +767,8 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         ],
         "DefaultActions": [
           {
-            "ForwardConfig": {
-              "TargetGroups": [
-                {
-                  "TargetGroupArn": {
-                    "Ref": "TargetGroupCdkplayground7A453FC2",
-                  },
-                  "Weight": 0,
-                },
-                {
-                  "TargetGroupArn": {
-                    "Ref": "EcsTargetGroupCdkplayground55757231",
-                  },
-                  "Weight": 999,
-                },
-              ],
+            "TargetGroupArn": {
+              "Ref": "EcsTargetGroupCdkplayground55757231",
             },
             "Type": "forward",
           },
@@ -1213,27 +898,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundEc2CODEGuHttpsEgressSecurityGroupCdkplayground0BB5710F9000BBED7E0F": {
-      "Properties": {
-        "Description": "Load balancer to target",
-        "DestinationSecurityGroupId": {
-          "Fn::GetAtt": [
-            "GuHttpsEgressSecurityGroupCdkplaygroundAF9827C8",
-            "GroupId",
-          ],
-        },
-        "FromPort": 9000,
-        "GroupId": {
-          "Fn::GetAtt": [
-            "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "ToPort": 9000,
-      },
-      "Type": "AWS::EC2::SecurityGroupEgress",
-    },
     "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundEc2CODEGuHttpsEgressSecurityGroupCdkplaygroundecsC9C5D1759000EE07DB64": {
       "Properties": {
         "Description": "Load balancer to target",
@@ -1254,57 +918,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         "ToPort": 9000,
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
-    },
-    "ParameterStoreReadCdkplaygroundF78958B9": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "ssm:GetParametersByPath",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:ssm:eu-west-1:",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/CODE/deploy/cdk-playground",
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": [
-                "ssm:GetParameters",
-                "ssm:GetParameter",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:ssm:eu-west-1:",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/CODE/deploy/cdk-playground/*",
-                  ],
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "parameter-store-read-policy",
-        "Roles": [
-          {
-            "Ref": "InstanceRoleCdkplaygroundC280027A",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
     },
     "ParameterStoreReadCdkplaygroundecsB1E187C6": {
       "Properties": {
@@ -1356,262 +969,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "SsmSshPolicy4CFC977E": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "ec2messages:AcknowledgeMessage",
-                "ec2messages:DeleteMessage",
-                "ec2messages:FailMessage",
-                "ec2messages:GetEndpoint",
-                "ec2messages:GetMessages",
-                "ec2messages:SendReply",
-                "ssm:UpdateInstanceInformation",
-                "ssm:ListInstanceAssociations",
-                "ssm:DescribeInstanceProperties",
-                "ssm:DescribeDocumentParameters",
-                "ssmmessages:CreateControlChannel",
-                "ssmmessages:CreateDataChannel",
-                "ssmmessages:OpenControlChannel",
-                "ssmmessages:OpenDataChannel",
-              ],
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "ssm-ssh-policy",
-        "Roles": [
-          {
-            "Ref": "InstanceRoleCdkplaygroundC280027A",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "TargetGroupCdkplayground7A453FC2": {
-      "Properties": {
-        "HealthCheckIntervalSeconds": 10,
-        "HealthCheckPath": "/healthcheck",
-        "HealthCheckProtocol": "HTTP",
-        "HealthCheckTimeoutSeconds": 5,
-        "HealthyThresholdCount": 5,
-        "Port": 9000,
-        "Protocol": "HTTP",
-        "Tags": [
-          {
-            "Key": "App",
-            "Value": "cdk-playground",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/cdk-playground",
-          },
-          {
-            "Key": "gu:riff-raff-project",
-            "Value": "devx::cdk-playground",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-        "TargetGroupAttributes": [
-          {
-            "Key": "deregistration_delay.timeout_seconds",
-            "Value": "30",
-          },
-          {
-            "Key": "stickiness.enabled",
-            "Value": "false",
-          },
-        ],
-        "TargetType": "instance",
-        "UnhealthyThresholdCount": 2,
-        "VpcId": {
-          "Ref": "VpcId",
-        },
-      },
-      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
-    },
-    "deployCODEcdkplaygroundCA0A63B1": {
-      "DependsOn": [
-        "InstanceRoleCdkplaygroundC280027A",
-      ],
-      "Properties": {
-        "LaunchTemplateData": {
-          "IamInstanceProfile": {
-            "Arn": {
-              "Fn::GetAtt": [
-                "deployCODEcdkplaygroundProfileF02041A0",
-                "Arn",
-              ],
-            },
-          },
-          "ImageId": {
-            "Ref": "AMICdkplayground",
-          },
-          "InstanceType": "t4g.micro",
-          "MetadataOptions": {
-            "HttpTokens": "required",
-            "InstanceMetadataTags": "enabled",
-          },
-          "Monitoring": {
-            "Enabled": false,
-          },
-          "SecurityGroupIds": [
-            {
-              "Fn::GetAtt": [
-                "GuHttpsEgressSecurityGroupCdkplaygroundAF9827C8",
-                "GroupId",
-              ],
-            },
-          ],
-          "TagSpecifications": [
-            {
-              "ResourceType": "instance",
-              "Tags": [
-                {
-                  "Key": "App",
-                  "Value": "cdk-playground",
-                },
-                {
-                  "Key": "gu:cdk:version",
-                  "Value": "TEST",
-                },
-                {
-                  "Key": "gu:repo",
-                  "Value": "guardian/cdk-playground",
-                },
-                {
-                  "Key": "gu:riff-raff-project",
-                  "Value": "devx::cdk-playground",
-                },
-                {
-                  "Key": "Name",
-                  "Value": "CdkPlaygroundEc2-CODE/deploy-CODE-cdk-playground",
-                },
-                {
-                  "Key": "Stack",
-                  "Value": "deploy",
-                },
-                {
-                  "Key": "Stage",
-                  "Value": "CODE",
-                },
-              ],
-            },
-            {
-              "ResourceType": "volume",
-              "Tags": [
-                {
-                  "Key": "App",
-                  "Value": "cdk-playground",
-                },
-                {
-                  "Key": "gu:cdk:version",
-                  "Value": "TEST",
-                },
-                {
-                  "Key": "gu:repo",
-                  "Value": "guardian/cdk-playground",
-                },
-                {
-                  "Key": "gu:riff-raff-project",
-                  "Value": "devx::cdk-playground",
-                },
-                {
-                  "Key": "Name",
-                  "Value": "CdkPlaygroundEc2-CODE/deploy-CODE-cdk-playground",
-                },
-                {
-                  "Key": "Stack",
-                  "Value": "deploy",
-                },
-                {
-                  "Key": "Stage",
-                  "Value": "CODE",
-                },
-              ],
-            },
-          ],
-          "UserData": {
-            "Fn::Base64": {
-              "Fn::Join": [
-                "",
-                [
-                  "#!/bin/bash
-mkdir -p $(dirname '/cdk-playground/cdk-playground.deb')
-aws s3 cp 's3://",
-                  {
-                    "Ref": "DistributionBucketName",
-                  },
-                  "/deploy/CODE/cdk-playground/cdk-playground.deb' '/cdk-playground/cdk-playground.deb'
-dpkg -i /cdk-playground/cdk-playground.deb",
-                ],
-              ],
-            },
-          },
-        },
-        "TagSpecifications": [
-          {
-            "ResourceType": "launch-template",
-            "Tags": [
-              {
-                "Key": "App",
-                "Value": "cdk-playground",
-              },
-              {
-                "Key": "gu:cdk:version",
-                "Value": "TEST",
-              },
-              {
-                "Key": "gu:repo",
-                "Value": "guardian/cdk-playground",
-              },
-              {
-                "Key": "gu:riff-raff-project",
-                "Value": "devx::cdk-playground",
-              },
-              {
-                "Key": "Name",
-                "Value": "CdkPlaygroundEc2-CODE/deploy-CODE-cdk-playground",
-              },
-              {
-                "Key": "Stack",
-                "Value": "deploy",
-              },
-              {
-                "Key": "Stage",
-                "Value": "CODE",
-              },
-            ],
-          },
-        ],
-      },
-      "Type": "AWS::EC2::LaunchTemplate",
-    },
-    "deployCODEcdkplaygroundProfileF02041A0": {
-      "Properties": {
-        "Roles": [
-          {
-            "Ref": "InstanceRoleCdkplaygroundC280027A",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::InstanceProfile",
     },
   },
 }
