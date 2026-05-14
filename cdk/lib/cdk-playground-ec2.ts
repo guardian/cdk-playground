@@ -66,8 +66,8 @@ export class CdkPlaygroundEc2 extends GuStack {
 				scaling: { minimumTasks: 1, maximumTasks: 10 },
 			},
 			targetGroupWeights: {
-				ec2: 500,
-				ecs: 499,
+				ec2: 0,
+				ecs: 999,
 			},
 		});
 
