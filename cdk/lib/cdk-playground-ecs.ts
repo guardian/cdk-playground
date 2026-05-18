@@ -22,6 +22,7 @@ import type { App } from 'aws-cdk-lib';
 import { CfnParameter, Duration } from 'aws-cdk-lib';
 import { Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Repository } from 'aws-cdk-lib/aws-ecr';
+import type { Volume } from 'aws-cdk-lib/aws-ecs';
 import {
 	Cluster,
 	ContainerImage,
@@ -30,9 +31,9 @@ import {
 	FireLensLogDriver,
 	FirelensLogRouterType,
 	LogDriver,
+	PropagatedTagSource,
 	VersionConsistency,
 } from 'aws-cdk-lib/aws-ecs';
-import type { Volume } from 'aws-cdk-lib/aws-ecs';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 
@@ -230,6 +231,7 @@ export class CdkPlaygroundEcs extends GuStack {
 					vpc,
 				}),
 			],
+			propagateTags: PropagatedTagSource.TASK_DEFINITION,
 		});
 
 		// Can also set 'desiredCount' via the Fargate Service, but apparently this can lead to accidental scale downs

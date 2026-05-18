@@ -199,6 +199,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             },
           },
         },
+        "PropagateTags": "TASK_DEFINITION",
         "Tags": [
           {
             "Key": "gu:cdk:version",
