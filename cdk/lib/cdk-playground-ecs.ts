@@ -22,6 +22,7 @@ import type { App } from 'aws-cdk-lib';
 import { CfnParameter, Duration } from 'aws-cdk-lib';
 import { Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Repository } from 'aws-cdk-lib/aws-ecr';
+import type { Volume } from 'aws-cdk-lib/aws-ecs';
 import {
 	Cluster,
 	ContainerImage,
@@ -30,9 +31,9 @@ import {
 	FireLensLogDriver,
 	FirelensLogRouterType,
 	LogDriver,
+	PropagatedTagSource,
 	VersionConsistency,
 } from 'aws-cdk-lib/aws-ecs';
-import type { Volume } from 'aws-cdk-lib/aws-ecs';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 
@@ -220,6 +221,7 @@ export class CdkPlaygroundEcs extends GuStack {
 			minHealthyPercent: 100,
 			// Also important for service deployments; with the AWS defaults we don't get a fast failure when deploying a 'bad' build
 			circuitBreaker: { enable: true, rollback: true },
+			propagateTags: PropagatedTagSource.SERVICE,
 			// By default, AWS will create a new security group which allows all outbound traffic
 			// We don't want this so explicitly allow outbound HTTPS only
 			// This is what we do for the current GuEc2App pattern:
