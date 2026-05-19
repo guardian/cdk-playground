@@ -1,15 +1,8 @@
 import { AccessScope } from '@guardian/cdk/lib/constants';
 import { GuStack, type GuStackProps } from '@guardian/cdk/lib/constructs/core';
-import {
-	GuLoadBalancedAppExperimental,
-	RouteTrafficToEcsExperimental,
-} from '@guardian/cdk/lib/experimental/patterns/gu-load-balanced-app';
+import { GuLoadBalancedAppExperimental } from '@guardian/cdk/lib/experimental/patterns/gu-load-balanced-app';
 import type { App } from 'aws-cdk-lib';
-import type {
-	CfnListener,
-	CfnLoadBalancer,
-	CfnTargetGroup,
-} from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import type { CfnResource } from 'aws-cdk-lib';
 import { CfnInclude } from 'aws-cdk-lib/cloudformation-include';
 
 interface CdkPlaygroundEc2Props extends Omit<GuStackProps, 'stack' | 'stage'> {
@@ -56,15 +49,19 @@ export class CdkPlaygroundEc2 extends GuStack {
 			},
 		});
 
-		new RouteTrafficToEcsExperimental(this, {
-			currentLoadBalancer: yamlStack.getResource(
-				'LoadBalancer',
-			) as CfnLoadBalancer,
-			currentListener: yamlStack.getResource('Listener') as CfnListener,
-			ec2TargetGroup: yamlStack.getResource('Ec2TargetGroup') as CfnTargetGroup,
-			ecsPattern,
-			ec2Weight: 499,
-			ecsWeight: 500,
-		});
+		const newListenerAsCfn = ecsPattern.listener.node
+			.defaultChild as CfnResource;
+
+		const dnsRecord = yamlStack.getResource('DNS');
+		dnsRecord.addPropertyOverride('ResourceRecords', [
+			ecsPattern.loadBalancer.loadBalancerDnsName,
+		]);
+
+		// We need the old listener to update first so that the ECS target group can be linked to the new listener (a target
+		// group can't be associated with 2 load balancers at once).
+		newListenerAsCfn.addDependency(yamlStack.getResource('Listener'));
+		// And we need the new listener to be ready (i.e. to be routing traffic to the ECS target group) before we update DNS
+		// and start sending traffic to it.
+		dnsRecord.addDependency(newListenerAsCfn);
 	}
 }
