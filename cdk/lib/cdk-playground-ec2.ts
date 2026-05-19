@@ -63,8 +63,8 @@ export class CdkPlaygroundEc2 extends GuStack {
 			currentListener: yamlStack.getResource('Listener') as CfnListener,
 			ec2TargetGroup: yamlStack.getResource('Ec2TargetGroup') as CfnTargetGroup,
 			ecsPattern,
-			ec2Weight: 999,
-			ecsWeight: 0,
+			ec2Weight: 499,
+			ecsWeight: 500,
 		});
 	}
 }
