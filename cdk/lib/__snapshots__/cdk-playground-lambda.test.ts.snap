@@ -61,7 +61,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for L
             "Value": "guardian/cdk-playground",
           },
           {
-            "Key": "gu:riff-raff-project",
+            "Key": "gu:riff-raff:project",
             "Value": "devx::cdk-playground",
           },
           {
@@ -144,7 +144,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for L
             "Value": "guardian/cdk-playground",
           },
           {
-            "Key": "gu:riff-raff-project",
+            "Key": "gu:riff-raff:project",
             "Value": "devx::cdk-playground",
           },
           {
@@ -202,7 +202,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for L
             "Value": "guardian/cdk-playground",
           },
           {
-            "Key": "gu:riff-raff-project",
+            "Key": "gu:riff-raff:project",
             "Value": "devx::cdk-playground",
           },
           {
@@ -327,7 +327,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for L
             "Value": "guardian/cdk-playground",
           },
           {
-            "Key": "gu:riff-raff-project",
+            "Key": "gu:riff-raff:project",
             "Value": "devx::cdk-playground",
           },
           {
@@ -510,7 +510,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for L
             "Value": "guardian/cdk-playground",
           },
           {
-            "Key": "gu:riff-raff-project",
+            "Key": "gu:riff-raff:project",
             "Value": "devx::cdk-playground",
           },
           {
@@ -526,7 +526,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for L
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "lambdacdkplaygroundlambdaapiDeployment157471B2fe4f0cb0700525e097b6f84513cf7205": {
+    "lambdacdkplaygroundlambdaapiDeployment157471B29fc88a7abed222ac5859e9e43263f72d": {
       "DependsOn": [
         "lambdacdkplaygroundlambdaapiproxyANYDB984CB2",
         "lambdacdkplaygroundlambdaapiproxyFA4DE6D2",
@@ -549,7 +549,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for L
       ],
       "Properties": {
         "DeploymentId": {
-          "Ref": "lambdacdkplaygroundlambdaapiDeployment157471B2fe4f0cb0700525e097b6f84513cf7205",
+          "Ref": "lambdacdkplaygroundlambdaapiDeployment157471B29fc88a7abed222ac5859e9e43263f72d",
         },
         "RestApiId": {
           "Ref": "lambdacdkplaygroundlambdaapi061BB942",
@@ -569,7 +569,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for L
             "Value": "guardian/cdk-playground",
           },
           {
-            "Key": "gu:riff-raff-project",
+            "Key": "gu:riff-raff:project",
             "Value": "devx::cdk-playground",
           },
           {
@@ -609,7 +609,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for L
             "Value": "guardian/cdk-playground",
           },
           {
-            "Key": "gu:riff-raff-project",
+            "Key": "gu:riff-raff:project",
             "Value": "devx::cdk-playground",
           },
           {
