@@ -2,3 +2,4 @@ target
 logs
 lambda/cdk-playground-lambda.zip
 dist/
+.idea

@@ -287,7 +287,9 @@ export class CdkPlaygroundEcs extends GuStack {
 
 		const logRouter = taskDefinition.addFirelensLogRouter('LogShipping', {
 			// See https://github.com/guardian/devx-logs
-			image: ContainerImage.fromRegistry('ghcr.io/guardian/devx-logs:2.1.0'),
+			image: ContainerImage.fromRegistry(
+				'ghcr.io/guardian/devx-logs@sha256:cf91724a5166f1c143e07958820aa2122afb61c164b68555d15cb92abb5acda0',
+			),
 
 			// Required by https://github.com/guardian/devx-logs
 			environment: {
@@ -297,6 +299,8 @@ export class CdkPlaygroundEcs extends GuStack {
 				GU_REPO: repositoryName,
 				TASK_NAME: ecsApp,
 			},
+
+			versionConsistency: VersionConsistency.DISABLED,
 
 			// Send this container's logs to CloudWatch logs, retained for 1 day
 			logging: LogDriver.awsLogs({
