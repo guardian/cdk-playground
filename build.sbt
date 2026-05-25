@@ -59,7 +59,8 @@ lazy val root = (project in file("."))
     dockerAliases := Seq(
       "sha"    -> env("COMMIT_SHA").getOrElse("dev"),
       "build"  -> env("BUILD_NUMBER").getOrElse("dev"),
-      "branch" -> env("BRANCH_NAME").getOrElse("dev")
+      "branch" -> env("BRANCH_NAME").getOrElse("dev"),
+      "lifecycle" -> s"${env("BRANCH_NAME").getOrElse("dev")}-${env("BUILD_NUMBER").getOrElse("dev")}",
     ).map { case (prefix, value) =>
       DockerAlias(
         name = name.value,
