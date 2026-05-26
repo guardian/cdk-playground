@@ -15,6 +15,7 @@ interface CdkPlaygroundEc2Props extends Omit<GuStackProps, 'stack' | 'stage'> {
 	 * process.env.GITHUB_RUN_NUMBER
 	 */
 	buildIdentifier: string;
+	imageIdentifier: string;
 }
 
 export class CdkPlaygroundEc2 extends GuStack {
@@ -26,7 +27,7 @@ export class CdkPlaygroundEc2 extends GuStack {
 			env: { region: 'eu-west-1' },
 		});
 
-		const { buildIdentifier } = props;
+		const { buildIdentifier, imageIdentifier } = props;
 
 		const ec2AppDomainName = 'cdk-playground.code.dev-gutools.co.uk';
 
@@ -62,6 +63,20 @@ export class CdkPlaygroundEc2 extends GuStack {
 				},
 				imageRecipe: 'arm64-jammy-java21-deploy-infrastructure',
 				instanceMetricGranularity: '5Minute',
+			},
+			ecsProps: {
+				imageIdentifier,
+				memoryLimitMiB: 2048,
+				cpu: 1024,
+				repositoryName: 'guardian/cdk-playground',
+				scaling: {
+					minimumTasks: 1,
+					maximumTasks: 2,
+				},
+			},
+			targetGroupWeights: {
+				ec2: 499,
+				ecs: 500,
 			},
 		});
 
