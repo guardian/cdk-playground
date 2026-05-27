@@ -5,6 +5,7 @@
 	"scripts": {
 		"build": "tsc",
 		"test": "jest",
+    "test-update": "jest --updateSnapshot",
 		"format": "prettier --write \"{lib,bin}/**/*.ts\"",
 		"lint": "eslint lib/** bin/** --no-error-on-unmatched-pattern",
 		"synth": "cdk synth --path-metadata false --version-reporting false",
