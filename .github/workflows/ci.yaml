@@ -31,7 +31,6 @@ jobs:
 
           echo "BRANCH_NAME=${TRIMMED_BRANCH_NAME}" >> $GITHUB_OUTPUT
           echo "BRANCH_NAME_FOR_ECR=${BRANCH_NAME_FOR_ECR}" >> $GITHUB_OUTPUT
-
   ci-image:
     runs-on: ubuntu-latest
     needs: [facts]
@@ -50,12 +49,6 @@ jobs:
       # Checkout the branch
       - uses: actions/checkout@v6.0.2
       - uses: guardian/setup-scala@v1
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v6.1.0
-        with:
-          role-to-assume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
-          aws-region: eu-west-1
-          mask-aws-account-id: 'true'
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2.1.3
@@ -77,24 +70,19 @@ jobs:
       - ci-image
     permissions:
       contents: read
-
       # These permissions are required by guardian/actions-riff-raff...
       id-token: write # ...to exchange an OIDC JWT ID token for AWS credentials
       pull-requests: write #...to comment on PRs
-
     steps:
       # Checkout the branch
       - uses: actions/checkout@v6.0.2
-
       # Node is needed for CDK
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.tool-versions'
           cache: npm
           cache-dependency-path: 'cdk/package-lock.json'
-
       - uses: guardian/setup-scala@v1
-
       # Build CDK and Play (in sequence)
       - run: ./script/ci
         env:
@@ -102,7 +90,6 @@ jobs:
           BUILD_NUMBER: ${{ needs.facts.outputs.BUILD_NUMBER }}
           BRANCH_NAME: ${{ needs.facts.outputs.BRANCH_NAME }}
           IMAGE_DIGEST: ${{ needs.ci-image.outputs.IMAGE_DIGEST }}
-
       # Upload our build artifacts to Riff-Raff (well, S3)
       - uses: guardian/actions-riff-raff@v4
         with:
