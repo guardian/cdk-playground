@@ -50,12 +50,6 @@ jobs:
       # Checkout the branch
       - uses: actions/checkout@v6.0.2
       - uses: guardian/setup-scala@v1
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v6.1.0
-        with:
-          role-to-assume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
-          aws-region: eu-west-1
-          mask-aws-account-id: 'true'
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2.1.3
