@@ -1,3 +1,4 @@
+import { NAMED_SSM_PARAMETER_PATHS } from '@guardian/cdk/lib/constants';
 import { GuCertificate } from '@guardian/cdk/lib/constructs/acm';
 import {
 	GuLoggingStreamNameParameter,
@@ -19,7 +20,7 @@ import {
 } from '@guardian/cdk/lib/constructs/loadbalancing';
 import { isSingletonPresentInStack } from '@guardian/cdk/lib/utils/singleton';
 import type { App } from 'aws-cdk-lib';
-import { CfnParameter, Duration } from 'aws-cdk-lib';
+import { ArnFormat, CfnParameter, Duration } from 'aws-cdk-lib';
 import { Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Repository } from 'aws-cdk-lib/aws-ecr';
 import type { Volume } from 'aws-cdk-lib/aws-ecs';
@@ -36,6 +37,7 @@ import {
 } from 'aws-cdk-lib/aws-ecs';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
+import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 
 // This construct is already present in GuCDK as part of `GuEc2AppExperimental`, however it is not exported.
 // TODO Update GuCDK to export this construct.
@@ -119,10 +121,27 @@ export class CdkPlaygroundEcs extends GuStack {
 			vpc: vpcThatEcsClusterConstructWillAccept,
 		});
 
+		const deployToolsAccountId = StringParameter.fromStringParameterName(
+			this,
+			'DeployToolsAccountId',
+			NAMED_SSM_PARAMETER_PATHS.DeployToolsAccountId.path,
+		);
+
+		const repositoryArn = this.formatArn({
+			account: deployToolsAccountId.stringValue,
+			arnFormat: ArnFormat.SLASH_RESOURCE_NAME,
+			resource: 'repository',
+			resourceName: this.repositoryName!,
+			service: 'ecr',
+		});
+
 		// Need to figure out how to make this cross-account, but this is fine for the simple case where the app and the
 		// ECR repo are both in the Deploy Tools account
 		const image = ContainerImage.fromEcrRepository(
-			Repository.fromRepositoryName(this, 'Repo', this.repositoryName!),
+			Repository.fromRepositoryAttributes(this, 'Repo', {
+				repositoryArn,
+				repositoryName: this.repositoryName!,
+			}),
 			imageIdentifier,
 		);
 
