@@ -35,3 +35,12 @@ new CdkPlaygroundEcs(app, 'CdkPlaygroundEcs-CODE', {
 
 // Configure Riff-Raff to deploy the application stack after the EventForwarder stack has finished.
 ec2Stack.addDependency(eventForwarder);
+
+new CdkPlaygroundEcs(app, 'CdkPlaygroundEcs-CODE-playground', {
+	cloudFormationStackName: 'playground-CODE-cdk-playground-ecs',
+	imageIdentifier: process.env.IMAGE_DIGEST ?? 'DEV',
+	riffRaffProjectName,
+	stack: 'playground',
+	stage: 'CODE',
+	domainName: 'cdk-playground-ecs-playground.code.dev-gutools.co.uk',
+});
