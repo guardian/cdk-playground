@@ -58,7 +58,7 @@ class GuRiffRaffDeploymentIdParameter extends CfnParameter {
 	}
 }
 
-interface CdkPlaygroundEcsProps extends Omit<GuStackProps, 'stack' | 'stage'> {
+interface CdkPlaygroundEcsProps extends GuStackProps {
 	/**
 	 * Which image to run.
 	 * This should be the image digest (e.g. 'sha256:abc123') to ensure immutable deployments.
@@ -66,6 +66,8 @@ interface CdkPlaygroundEcsProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 	 * @see https://docs.docker.com/dhi/core-concepts/digests
 	 */
 	imageIdentifier: string;
+
+	domainName: string;
 }
 
 // For now, we provision all of this infrastructure via constructs as part of this repo.
@@ -74,8 +76,6 @@ export class CdkPlaygroundEcs extends GuStack {
 	constructor(scope: App, id: string, props: CdkPlaygroundEcsProps) {
 		super(scope, id, {
 			...props,
-			stack: 'deploy',
-			stage: 'CODE',
 			env: { region: 'eu-west-1' },
 		});
 
@@ -86,9 +86,8 @@ export class CdkPlaygroundEcs extends GuStack {
 			region,
 		} = this;
 
-		const { imageIdentifier } = props;
+		const { imageIdentifier, domainName } = props;
 		const ecsApp = 'cdk-playground-ecs';
-		const ecsDomainName = 'cdk-playground-ecs.code.dev-gutools.co.uk';
 
 		const vpc = GuVpc.fromIdParameter(this, 'GuVpc');
 
@@ -270,7 +269,7 @@ export class CdkPlaygroundEcs extends GuStack {
 			loadBalancer,
 			certificate: new GuCertificate(this, {
 				app: ecsApp,
-				domainName: ecsDomainName,
+				domainName,
 			}),
 			targetGroup,
 			// When open=true, AWS will create a security group which allows all inbound traffic over HTTPS
@@ -281,7 +280,7 @@ export class CdkPlaygroundEcs extends GuStack {
 		new GuCname(this, 'EcsDns', {
 			app: ecsApp,
 			ttl: Duration.minutes(1),
-			domainName: ecsDomainName,
+			domainName,
 			resourceRecord: loadBalancer.loadBalancerDnsName,
 		});
 
