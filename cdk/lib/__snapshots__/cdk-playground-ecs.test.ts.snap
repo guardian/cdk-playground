@@ -5,27 +5,28 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
   "Metadata": {
     "gu:cdk:constructs": [
       "GuVpcParameter",
-      "GuParameter",
+      "GuSubnetListParameter",
+      "GuSubnetListParameter",
+      "GuLoadBalancedAppExperimental",
       "GuLoggingStreamNameParameter",
-      "GuRiffRaffDeploymentIdParameter",
+      "GuRiffRaffDeploymentIdParameterExperimental",
       "GuParameterStoreReadPolicy",
       "GuHttpsEgressSecurityGroup",
-      "GuSubnetListParameter",
-      "GuApplicationLoadBalancer",
-      "GuAccessLoggingBucketParameter",
       "GuApplicationTargetGroup",
       "GuCertificate",
+      "GuApplicationLoadBalancer",
+      "GuAccessLoggingBucketParameter",
       "GuHttpsApplicationListener",
       "GuCname",
     ],
     "gu:cdk:version": "TEST",
   },
   "Outputs": {
-    "LoadBalancerCdkplaygroundecsDnsName": {
-      "Description": "DNS entry for LoadBalancerCdkplaygroundecs",
+    "LoadBalancerCdkplaygroundDnsName": {
+      "Description": "DNS entry for LoadBalancerCdkplayground",
       "Value": {
         "Fn::GetAtt": [
-          "LoadBalancerCdkplaygroundecsA22B17EA",
+          "LoadBalancerCdkplayground7C6B4D97",
           "DNSName",
         ],
       },
@@ -51,25 +52,26 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
-    "VpcPrivateSubnetsParam": {
+    "cdkplaygroundPrivateSubnets": {
       "Default": "/account/vpc/primary/subnets/private",
-      "Type": "AWS::SSM::Parameter::Value<List<String>>",
+      "Description": "A list of private subnets",
+      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
-    "cdkplaygroundecsPublicSubnets": {
+    "cdkplaygroundPublicSubnets": {
       "Default": "/account/vpc/primary/subnets/public",
       "Description": "A list of public subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
   },
   "Resources": {
-    "CertificateCdkplaygroundecsD6C69B43": {
+    "CertificateCdkplayground47FCF7D9": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "DomainName": "cdk-playground-ecs.code.dev-gutools.co.uk",
         "Tags": [
           {
             "Key": "App",
-            "Value": "cdk-playground-ecs",
+            "Value": "cdk-playground",
           },
           {
             "Key": "gu:cdk:version",
@@ -85,7 +87,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           },
           {
             "Key": "Name",
-            "Value": "CdkPlaygroundEcs-CODE/CertificateCdkplaygroundecs",
+            "Value": "CdkPlaygroundEcs-CODE/CertificateCdkplayground",
           },
           {
             "Key": "Stack",
@@ -101,33 +103,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       "Type": "AWS::CertificateManager::Certificate",
       "UpdateReplacePolicy": "Retain",
     },
-    "EcsCluster97242B84": {
-      "Properties": {
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/cdk-playground",
-          },
-          {
-            "Key": "gu:riff-raff:project",
-            "Value": "devx::cdk-playground",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-      },
-      "Type": "AWS::ECS::Cluster",
-    },
     "EcsDns": {
       "Properties": {
         "Name": "cdk-playground-ecs.code.dev-gutools.co.uk",
@@ -135,7 +110,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         "ResourceRecords": [
           {
             "Fn::GetAtt": [
-              "LoadBalancerCdkplaygroundecsA22B17EA",
+              "LoadBalancerCdkplayground7C6B4D97",
               "DNSName",
             ],
           },
@@ -149,11 +124,11 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       "DependsOn": [
         "EcsTaskDefinitionTaskRoleDefaultPolicy1FD2F057",
         "EcsTaskDefinitionTaskRoleB7B6D8DD",
-        "ListenerCdkplaygroundecs3194EDCD",
+        "ListenerCdkplaygroundA8D9CA6F",
       ],
       "Properties": {
         "Cluster": {
-          "Ref": "EcsCluster97242B84",
+          "Ref": "cdkplaygroundEcsClusterF9ADCF3E",
         },
         "DeploymentConfiguration": {
           "Alarms": {
@@ -179,7 +154,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             "ContainerName": "cdk-playground",
             "ContainerPort": 9000,
             "TargetGroupArn": {
-              "Ref": "EcsTargetGroupCdkplaygroundecsF5A8D17A",
+              "Ref": "EcsTargetGroupCdkplayground55757231",
             },
           },
         ],
@@ -195,7 +170,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
               },
             ],
             "Subnets": {
-              "Ref": "VpcPrivateSubnetsParam",
+              "Ref": "cdkplaygroundPrivateSubnets",
             },
           },
         },
@@ -234,15 +209,15 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         "EcsTaskDefinitionTaskRoleB7B6D8DD",
       ],
       "Properties": {
-        "MaxCapacity": 6,
-        "MinCapacity": 3,
+        "MaxCapacity": 2,
+        "MinCapacity": 1,
         "ResourceId": {
           "Fn::Join": [
             "",
             [
               "service/",
               {
-                "Ref": "EcsCluster97242B84",
+                "Ref": "cdkplaygroundEcsClusterF9ADCF3E",
               },
               "/",
               {
@@ -275,20 +250,19 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       },
       "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
     },
-    "EcsTargetGroupCdkplaygroundecsF5A8D17A": {
+    "EcsTargetGroupCdkplayground55757231": {
       "Properties": {
         "HealthCheckIntervalSeconds": 10,
         "HealthCheckPath": "/healthcheck",
         "HealthCheckProtocol": "HTTP",
         "HealthCheckTimeoutSeconds": 5,
         "HealthyThresholdCount": 5,
-        "Name": "cdk-playground-ecs",
         "Port": 9000,
         "Protocol": "HTTP",
         "Tags": [
           {
             "Key": "App",
-            "Value": "cdk-playground-ecs",
+            "Value": "cdk-playground",
           },
           {
             "Key": "gu:cdk:version",
@@ -387,15 +361,15 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
               },
               {
                 "Name": "APP",
-                "Value": "cdk-playground-ecs",
+                "Value": "cdk-playground",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "cdk-playground",
               },
               {
                 "Name": "GU_REPO",
                 "Value": "guardian/cdk-playground",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "cdk-playground-ecs",
               },
             ],
             "Essential": true,
@@ -410,7 +384,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                   "Ref": "EcsTaskDefinitionLogShippingLogGroup0E405BD0",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/CODE/cdk-playground-ecs/devx-logs-sidecar",
+                "awslogs-stream-prefix": "deploy/CODE/cdk-playground/devx-logs-sidecar",
               },
             },
             "MountPoints": [
@@ -735,7 +709,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "GuHttpsEgressSecurityGroupCdkplaygroundecsfromCdkPlaygroundEcsCODELoadBalancerCdkplaygroundecsSecurityGroup010B2D269000BEBFE3E3": {
+    "GuHttpsEgressSecurityGroupCdkplaygroundecsfromCdkPlaygroundEcsCODELoadBalancerCdkplaygroundSecurityGroup658128409000DE48CFEB": {
       "Properties": {
         "Description": "Load balancer to target",
         "FromPort": 9000,
@@ -748,7 +722,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         "IpProtocol": "tcp",
         "SourceSecurityGroupId": {
           "Fn::GetAtt": [
-            "LoadBalancerCdkplaygroundecsSecurityGroupE3A6820F",
+            "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
             "GroupId",
           ],
         },
@@ -756,25 +730,25 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
-    "ListenerCdkplaygroundecs3194EDCD": {
+    "ListenerCdkplaygroundA8D9CA6F": {
       "Properties": {
         "Certificates": [
           {
             "CertificateArn": {
-              "Ref": "CertificateCdkplaygroundecsD6C69B43",
+              "Ref": "CertificateCdkplayground47FCF7D9",
             },
           },
         ],
         "DefaultActions": [
           {
             "TargetGroupArn": {
-              "Ref": "EcsTargetGroupCdkplaygroundecsF5A8D17A",
+              "Ref": "EcsTargetGroupCdkplayground55757231",
             },
             "Type": "forward",
           },
         ],
         "LoadBalancerArn": {
-          "Ref": "LoadBalancerCdkplaygroundecsA22B17EA",
+          "Ref": "LoadBalancerCdkplayground7C6B4D97",
         },
         "Port": 443,
         "Protocol": "HTTPS",
@@ -782,7 +756,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       },
       "Type": "AWS::ElasticLoadBalancingV2::Listener",
     },
-    "LoadBalancerCdkplaygroundecsA22B17EA": {
+    "LoadBalancerCdkplayground7C6B4D97": {
       "Properties": {
         "LoadBalancerAttributes": [
           {
@@ -809,25 +783,25 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           },
           {
             "Key": "access_logs.s3.prefix",
-            "Value": "application-load-balancer/CODE/deploy/cdk-playground-ecs",
+            "Value": "application-load-balancer/CODE/deploy/cdk-playground",
           },
         ],
         "Scheme": "internet-facing",
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "LoadBalancerCdkplaygroundecsSecurityGroupE3A6820F",
+              "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
               "GroupId",
             ],
           },
         ],
         "Subnets": {
-          "Ref": "cdkplaygroundecsPublicSubnets",
+          "Ref": "cdkplaygroundPublicSubnets",
         },
         "Tags": [
           {
             "Key": "App",
-            "Value": "cdk-playground-ecs",
+            "Value": "cdk-playground",
           },
           {
             "Key": "gu:cdk:version",
@@ -854,9 +828,9 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       },
       "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
     },
-    "LoadBalancerCdkplaygroundecsSecurityGroupE3A6820F": {
+    "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05": {
       "Properties": {
-        "GroupDescription": "Automatically created Security Group for ELB CdkPlaygroundEcsCODELoadBalancerCdkplaygroundecs9FB94A74",
+        "GroupDescription": "Automatically created Security Group for ELB CdkPlaygroundEcsCODELoadBalancerCdkplaygroundC70E1BCA",
         "SecurityGroupIngress": [
           {
             "CidrIp": "0.0.0.0/0",
@@ -869,7 +843,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         "Tags": [
           {
             "Key": "App",
-            "Value": "cdk-playground-ecs",
+            "Value": "cdk-playground",
           },
           {
             "Key": "gu:cdk:version",
@@ -898,7 +872,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "LoadBalancerCdkplaygroundecsSecurityGrouptoCdkPlaygroundEcsCODEGuHttpsEgressSecurityGroupCdkplaygroundecsD24FE46B9000417ADD3A": {
+    "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundEcsCODEGuHttpsEgressSecurityGroupCdkplaygroundecsD24FE46B9000F65AA812": {
       "Properties": {
         "Description": "Load balancer to target",
         "DestinationSecurityGroupId": {
@@ -910,7 +884,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         "FromPort": 9000,
         "GroupId": {
           "Fn::GetAtt": [
-            "LoadBalancerCdkplaygroundecsSecurityGroupE3A6820F",
+            "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
             "GroupId",
           ],
         },
@@ -969,6 +943,33 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "cdkplaygroundEcsClusterF9ADCF3E": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::Cluster",
     },
   },
 }
