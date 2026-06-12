@@ -8,29 +8,15 @@ on:
 jobs:
   facts:
     runs-on: ubuntu-slim
-    permissions: {} # This job doesn't need any permissions. Explicitly set it to an empty object to avoid inheriting any default permissions of the workflow.
+    permissions: {} # This job doesn't need any permissions.
     outputs:
-      BRANCH_NAME: ${{ steps.set-facts.outputs.BRANCH_NAME }}
-      BRANCH_NAME_FOR_ECR: ${{ steps.set-facts.outputs.BRANCH_NAME_FOR_ECR }}
-      BUILD_NUMBER: ${{ steps.set-facts.outputs.BUILD_NUMBER }}
-      COMMIT_SHA: ${{ steps.set-facts.outputs.COMMIT_SHA }}
+      BRANCH_NAME: ${{ steps.get-build-facts.outputs.BRANCH_NAME }}
+      BRANCH_NAME_FOR_ECR: ${{ steps.get-build-facts.outputs.BRANCH_NAME_FOR_ECR }}
+      BUILD_NUMBER: ${{ steps.get-build-facts.outputs.BUILD_NUMBER }}
+      COMMIT_SHA: ${{ steps.get-build-facts.outputs.COMMIT_SHA }}
     steps:
-      - name: Build facts
-        id: set-facts
-        env:
-          RAW_BRANCH_NAME: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref || 'unknown' }}
-          BUILD_NUMBER: ${{ github.run_number }}
-          COMMIT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }} # When invoked from `pull_request`, `github.sha` is not the latest commit of the feature branch. All other times, it is.
-        run: |
-          echo "BUILD_NUMBER=${BUILD_NUMBER}" >> $GITHUB_OUTPUT
-          echo "COMMIT_SHA=${COMMIT_SHA}" >> $GITHUB_OUTPUT
-
-          # Remove "refs/heads/" prefix from RAW_BRANCH_NAME
-          TRIMMED_BRANCH_NAME="${RAW_BRANCH_NAME#refs/heads/}"
-          BRANCH_NAME_FOR_ECR=${TRIMMED_BRANCH_NAME//\//-}
-
-          echo "BRANCH_NAME=${TRIMMED_BRANCH_NAME}" >> $GITHUB_OUTPUT
-          echo "BRANCH_NAME_FOR_ECR=${BRANCH_NAME_FOR_ECR}" >> $GITHUB_OUTPUT
+      - uses: guardian/actions-build-facts@main
+        id: get-build-facts
 
   ci-image:
     runs-on: ubuntu-latest
