@@ -4,7 +4,7 @@ import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuLoadBalancedAppExperimental } from '@guardian/cdk/lib/experimental/patterns/gu-load-balanced-app';
 import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
-import type { ScalableTaskCount } from 'aws-cdk-lib/aws-ecs';
+import { CfnCluster, type ScalableTaskCount } from 'aws-cdk-lib/aws-ecs';
 
 interface CdkPlaygroundEcsProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 	/**
@@ -53,6 +53,12 @@ export class CdkPlaygroundEcs extends GuStack {
 				},
 			},
 		);
+
+		// Enable Container Insights for faster metric delivery (~30s vs ~2-3 min).
+		const cfnCluster = ecsService!.cluster.node.defaultChild as CfnCluster;
+		cfnCluster.clusterSettings = [
+			{ name: 'containerInsights', value: 'enhanced' },
+		];
 
 		const scalableTaskCount = ecsService!.node.findChild(
 			'TaskCount',
