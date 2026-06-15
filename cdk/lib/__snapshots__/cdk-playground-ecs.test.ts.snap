@@ -209,7 +209,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         "EcsTaskDefinitionTaskRoleB7B6D8DD",
       ],
       "Properties": {
-        "MaxCapacity": 2,
+        "MaxCapacity": 4,
         "MinCapacity": 1,
         "ResourceId": {
           "Fn::Join": [
@@ -249,6 +249,28 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         "ServiceNamespace": "ecs",
       },
       "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
+    },
+    "EcsServiceTaskCountTargetCpuTargetTracking290FAC76": {
+      "DependsOn": [
+        "EcsTaskDefinitionTaskRoleDefaultPolicy1FD2F057",
+        "EcsTaskDefinitionTaskRoleB7B6D8DD",
+      ],
+      "Properties": {
+        "PolicyName": "CdkPlaygroundEcsCODEEcsServiceTaskCountTargetCpuTargetTracking9863935A",
+        "PolicyType": "TargetTrackingScaling",
+        "ScalingTargetId": {
+          "Ref": "EcsServiceTaskCountTarget02FCCE22",
+        },
+        "TargetTrackingScalingPolicyConfiguration": {
+          "PredefinedMetricSpecification": {
+            "PredefinedMetricType": "ECSServiceAverageCPUUtilization",
+          },
+          "ScaleInCooldown": 60,
+          "ScaleOutCooldown": 60,
+          "TargetValue": 50,
+        },
+      },
+      "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
     },
     "EcsTargetGroupCdkplayground55757231": {
       "Properties": {
