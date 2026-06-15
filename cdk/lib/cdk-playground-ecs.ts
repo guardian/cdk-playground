@@ -4,6 +4,7 @@ import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuLoadBalancedAppExperimental } from '@guardian/cdk/lib/experimental/patterns/gu-load-balanced-app';
 import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
+import { Metric } from 'aws-cdk-lib/aws-cloudwatch';
 import type { CfnCluster, ScalableTaskCount } from 'aws-cdk-lib/aws-ecs';
 
 interface CdkPlaygroundEcsProps extends Omit<GuStackProps, 'stack' | 'stage'> {
@@ -63,8 +64,17 @@ export class CdkPlaygroundEcs extends GuStack {
 		const scalableTaskCount = ecsService!.node.findChild(
 			'TaskCount',
 		) as ScalableTaskCount;
-		scalableTaskCount.scaleOnCpuUtilization('CpuTargetTracking', {
-			targetUtilizationPercent: 50,
+		scalableTaskCount.scaleToTrackCustomMetric('CpuTargetTracking', {
+			metric: new Metric({
+				namespace: 'ECS/ContainerInsights',
+				metricName: 'TaskCpuUtilization',
+				dimensionsMap: {
+					ClusterName: ecsService!.cluster.clusterName,
+					ServiceName: ecsService!.serviceName,
+				},
+				statistic: 'Average',
+			}),
+			targetValue: 50,
 			scaleInCooldown: Duration.seconds(60),
 			scaleOutCooldown: Duration.seconds(60),
 		});

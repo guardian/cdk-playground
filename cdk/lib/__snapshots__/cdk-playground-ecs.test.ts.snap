@@ -262,8 +262,27 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           "Ref": "EcsServiceTaskCountTarget02FCCE22",
         },
         "TargetTrackingScalingPolicyConfiguration": {
-          "PredefinedMetricSpecification": {
-            "PredefinedMetricType": "ECSServiceAverageCPUUtilization",
+          "CustomizedMetricSpecification": {
+            "Dimensions": [
+              {
+                "Name": "ClusterName",
+                "Value": {
+                  "Ref": "cdkplaygroundEcsClusterF9ADCF3E",
+                },
+              },
+              {
+                "Name": "ServiceName",
+                "Value": {
+                  "Fn::GetAtt": [
+                    "EcsService81FC6EF6",
+                    "Name",
+                  ],
+                },
+              },
+            ],
+            "MetricName": "TaskCpuUtilization",
+            "Namespace": "ECS/ContainerInsights",
+            "Statistic": "Average",
           },
           "ScaleInCooldown": 60,
           "ScaleOutCooldown": 60,
