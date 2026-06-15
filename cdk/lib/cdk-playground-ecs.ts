@@ -4,7 +4,7 @@ import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuLoadBalancedAppExperimental } from '@guardian/cdk/lib/experimental/patterns/gu-load-balanced-app';
 import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
-import { CfnCluster, type ScalableTaskCount } from 'aws-cdk-lib/aws-ecs';
+import type { CfnCluster, ScalableTaskCount } from 'aws-cdk-lib/aws-ecs';
 
 interface CdkPlaygroundEcsProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 	/**
