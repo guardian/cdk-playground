@@ -54,11 +54,9 @@ export class CdkPlaygroundEcs extends GuStack {
 			},
 		);
 
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- escape hatch: GuLoadBalancedAppExperimental doesn't expose ScalableTaskCount directly
 		const scalableTaskCount = ecsService!.node.findChild(
 			'TaskCount',
 		) as ScalableTaskCount;
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- escape hatch: type cannot be resolved from findChild
 		scalableTaskCount.scaleOnCpuUtilization('CpuTargetTracking', {
 			targetUtilizationPercent: 50,
 			scaleInCooldown: Duration.seconds(60),
