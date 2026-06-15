@@ -45,7 +45,7 @@ lazy val root = (project in file("."))
       sbtVersion,
 
       BuildInfoKey.sbtbuildinfoConstantEntry("buildNumber", env("BUILD_NUMBER")),
-      BuildInfoKey.sbtbuildinfoConstantEntry("buildTime", System.currentTimeMillis),
+      BuildInfoKey.sbtbuildinfoConstantEntry("buildTime", env("BUILD_TIME")),
       BuildInfoKey.sbtbuildinfoConstantEntry("gitCommitId", env("COMMIT_SHA")),
       BuildInfoKey.sbtbuildinfoConstantEntry("branch", env("BRANCH_NAME")),
     ),
@@ -55,18 +55,5 @@ lazy val root = (project in file("."))
     ),
 
     dockerBaseImage := "amazoncorretto:21-alpine",
-    dockerBuildxPlatforms := Seq("linux/amd64"),
-    dockerAliases := Seq(
-      "sha"    -> env("COMMIT_SHA").getOrElse("dev"),
-      "build"  -> env("BUILD_NUMBER").getOrElse("dev"),
-      "branch" -> env("BRANCH_NAME").getOrElse("dev"),
-      "lifecycle" -> s"${env("BRANCH_NAME").getOrElse("dev")}-${env("BUILD_NUMBER").getOrElse("dev")}",
-    ).map { case (prefix, value) =>
-      DockerAlias(
-        name = name.value,
-        registryHost = Some(s"${env("REGISTRY").getOrElse("dev")}/guardian"),
-        username = None,
-        tag = Some(s"$prefix-$value"),
-      )
-    }
+    dockerBuildxPlatforms := Seq("linux/amd64")
   )
