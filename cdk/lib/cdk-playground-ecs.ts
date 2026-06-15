@@ -4,6 +4,11 @@ import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuLoadBalancedAppExperimental } from '@guardian/cdk/lib/experimental/patterns/gu-load-balanced-app';
 import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
+import {
+	AdjustmentType,
+	MetricAggregationType,
+	StepScalingPolicy,
+} from 'aws-cdk-lib/aws-applicationautoscaling';
 import { Metric } from 'aws-cdk-lib/aws-cloudwatch';
 import type { CfnCluster, ScalableTaskCount } from 'aws-cdk-lib/aws-ecs';
 
@@ -64,19 +69,28 @@ export class CdkPlaygroundEcs extends GuStack {
 		const scalableTaskCount = ecsService!.node.findChild(
 			'TaskCount',
 		) as ScalableTaskCount;
-		scalableTaskCount.scaleToTrackCustomMetric('CpuTargetTracking', {
-			metric: new Metric({
-				namespace: 'ECS/ContainerInsights',
-				metricName: 'TaskCpuUtilization',
-				dimensionsMap: {
-					ClusterName: ecsService!.cluster.clusterName,
-					ServiceName: ecsService!.serviceName,
-				},
-				statistic: 'Average',
-			}),
-			targetValue: 50,
-			scaleInCooldown: Duration.seconds(60),
-			scaleOutCooldown: Duration.seconds(60),
+
+		const cpuMetric = new Metric({
+			namespace: 'ECS/ContainerInsights',
+			metricName: 'TaskCpuUtilization',
+			dimensionsMap: {
+				ClusterName: ecsService!.cluster.clusterName,
+				ServiceName: ecsService!.serviceName,
+			},
+			statistic: 'Average',
+		});
+
+		new StepScalingPolicy(this, 'CpuStepScaling', {
+			scalingTarget: scalableTaskCount,
+			metric: cpuMetric,
+			adjustmentType: AdjustmentType.CHANGE_IN_CAPACITY,
+			metricAggregationType: MetricAggregationType.AVERAGE,
+			scalingSteps: [
+				{ upper: 30, change: -1 },
+				{ lower: 50, change: +1 },
+				{ lower: 70, change: +2 },
+			],
+			cooldown: Duration.seconds(60),
 		});
 
 		new GuCname(this, 'EcsDns', {
