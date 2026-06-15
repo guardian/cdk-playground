@@ -13,7 +13,12 @@ jobs:
       branchName: ${{ steps.get-build-facts.outputs.branchName }}
       buildNumber: ${{ steps.get-build-facts.outputs.buildNumber }}
       commitSha: ${{ steps.get-build-facts.outputs.commitSha }}
+      buildTime: ${{ steps.build-time.outputs.buildTime }}
     steps:
+      - name: Build time
+        id: build-time
+        shell: bash
+        run: echo "buildTime=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
       - uses: guardian/actions-build-facts@v0.0.1
         id: get-build-facts
 
@@ -33,6 +38,7 @@ jobs:
           COMMIT_SHA: ${{ needs.facts.outputs.commitSha }}
           BUILD_NUMBER: ${{ needs.facts.outputs.buildNumber }}
           BRANCH_NAME: ${{ needs.facts.outputs.branchName }}
+          BUILD_TIME: ${{ needs.facts.outputs.buildTime }}
         run: sbt Docker/publishLocal
       - name: Normalise Docker image name
         run: docker image tag cdk-playground:1.0-SNAPSHOT ${{ github.repository }}:latest
@@ -75,6 +81,7 @@ jobs:
           COMMIT_SHA: ${{ needs.facts.outputs.commitSha }}
           BUILD_NUMBER: ${{ needs.facts.outputs.buildNumber }}
           BRANCH_NAME: ${{ needs.facts.outputs.branchName }}
+          BUILD_TIME: ${{ needs.facts.outputs.buildTime }}
           IMAGE_DIGEST: ${{ needs.ci-image.outputs.imageDigest }}
 
       # Upload our build artifacts to Riff-Raff (well, S3)

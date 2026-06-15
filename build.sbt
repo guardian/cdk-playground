@@ -45,7 +45,7 @@ lazy val root = (project in file("."))
       sbtVersion,
 
       BuildInfoKey.sbtbuildinfoConstantEntry("buildNumber", env("BUILD_NUMBER")),
-      BuildInfoKey.sbtbuildinfoConstantEntry("buildTime", System.currentTimeMillis),
+      BuildInfoKey.sbtbuildinfoConstantEntry("buildTime", env("BUILD_TIME")),
       BuildInfoKey.sbtbuildinfoConstantEntry("gitCommitId", env("COMMIT_SHA")),
       BuildInfoKey.sbtbuildinfoConstantEntry("branch", env("BRANCH_NAME")),
     ),
