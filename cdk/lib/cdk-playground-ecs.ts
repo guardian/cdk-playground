@@ -88,9 +88,8 @@ export class CdkPlaygroundEcs extends GuStack {
 			metricAggregationType: MetricAggregationType.AVERAGE,
 			evaluationPeriods: 1,
 			scalingSteps: [
-				{ upper: 30, change: -1 },
-				{ lower: 50, change: +1 },
-				{ lower: 70, change: +2 },
+				{ upper: 20, change: -1 },
+				{ lower: 70, change: +1 },
 			],
 			cooldown: Duration.seconds(60),
 		});

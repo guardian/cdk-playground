@@ -156,7 +156,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             "Value": "CODE",
           },
         ],
-        "Threshold": 30,
+        "Threshold": 20,
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
@@ -234,7 +234,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             "Value": "CODE",
           },
         ],
-        "Threshold": 50,
+        "Threshold": 70,
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
@@ -252,12 +252,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           "StepAdjustments": [
             {
               "MetricIntervalLowerBound": 0,
-              "MetricIntervalUpperBound": 20,
               "ScalingAdjustment": 1,
-            },
-            {
-              "MetricIntervalLowerBound": 20,
-              "ScalingAdjustment": 2,
             },
           ],
         },
