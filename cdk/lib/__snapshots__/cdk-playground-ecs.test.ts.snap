@@ -132,7 +132,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         "EvaluationPeriods": 1,
         "MetricName": "TaskCpuUtilization",
         "Namespace": "ECS/ContainerInsights",
-        "Period": 300,
+        "Period": 60,
         "Statistic": "Average",
         "Tags": [
           {
@@ -210,7 +210,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         "EvaluationPeriods": 1,
         "MetricName": "TaskCpuUtilization",
         "Namespace": "ECS/ContainerInsights",
-        "Period": 300,
+        "Period": 60,
         "Statistic": "Average",
         "Tags": [
           {

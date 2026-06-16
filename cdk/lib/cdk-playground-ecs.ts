@@ -78,6 +78,7 @@ export class CdkPlaygroundEcs extends GuStack {
 				ServiceName: ecsService!.serviceName,
 			},
 			statistic: 'Average',
+			period: Duration.seconds(60),
 		});
 
 		new StepScalingPolicy(this, 'CpuStepScaling', {
@@ -85,6 +86,7 @@ export class CdkPlaygroundEcs extends GuStack {
 			metric: cpuMetric,
 			adjustmentType: AdjustmentType.CHANGE_IN_CAPACITY,
 			metricAggregationType: MetricAggregationType.AVERAGE,
+			evaluationPeriods: 1,
 			scalingSteps: [
 				{ upper: 30, change: -1 },
 				{ lower: 50, change: +1 },
