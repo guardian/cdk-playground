@@ -10,7 +10,7 @@ import {
 	StepScalingPolicy,
 } from 'aws-cdk-lib/aws-applicationautoscaling';
 import { Metric } from 'aws-cdk-lib/aws-cloudwatch';
-import type { CfnCluster, ScalableTaskCount } from 'aws-cdk-lib/aws-ecs';
+import type { ScalableTaskCount } from 'aws-cdk-lib/aws-ecs';
 
 interface CdkPlaygroundEcsProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 	/**
@@ -60,19 +60,13 @@ export class CdkPlaygroundEcs extends GuStack {
 			},
 		);
 
-		// Enable Container Insights for faster metric delivery (~30s vs ~2-3 min).
-		const cfnCluster = ecsService!.cluster.node.defaultChild as CfnCluster;
-		cfnCluster.clusterSettings = [
-			{ name: 'containerInsights', value: 'enhanced' },
-		];
-
 		const scalableTaskCount = ecsService!.node.findChild(
 			'TaskCount',
 		) as ScalableTaskCount;
 
 		const cpuMetric = new Metric({
-			namespace: 'ECS/ContainerInsights',
-			metricName: 'TaskCpuUtilization',
+			namespace: 'AWS/ECS',
+			metricName: 'CPUUtilization',
 			dimensionsMap: {
 				ClusterName: ecsService!.cluster.clusterName,
 				ServiceName: ecsService!.serviceName,
