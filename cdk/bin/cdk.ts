@@ -1,7 +1,6 @@
 import 'source-map-support/register';
 import { GuRoot } from '@guardian/cdk/lib/constructs/root';
 import { CdkPlaygroundEc2 } from '../lib/cdk-playground-ec2';
-import { CdkPlaygroundEcs } from '../lib/cdk-playground-ecs';
 import { CdkPlaygroundLambda } from '../lib/cdk-playground-lambda';
 import { EventForwarder } from '../lib/event-forwarder';
 
@@ -22,12 +21,6 @@ const ec2Stack = new CdkPlaygroundEc2(app, 'CdkPlaygroundEc2-CODE', {
 
 new CdkPlaygroundLambda(app, 'CdkPlaygroundLambda-CODE', {
 	cloudFormationStackName: 'deploy-CODE-cdk-playground-lambda',
-	riffRaffProjectName,
-});
-
-new CdkPlaygroundEcs(app, 'CdkPlaygroundEcs-CODE', {
-	cloudFormationStackName: 'deploy-CODE-cdk-playground-ecs',
-	imageIdentifier: process.env.IMAGE_DIGEST ?? 'DEV',
 	riffRaffProjectName,
 });
 
