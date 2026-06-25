@@ -59,8 +59,15 @@ echo "Concurrency: $CONCURRENCY (calculated from empirical calibration)"
 echo ""
 echo "Press Ctrl+C to stop."
 echo ""
-echo "Starting in 3 seconds..."
-sleep 3
+
+# Wait until the start of the next minute
+SECONDS_LEFT=$(( 60 - $(date +%S | sed 's/^0//') ))
+if [[ "$SECONDS_LEFT" -eq 60 ]]; then
+  SECONDS_LEFT=0
+fi
+NEXT_MINUTE=$(date -v+${SECONDS_LEFT}S -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u -d "+${SECONDS_LEFT} seconds" +%Y-%m-%dT%H:%M:%SZ)
+echo "Waiting ${SECONDS_LEFT}s until next minute boundary (${NEXT_MINUTE})..."
+sleep "$SECONDS_LEFT"
 
 echo "Started at: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 echo ""
