@@ -2,14 +2,12 @@ import { AccessScope } from '@guardian/cdk/lib/constants/access';
 import { GuStack, type GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuLoadBalancedAppExperimental } from '@guardian/cdk/lib/experimental/patterns/gu-load-balanced-app';
-import type { App } from 'aws-cdk-lib';
+import type { App, CfnResource } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
 import {
-	AdjustmentType,
-	MetricAggregationType,
-	StepScalingPolicy,
+	type PredefinedMetric,
+	TargetTrackingScalingPolicy,
 } from 'aws-cdk-lib/aws-applicationautoscaling';
-import { Metric } from 'aws-cdk-lib/aws-cloudwatch';
 import type { ScalableTaskCount } from 'aws-cdk-lib/aws-ecs';
 
 interface CdkPlaygroundEcsProps extends Omit<GuStackProps, 'stack' | 'stage'> {
@@ -64,28 +62,23 @@ export class CdkPlaygroundEcs extends GuStack {
 			'TaskCount',
 		) as ScalableTaskCount;
 
-		const cpuMetric = new Metric({
-			namespace: 'AWS/ECS',
-			metricName: 'CPUUtilization',
-			dimensionsMap: {
-				ClusterName: ecsService!.cluster.clusterName,
-				ServiceName: ecsService!.serviceName,
-			},
-			statistic: 'Average',
-			period: Duration.seconds(60),
+		const cfnService = ecsService!.node.defaultChild as CfnResource;
+		cfnService.addPropertyOverride('Monitoring', {
+			MetricConfigurations: [
+				{
+					MetricNames: ['CPUUtilization'],
+					ResolutionSeconds: 20,
+				},
+			],
 		});
 
-		new StepScalingPolicy(this, 'CpuStepScaling', {
+		new TargetTrackingScalingPolicy(this, 'CpuTargetTracking', {
 			scalingTarget: scalableTaskCount,
-			metric: cpuMetric,
-			adjustmentType: AdjustmentType.CHANGE_IN_CAPACITY,
-			metricAggregationType: MetricAggregationType.AVERAGE,
-			evaluationPeriods: 1,
-			scalingSteps: [
-				{ upper: 20, change: -1 },
-				{ lower: 70, change: +1 },
-			],
-			cooldown: Duration.seconds(60),
+			targetValue: 50,
+			predefinedMetric:
+				'ECSServiceAverageCPUUtilizationHighResolution' as unknown as PredefinedMetric,
+			scaleOutCooldown: Duration.seconds(60),
+			scaleInCooldown: Duration.seconds(60),
 		});
 
 		new GuCname(this, 'EcsDns', {
