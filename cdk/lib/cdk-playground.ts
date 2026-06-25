@@ -6,7 +6,7 @@ import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 
-interface CdkPlaygroundEc2Props extends Omit<GuStackProps, 'stack' | 'stage'> {
+interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 	/**
 	 * Which application build to run.
 	 * This will typically match the build number provided by CI.
@@ -25,8 +25,8 @@ interface CdkPlaygroundEc2Props extends Omit<GuStackProps, 'stack' | 'stage'> {
 	imageIdentifier: string;
 }
 
-export class CdkPlaygroundEc2 extends GuStack {
-	constructor(scope: App, id: string, props: CdkPlaygroundEc2Props) {
+export class CdkPlayground extends GuStack {
+	constructor(scope: App, id: string, props: CdkPlaygroundProps) {
 		super(scope, id, {
 			...props,
 			stack: 'deploy',

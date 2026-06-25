@@ -1,6 +1,6 @@
 import 'source-map-support/register';
 import { GuRoot } from '@guardian/cdk/lib/constructs/root';
-import { CdkPlaygroundEc2 } from '../lib/cdk-playground-ec2';
+import { CdkPlayground } from '../lib/cdk-playground';
 import { CdkPlaygroundLambda } from '../lib/cdk-playground-lambda';
 import { EventForwarder } from '../lib/event-forwarder';
 
@@ -12,7 +12,7 @@ const eventForwarder = new EventForwarder(app, 'EventForwarder-CODE', {
 	riffRaffProjectName,
 });
 
-const ec2Stack = new CdkPlaygroundEc2(app, 'CdkPlaygroundEc2-CODE', {
+const playground = new CdkPlayground(app, 'CdkPlaygroundEc2-CODE', {
 	cloudFormationStackName: 'deploy-CODE-cdk-playground-ec2',
 	buildIdentifier: process.env.GITHUB_RUN_NUMBER ?? 'DEV',
 	imageIdentifier: process.env.IMAGE_DIGEST ?? 'DEV',
@@ -25,4 +25,4 @@ new CdkPlaygroundLambda(app, 'CdkPlaygroundLambda-CODE', {
 });
 
 // Configure Riff-Raff to deploy the application stack after the EventForwarder stack has finished.
-ec2Stack.addDependency(eventForwarder);
+playground.addDependency(eventForwarder);

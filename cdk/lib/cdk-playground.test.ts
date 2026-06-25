@@ -1,11 +1,11 @@
 import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import { CdkPlaygroundEc2 } from './cdk-playground-ec2';
+import { CdkPlayground } from './cdk-playground';
 
 describe('The cdk-playground infrastructure definition', () => {
-	it('matches the snapshot for EC2', () => {
+	it('matches the snapshot', () => {
 		const app = new App({ outdir: '/tmp/cdk.out' });
-		const stack = new CdkPlaygroundEc2(app, 'CdkPlaygroundEc2-CODE', {
+		const stack = new CdkPlayground(app, 'CdkPlaygroundEc2-CODE', {
 			buildIdentifier: 'TEST',
 			imageIdentifier: 'sha256:12345',
 			riffRaffProjectName: 'devx::cdk-playground',

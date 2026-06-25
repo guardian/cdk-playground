@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`The cdk-playground infrastructure definition matches the snapshot for EC2 1`] = `
+exports[`The cdk-playground infrastructure definition matches the snapshot 1`] = `
 {
   "Metadata": {
     "gu:cdk:constructs": [
