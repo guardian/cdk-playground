@@ -103,20 +103,163 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       "Type": "AWS::CertificateManager::Certificate",
       "UpdateReplacePolicy": "Retain",
     },
-    "CpuTargetTracking785C9A34": {
+    "CpuStepScalingLowerAlarmB8F2D712": {
       "Properties": {
-        "PolicyName": "CdkPlaygroundEcsCODECpuTargetTracking49E9E1E2",
-        "PolicyType": "TargetTrackingScaling",
+        "AlarmActions": [
+          {
+            "Ref": "CpuStepScalingLowerPolicy33D427C7",
+          },
+        ],
+        "AlarmDescription": "Lower threshold scaling alarm",
+        "ComparisonOperator": "LessThanOrEqualToThreshold",
+        "Dimensions": [
+          {
+            "Name": "ClusterName",
+            "Value": {
+              "Ref": "cdkplaygroundEcsClusterF9ADCF3E",
+            },
+          },
+          {
+            "Name": "ServiceName",
+            "Value": {
+              "Fn::GetAtt": [
+                "EcsService81FC6EF6",
+                "Name",
+              ],
+            },
+          },
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "CPUUtilization",
+        "Namespace": "AWS/ECS",
+        "Period": 10,
+        "Statistic": "Average",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "Threshold": 30,
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "CpuStepScalingLowerPolicy33D427C7": {
+      "Properties": {
+        "PolicyName": "CdkPlaygroundEcsCODECpuStepScalingLowerPolicy500F7DFC",
+        "PolicyType": "StepScaling",
         "ScalingTargetId": {
           "Ref": "EcsServiceTaskCountTarget02FCCE22",
         },
-        "TargetTrackingScalingPolicyConfiguration": {
-          "PredefinedMetricSpecification": {
-            "PredefinedMetricType": "ECSServiceAverageCPUUtilizationHighResolution",
+        "StepScalingPolicyConfiguration": {
+          "AdjustmentType": "ChangeInCapacity",
+          "Cooldown": 60,
+          "MetricAggregationType": "Average",
+          "StepAdjustments": [
+            {
+              "MetricIntervalUpperBound": 0,
+              "ScalingAdjustment": -1,
+            },
+          ],
+        },
+      },
+      "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+    },
+    "CpuStepScalingUpperAlarmAE3ED29D": {
+      "Properties": {
+        "AlarmActions": [
+          {
+            "Ref": "CpuStepScalingUpperPolicy0DD80A2E",
           },
-          "ScaleInCooldown": 60,
-          "ScaleOutCooldown": 60,
-          "TargetValue": 50,
+        ],
+        "AlarmDescription": "Upper threshold scaling alarm",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "Dimensions": [
+          {
+            "Name": "ClusterName",
+            "Value": {
+              "Ref": "cdkplaygroundEcsClusterF9ADCF3E",
+            },
+          },
+          {
+            "Name": "ServiceName",
+            "Value": {
+              "Fn::GetAtt": [
+                "EcsService81FC6EF6",
+                "Name",
+              ],
+            },
+          },
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "CPUUtilization",
+        "Namespace": "AWS/ECS",
+        "Period": 10,
+        "Statistic": "Average",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "Threshold": 50,
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "CpuStepScalingUpperPolicy0DD80A2E": {
+      "Properties": {
+        "PolicyName": "CdkPlaygroundEcsCODECpuStepScalingUpperPolicy7CFC7444",
+        "PolicyType": "StepScaling",
+        "ScalingTargetId": {
+          "Ref": "EcsServiceTaskCountTarget02FCCE22",
+        },
+        "StepScalingPolicyConfiguration": {
+          "AdjustmentType": "ChangeInCapacity",
+          "Cooldown": 60,
+          "MetricAggregationType": "Average",
+          "StepAdjustments": [
+            {
+              "MetricIntervalLowerBound": 0,
+              "MetricIntervalUpperBound": 20,
+              "ScalingAdjustment": 1,
+            },
+            {
+              "MetricIntervalLowerBound": 20,
+              "ScalingAdjustment": 2,
+            },
+          ],
         },
       },
       "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",

@@ -5,9 +5,11 @@ import { GuLoadBalancedAppExperimental } from '@guardian/cdk/lib/experimental/pa
 import type { App, CfnResource } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
 import {
-	type PredefinedMetric,
-	TargetTrackingScalingPolicy,
+	AdjustmentType,
+	MetricAggregationType,
+	StepScalingPolicy,
 } from 'aws-cdk-lib/aws-applicationautoscaling';
+import { Metric } from 'aws-cdk-lib/aws-cloudwatch';
 import type { ScalableTaskCount } from 'aws-cdk-lib/aws-ecs';
 
 interface CdkPlaygroundEcsProps extends Omit<GuStackProps, 'stack' | 'stage'> {
@@ -58,10 +60,7 @@ export class CdkPlaygroundEcs extends GuStack {
 			},
 		);
 
-		const scalableTaskCount = ecsService!.node.findChild(
-			'TaskCount',
-		) as ScalableTaskCount;
-
+		// Enable 20-second high-resolution metric publishing on the ECS service.
 		const cfnService = ecsService!.node.defaultChild as CfnResource;
 		cfnService.addPropertyOverride('Monitoring', {
 			MetricConfigurations: [
@@ -72,13 +71,32 @@ export class CdkPlaygroundEcs extends GuStack {
 			],
 		});
 
-		new TargetTrackingScalingPolicy(this, 'CpuTargetTracking', {
+		const scalableTaskCount = ecsService!.node.findChild(
+			'TaskCount',
+		) as ScalableTaskCount;
+
+		const cpuMetric = new Metric({
+			namespace: 'AWS/ECS',
+			metricName: 'CPUUtilization',
+			dimensionsMap: {
+				ClusterName: ecsService!.cluster.clusterName,
+				ServiceName: ecsService!.serviceName,
+			},
+			statistic: 'Average',
+			period: Duration.seconds(10),
+		});
+
+		new StepScalingPolicy(this, 'CpuStepScaling', {
 			scalingTarget: scalableTaskCount,
-			targetValue: 50,
-			predefinedMetric:
-				'ECSServiceAverageCPUUtilizationHighResolution' as unknown as PredefinedMetric,
-			scaleOutCooldown: Duration.seconds(60),
-			scaleInCooldown: Duration.seconds(60),
+			metric: cpuMetric,
+			adjustmentType: AdjustmentType.CHANGE_IN_CAPACITY,
+			metricAggregationType: MetricAggregationType.AVERAGE,
+			scalingSteps: [
+				{ upper: 30, change: -1 },
+				{ lower: 50, change: +1 },
+				{ lower: 70, change: +2 },
+			],
+			cooldown: Duration.seconds(60),
 		});
 
 		new GuCname(this, 'EcsDns', {
