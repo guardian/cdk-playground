@@ -6,7 +6,7 @@ import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 
-interface CdkPlaygroundEc2Props extends Omit<GuStackProps, 'stack' | 'stage'> {
+interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 	/**
 	 * Which application build to run.
 	 * This will typically match the build number provided by CI.
@@ -15,10 +15,18 @@ interface CdkPlaygroundEc2Props extends Omit<GuStackProps, 'stack' | 'stage'> {
 	 * process.env.GITHUB_RUN_NUMBER
 	 */
 	buildIdentifier: string;
+
+	/**
+	 * Which image to run.
+	 * This should be the image digest (e.g. 'sha256:abc123') to ensure immutable deployments.
+	 *
+	 * @see https://docs.docker.com/dhi/core-concepts/digests
+	 */
+	imageIdentifier: string;
 }
 
-export class CdkPlaygroundEc2 extends GuStack {
-	constructor(scope: App, id: string, props: CdkPlaygroundEc2Props) {
+export class CdkPlayground extends GuStack {
+	constructor(scope: App, id: string, props: CdkPlaygroundProps) {
 		super(scope, id, {
 			...props,
 			stack: 'deploy',
@@ -26,7 +34,7 @@ export class CdkPlaygroundEc2 extends GuStack {
 			env: { region: 'eu-west-1' },
 		});
 
-		const { buildIdentifier } = props;
+		const { buildIdentifier, imageIdentifier } = props;
 
 		const ec2AppDomainName = 'cdk-playground.code.dev-gutools.co.uk';
 
@@ -62,6 +70,20 @@ export class CdkPlaygroundEc2 extends GuStack {
 				},
 				imageRecipe: 'arm64-jammy-java21-deploy-infrastructure',
 				instanceMetricGranularity: '5Minute',
+			},
+			ecsProps: {
+				imageIdentifier,
+				memoryLimitMiB: 2048,
+				cpu: 1024,
+				repositoryName: 'guardian/cdk-playground',
+				scaling: {
+					minimumTasks: 1,
+					maximumTasks: 2,
+				},
+			},
+			targetGroupWeights: {
+				ec2: 500,
+				ecs: 499,
 			},
 		});
 
