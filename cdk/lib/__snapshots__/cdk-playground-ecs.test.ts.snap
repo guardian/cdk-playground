@@ -38,6 +38,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       "Description": "S3 bucket to store your access logs",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
+    "DeployToolsAccountIdParameter": {
+      "Default": "/organisation/accounts/deployTools",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
     "LoggingStreamName": {
       "Default": "/account/services/logging.stream.name",
       "Description": "SSM parameter containing the Name (not ARN) on the kinesis stream",
@@ -318,7 +322,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                 "",
                 [
                   {
-                    "Ref": "AWS::AccountId",
+                    "Ref": "DeployToolsAccountIdParameter",
                   },
                   ".dkr.ecr.eu-west-1.",
                   {
@@ -508,7 +512,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                     },
                     ":ecr:eu-west-1:",
                     {
-                      "Ref": "AWS::AccountId",
+                      "Ref": "DeployToolsAccountIdParameter",
                     },
                     ":repository/guardian/cdk-playground",
                   ],
