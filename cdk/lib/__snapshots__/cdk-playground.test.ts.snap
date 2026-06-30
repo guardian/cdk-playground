@@ -53,6 +53,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
       "Description": "S3 bucket to store your access logs",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
+    "DeployToolsAccountIdParameter": {
+      "Default": "/organisation/accounts/deployTools",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
     "DistributionBucketName": {
       "Default": "/account/services/artifact.bucket",
       "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
@@ -499,7 +503,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
                 "",
                 [
                   {
-                    "Ref": "AWS::AccountId",
+                    "Ref": "DeployToolsAccountIdParameter",
                   },
                   ".dkr.ecr.eu-west-1.",
                   {
@@ -689,7 +693,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
                     },
                     ":ecr:eu-west-1:",
                     {
-                      "Ref": "AWS::AccountId",
+                      "Ref": "DeployToolsAccountIdParameter",
                     },
                     ":repository/guardian/cdk-playground",
                   ],
