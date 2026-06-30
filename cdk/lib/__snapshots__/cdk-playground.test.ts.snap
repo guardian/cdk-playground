@@ -1111,13 +1111,13 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
                   "TargetGroupArn": {
                     "Ref": "TargetGroupCdkplayground7A453FC2",
                   },
-                  "Weight": 500,
+                  "Weight": 1,
                 },
                 {
                   "TargetGroupArn": {
                     "Ref": "EcsTargetGroupCdkplayground55757231",
                   },
-                  "Weight": 499,
+                  "Weight": 1,
                 },
               ],
             },

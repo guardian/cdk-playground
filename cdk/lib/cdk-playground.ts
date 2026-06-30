@@ -82,8 +82,8 @@ export class CdkPlayground extends GuStack {
 				},
 			},
 			targetGroupWeights: {
-				ec2: 500,
-				ecs: 499,
+				ec2: 1,
+				ecs: 1,
 			},
 		});
 
