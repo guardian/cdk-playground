@@ -31,7 +31,7 @@ jobs:
     outputs:
       imageDigest: ${{ steps.publish-image.outputs.imageDigest }}
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v7.0.0
       - uses: guardian/setup-scala@v1
       - name: Build Docker image
         env:
@@ -64,7 +64,7 @@ jobs:
 
     steps:
       # Checkout the branch
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v7.0.0
 
       # Node is needed for CDK
       - uses: actions/setup-node@v6
