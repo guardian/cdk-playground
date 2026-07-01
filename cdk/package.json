@@ -23,7 +23,7 @@
 		"@guardian/prettier": "11.0.0",
 		"@types/aws-lambda": "8.10.162",
 		"@types/jest": "^30.0.0",
-		"@types/node": "25.6.0",
+		"@types/node": "26.0.1",
 		"esbuild": "0.28.1",
 		"eslint": "9.39.2",
 		"eslint-plugin-prettier": "5.5.5",
