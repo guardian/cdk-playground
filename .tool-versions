@@ -1,2 +1,6 @@
 java corretto-21
 nodejs 24
+sbt 1.12.11
+awscli 2.27.31
+jq 1.7.1
+github:guardian/devenv latest
