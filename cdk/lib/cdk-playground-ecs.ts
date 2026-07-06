@@ -19,15 +19,17 @@ interface CdkPlaygroundEcsProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 // Once we've figured out the details we'd aim to provide this to users via a GuCDK pattern instead.
 export class CdkPlaygroundEcs extends GuStack {
 	constructor(scope: App, id: string, props: CdkPlaygroundEcsProps) {
+		const app = 'cdk-playground-ecs';
+
 		super(scope, id, {
 			...props,
 			stack: 'deploy',
 			stage: 'CODE',
+			app,
 			env: { region: 'eu-west-1' },
 		});
 
 		const { imageIdentifier } = props;
-		const app = 'cdk-playground';
 		const domainName = 'cdk-playground-ecs.code.dev-gutools.co.uk';
 
 		const { loadBalancer } = new GuLoadBalancedAppExperimental(this, {

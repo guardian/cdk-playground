@@ -360,6 +360,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         "PropagateTags": "SERVICE",
         "Tags": [
           {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
@@ -596,6 +600,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         ],
         "Tags": [
           {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
@@ -645,6 +653,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
           "Version": "2012-10-17",
         },
         "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
           {
             "Key": "gu:cdk:version",
             "Value": "TEST",
@@ -742,6 +754,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         "RetentionInDays": 1,
         "Tags": [
           {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
@@ -781,6 +797,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
           "Version": "2012-10-17",
         },
         "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
           {
             "Key": "gu:cdk:version",
             "Value": "TEST",
@@ -1395,6 +1415,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
     "cdkplaygroundEcsClusterF9ADCF3E": {
       "Properties": {
         "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
           {
             "Key": "gu:cdk:version",
             "Value": "TEST",

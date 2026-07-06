@@ -27,10 +27,13 @@ interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 
 export class CdkPlayground extends GuStack {
 	constructor(scope: App, id: string, props: CdkPlaygroundProps) {
+		const app = 'cdk-playground';
+
 		super(scope, id, {
 			...props,
 			stack: 'deploy',
 			stage: 'CODE',
+			app,
 			env: { region: 'eu-west-1' },
 		});
 
@@ -38,11 +41,9 @@ export class CdkPlayground extends GuStack {
 
 		const ec2AppDomainName = 'cdk-playground.code.dev-gutools.co.uk';
 
-		const ec2App = 'cdk-playground';
-
 		const { loadBalancer } = new GuLoadBalancedAppExperimental(this, {
 			applicationPort: 9000,
-			app: ec2App,
+			app,
 			access: { scope: AccessScope.PUBLIC },
 			certificateProps: {
 				domainName: ec2AppDomainName,
@@ -56,8 +57,8 @@ export class CdkPlayground extends GuStack {
 				instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO),
 				userData: {
 					distributable: {
-						fileName: `${ec2App}-${buildIdentifier}.deb`,
-						executionStatement: `dpkg -i /${ec2App}/${ec2App}-${buildIdentifier}.deb`,
+						fileName: `${app}-${buildIdentifier}.deb`,
+						executionStatement: `dpkg -i /${app}/${app}-${buildIdentifier}.deb`,
 					},
 				},
 				scaling: {
@@ -88,7 +89,7 @@ export class CdkPlayground extends GuStack {
 		});
 
 		new GuCname(this, 'EC2AppDNS', {
-			app: ec2App,
+			app,
 			ttl: Duration.hours(1),
 			domainName: ec2AppDomainName,
 			resourceRecord: loadBalancer.loadBalancerDnsName,
