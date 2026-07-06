@@ -10,6 +10,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       "GuLoadBalancedAppExperimental",
       "GuLoggingStreamNameParameter",
       "GuRiffRaffDeploymentIdParameterExperimental",
+      "GuLogShippingPolicy",
       "GuParameterStoreReadPolicy",
       "GuHttpsEgressSecurityGroup",
       "GuApplicationTargetGroup",
@@ -126,7 +127,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
     },
     "EcsService81FC6EF6": {
       "DependsOn": [
-        "EcsTaskDefinitionTaskRoleDefaultPolicy1FD2F057",
         "EcsTaskDefinitionTaskRoleB7B6D8DD",
         "ListenerCdkplaygroundA8D9CA6F",
       ],
@@ -209,7 +209,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
     },
     "EcsServiceTaskCountTarget02FCCE22": {
       "DependsOn": [
-        "EcsTaskDefinitionTaskRoleDefaultPolicy1FD2F057",
         "EcsTaskDefinitionTaskRoleB7B6D8DD",
       ],
       "Properties": {
@@ -627,48 +626,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       },
       "Type": "AWS::IAM::Role",
     },
-    "EcsTaskDefinitionTaskRoleDefaultPolicy1FD2F057": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "kinesis:Describe*",
-                "kinesis:Put*",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":kinesis:eu-west-1:",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":stream/",
-                    {
-                      "Ref": "LoggingStreamName",
-                    },
-                  ],
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "EcsTaskDefinitionTaskRoleDefaultPolicy1FD2F057",
-        "Roles": [
-          {
-            "Ref": "EcsTaskDefinitionTaskRoleB7B6D8DD",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "GuHttpsEgressSecurityGroupCdkplaygroundecs59F0C490": {
       "Properties": {
         "GroupDescription": "Allow all outbound HTTPS traffic",
@@ -733,6 +690,44 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         "ToPort": 9000,
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "GuLogShippingPolicy981BFE5A": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "kinesis:Describe*",
+                "kinesis:Put*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:kinesis:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":stream/",
+                    {
+                      "Ref": "LoggingStreamName",
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "GuLogShippingPolicy981BFE5A",
+        "Roles": [
+          {
+            "Ref": "EcsTaskDefinitionTaskRoleB7B6D8DD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
     },
     "ListenerCdkplaygroundA8D9CA6F": {
       "Properties": {
@@ -897,7 +892,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
     },
-    "ParameterStoreReadCdkplaygroundecsB1E187C6": {
+    "ParameterStoreReadCdkplaygroundF78958B9": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -912,7 +907,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/CODE/deploy/cdk-playground-ecs",
+                    ":parameter/CODE/deploy/cdk-playground",
                   ],
                 ],
               },
@@ -931,7 +926,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/CODE/deploy/cdk-playground-ecs/*",
+                    ":parameter/CODE/deploy/cdk-playground/*",
                   ],
                 ],
               },
