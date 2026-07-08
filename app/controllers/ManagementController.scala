@@ -8,7 +8,13 @@ import scala.io.Source
 
 class ManagementController (override val controllerComponents: ControllerComponents) extends BaseController with Logging {
   def manifest: Action[AnyContent] = Action {
-    Ok(Json.parse(BuildInfo.toJson))
+    val buildInfoJson = Json.parse(BuildInfo.toJson).as[play.api.libs.json.JsObject]
+
+    val backend =
+      if (sys.env.contains("ECS_CONTAINER_METADATA_URI_V4")) "ecs"
+      else "ec2"
+
+    Ok(buildInfoJson ++ Json.obj("backend" -> backend))
   }
 
   def tags: Action[AnyContent] = Action {
