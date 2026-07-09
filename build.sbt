@@ -54,6 +54,6 @@ lazy val root = (project in file("."))
       BuildInfoOption.ToJson
     ),
 
-    dockerBaseImage := "amazoncorretto:21-alpine",
+    dockerBaseImage := "dhi.io/amazoncorretto:21-alpine",
     dockerBuildxPlatforms := Seq("linux/amd64")
   )
