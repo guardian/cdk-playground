@@ -1,3 +1,5 @@
+import com.typesafe.sbt.packager.docker.{Cmd, ExecCmd}
+
 // https://github.com/orgs/playframework/discussions/11222
 val jacksonVersion         = "2.22.0"
 
@@ -55,5 +57,16 @@ lazy val root = (project in file("."))
     ),
 
     dockerBaseImage := "dhi.io/amazoncorretto:21-alpine",
-    dockerBuildxPlatforms := Seq("linux/amd64")
+    dockerBuildxPlatforms := Seq("linux/amd64"),
+
+    // The base image is very minimal (no reliable root name lookup and missing shell/coreutils),
+    // so we force numeric USER and remove generated RUN user/chmod setup commands.
+    Docker / daemonUser := "1001",
+    Docker / daemonGroup := "0",
+    Docker / dockerCommands := (Docker / dockerCommands).value.flatMap {
+      case ExecCmd("RUN", "chmod", _*)          => Nil
+      case Cmd("RUN", "id", "-u", "1001", _*)   => Nil
+      case Cmd("USER", "root")                  => Seq(Cmd("USER", "0"))
+      case other                                => Seq(other)
+    }
   )
