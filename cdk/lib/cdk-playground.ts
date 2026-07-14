@@ -85,9 +85,6 @@ export class CdkPlayground extends GuStack {
 				ec2: 1,
 				ecs: 1,
 			},
-			deterministicRouting: {
-				enabled: true,
-			},
 		});
 
 		new GuCname(this, 'EC2AppDNS', {
