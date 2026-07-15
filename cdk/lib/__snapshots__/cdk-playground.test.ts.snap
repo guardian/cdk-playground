@@ -307,6 +307,8 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
     "EcsService81FC6EF6": {
       "DependsOn": [
         "EcsTaskDefinitionTaskRoleB7B6D8DD",
+        "ListenerCdkplaygroundDeterministicRouteToEc2Rule2BB42C95",
+        "ListenerCdkplaygroundDeterministicRouteToEcsRule31238CBD",
         "ListenerCdkplaygroundA8D9CA6F",
       ],
       "Properties": {
@@ -1090,6 +1092,62 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         "SslPolicy": "ELBSecurityPolicy-TLS13-1-2-2021-06",
       },
       "Type": "AWS::ElasticLoadBalancingV2::Listener",
+    },
+    "ListenerCdkplaygroundDeterministicRouteToEc2Rule2BB42C95": {
+      "Properties": {
+        "Actions": [
+          {
+            "TargetGroupArn": {
+              "Ref": "TargetGroupCdkplayground7A453FC2",
+            },
+            "Type": "forward",
+          },
+        ],
+        "Conditions": [
+          {
+            "Field": "http-header",
+            "HttpHeaderConfig": {
+              "HttpHeaderName": "X-Gu-Target-Group",
+              "Values": [
+                "ec2",
+              ],
+            },
+          },
+        ],
+        "ListenerArn": {
+          "Ref": "ListenerCdkplaygroundA8D9CA6F",
+        },
+        "Priority": 10,
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::ListenerRule",
+    },
+    "ListenerCdkplaygroundDeterministicRouteToEcsRule31238CBD": {
+      "Properties": {
+        "Actions": [
+          {
+            "TargetGroupArn": {
+              "Ref": "EcsTargetGroupCdkplayground55757231",
+            },
+            "Type": "forward",
+          },
+        ],
+        "Conditions": [
+          {
+            "Field": "http-header",
+            "HttpHeaderConfig": {
+              "HttpHeaderName": "X-Gu-Target-Group",
+              "Values": [
+                "ecs",
+              ],
+            },
+          },
+        ],
+        "ListenerArn": {
+          "Ref": "ListenerCdkplaygroundA8D9CA6F",
+        },
+        "Priority": 11,
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::ListenerRule",
     },
     "LoadBalancerCdkplayground7C6B4D97": {
       "Properties": {
