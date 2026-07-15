@@ -31,7 +31,7 @@
 		"source-map-support": "^0.5.20",
 		"ts-jest": "29.4.11",
 		"ts-node": "^10.9.2",
-		"typescript": "5.9.3"
+		"typescript": "7.0.2"
 	},
 	"prettier": "@guardian/prettier",
 	"jest": {
