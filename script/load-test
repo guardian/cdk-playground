@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Load test the ECS service using Apache Bench (ab).
+# Requires: ab (ships with macOS via httpd/Apache)
+#
+# Empirical calibration (1 vCPU / 1024 cpu units, sustained load):
+#   40 concurrent connections ≈ 1,300 req/sec ≈ 75% CPU
+#   Therefore: 1 concurrent connection ≈ 1.875% CPU
+
+URL="https://cdk-playground-ecs.code.dev-gutools.co.uk/healthcheck"
+TARGET_CPU=""
+
+usage() {
+  echo "Usage: $0 [-p target_cpu_percent] [-u url]"
+  echo ""
+  echo "Runs sustained load to hold ECS CPU at the target percentage."
+  echo "Press Ctrl+C to stop."
+  echo ""
+  echo "Options:"
+  echo "  -p  Target CPU percentage, e.g. 50 (required)"
+  echo "  -u  Target URL (default: $URL)"
+  echo "  -h  Show this help"
+  exit 0
+}
+
+while getopts "p:u:h" opt; do
+  case $opt in
+    p) TARGET_CPU="$OPTARG" ;;
+    u) URL="$OPTARG" ;;
+    h) usage ;;
+    *) usage ;;
+  esac
+done
+
+if [[ -z "$TARGET_CPU" ]]; then
+  echo "Error: -p <target_cpu_percent> is required"
+  echo ""
+  usage
+fi
+
+if ! command -v ab &>/dev/null; then
+  echo "Error: 'ab' (Apache Bench) not found."
+  echo "On macOS it ships with the system. Try: which ab"
+  exit 1
+fi
+
+# Calculate concurrency from empirical data:
+# 40 concurrency → ~75% CPU, so concurrency = (target / 75) * 40
+CONCURRENCY=$(( (TARGET_CPU * 40 + 74) / 75 ))  # round up
+if [[ "$CONCURRENCY" -lt 1 ]]; then
+  CONCURRENCY=1
+fi
+
+echo "=== ECS Load Test (sustained) ==="
+echo "URL:         $URL"
+echo "Target CPU:  ${TARGET_CPU}%"
+echo "Concurrency: $CONCURRENCY (calculated from empirical calibration)"
+echo ""
+echo "Press Ctrl+C to stop."
+echo ""
+
+# Wait until the start of the next minute
+SECONDS_LEFT=$(( 60 - $(date +%S | sed 's/^0//') ))
+if [[ "$SECONDS_LEFT" -eq 60 ]]; then
+  SECONDS_LEFT=0
+fi
+NEXT_MINUTE=$(date -v+${SECONDS_LEFT}S -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u -d "+${SECONDS_LEFT} seconds" +%Y-%m-%dT%H:%M:%SZ)
+echo "Waiting ${SECONDS_LEFT}s until next minute boundary (${NEXT_MINUTE})..."
+sleep "$SECONDS_LEFT"
+
+echo "Started at: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+echo ""
+
+# Run ab in 60-second bursts in a loop until interrupted.
+# -t 60: run for 60 seconds per iteration
+# -k: keepalive connections
+# -s 60: 60s socket timeout
+trap 'echo ""; echo "Stopped at: $(date -u +%Y-%m-%dT%H:%M:%SZ)"; exit 0' INT TERM
+
+while true; do
+  ab -k -t 60 -c "$CONCURRENCY" -s 60 "$URL" 2>&1 | grep -E "^(Requests per second|Time taken|Complete requests)"
+  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Restarting burst..."
+done
+echo "Finished at: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
