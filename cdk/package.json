@@ -5,7 +5,7 @@
 	"scripts": {
 		"build": "tsc",
 		"test": "jest",
-    "test-update": "jest --updateSnapshot",
+		"test-update": "jest --updateSnapshot",
 		"format": "prettier --write \"{lib,bin}/**/*.ts\"",
 		"lint": "eslint lib/** bin/** --no-error-on-unmatched-pattern",
 		"synth": "cdk synth --path-metadata false --version-reporting false",
@@ -18,7 +18,7 @@
 	"devDependencies": {
 		"@aws-sdk/client-auto-scaling": "3.1087.0",
 		"@aws-sdk/credential-providers": "3.1079.0",
-		"@guardian/cdk": "64.1.0",
+		"@guardian/cdk": "github:guardian/cdk#aa/ecs-execute-command",
 		"@guardian/eslint-config": "14.0.1",
 		"@guardian/prettier": "11.0.0",
 		"@types/aws-lambda": "8.10.162",

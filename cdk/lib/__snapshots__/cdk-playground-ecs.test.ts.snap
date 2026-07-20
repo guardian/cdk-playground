@@ -151,6 +151,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           "Type": "ECS",
         },
         "EnableECSManagedTags": false,
+        "EnableExecuteCommand": false,
         "HealthCheckGracePeriodSeconds": 60,
         "LaunchType": "FARGATE",
         "LoadBalancers": [
@@ -315,6 +316,28 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                 "Ref": "RiffRaffDeploymentId",
               },
             },
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "CODE",
+              },
+              {
+                "Name": "APP",
+                "Value": "cdk-playground",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "cdk-playground",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/cdk-playground",
+              },
+            ],
             "Essential": true,
             "Image": {
               "Fn::Join": [
