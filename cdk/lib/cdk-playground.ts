@@ -80,6 +80,7 @@ export class CdkPlayground extends GuStack {
 					minimumTasks: 1,
 					maximumTasks: 2,
 				},
+				enableExecuteCommand: true,
 			},
 			targetGroupWeights: {
 				ec2: 1,
