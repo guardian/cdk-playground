@@ -306,6 +306,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
     },
     "EcsService81FC6EF6": {
       "DependsOn": [
+        "EcsTaskDefinitionTaskRoleDefaultPolicy1FD2F057",
         "EcsTaskDefinitionTaskRoleB7B6D8DD",
         "ListenerCdkplaygroundDeterministicRouteToEc2Rule2BB42C95",
         "ListenerCdkplaygroundDeterministicRouteToEcsRule31238CBD",
@@ -332,6 +333,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
           "Type": "ECS",
         },
         "EnableECSManagedTags": false,
+        "EnableExecuteCommand": true,
         "HealthCheckGracePeriodSeconds": 60,
         "LaunchType": "FARGATE",
         "LoadBalancers": [
@@ -390,6 +392,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
     },
     "EcsServiceTaskCountTarget02FCCE22": {
       "DependsOn": [
+        "EcsTaskDefinitionTaskRoleDefaultPolicy1FD2F057",
         "EcsTaskDefinitionTaskRoleB7B6D8DD",
       ],
       "Properties": {
@@ -496,6 +499,28 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
                 "Ref": "RiffRaffDeploymentId",
               },
             },
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "CODE",
+              },
+              {
+                "Name": "APP",
+                "Value": "cdk-playground",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "cdk-playground",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/cdk-playground",
+              },
+            ],
             "Essential": true,
             "Image": {
               "Fn::Join": [
@@ -511,6 +536,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
                   "/guardian/cdk-playground@sha256:12345",
                 ],
               ],
+            },
+            "LinuxParameters": {
+              "Capabilities": {},
+              "InitProcessEnabled": true,
             },
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -530,7 +559,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
                 "Protocol": "tcp",
               },
             ],
-            "ReadonlyRootFilesystem": true,
+            "ReadonlyRootFilesystem": false,
             "VersionConsistency": "disabled",
           },
           {
@@ -806,6 +835,46 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         ],
       },
       "Type": "AWS::IAM::Role",
+    },
+    "EcsTaskDefinitionTaskRoleDefaultPolicy1FD2F057": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "ssmmessages:CreateControlChannel",
+                "ssmmessages:CreateDataChannel",
+                "ssmmessages:OpenControlChannel",
+                "ssmmessages:OpenDataChannel",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": "logs:DescribeLogGroups",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "EcsTaskDefinitionTaskRoleDefaultPolicy1FD2F057",
+        "Roles": [
+          {
+            "Ref": "EcsTaskDefinitionTaskRoleB7B6D8DD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
     },
     "GetDistributablePolicyCdkplaygroundBFB4D02B": {
       "Properties": {
