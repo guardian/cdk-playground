@@ -151,6 +151,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           "Type": "ECS",
         },
         "EnableECSManagedTags": false,
+        "EnableExecuteCommand": true,
         "HealthCheckGracePeriodSeconds": 60,
         "LaunchType": "FARGATE",
         "LoadBalancers": [
@@ -349,7 +350,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                 "Protocol": "tcp",
               },
             ],
-            "ReadonlyRootFilesystem": true,
+            "ReadonlyRootFilesystem": false,
             "VersionConsistency": "disabled",
           },
           {

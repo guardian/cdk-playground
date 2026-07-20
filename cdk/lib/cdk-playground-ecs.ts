@@ -4,6 +4,7 @@ import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuLoadBalancedAppExperimental } from '@guardian/cdk/lib/experimental/patterns/gu-load-balanced-app';
 import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
+import type { CfnService, CfnTaskDefinition } from 'aws-cdk-lib/aws-ecs';
 
 interface CdkPlaygroundEcsProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 	/**
@@ -30,7 +31,7 @@ export class CdkPlaygroundEcs extends GuStack {
 		const app = 'cdk-playground';
 		const domainName = 'cdk-playground-ecs.code.dev-gutools.co.uk';
 
-		const { loadBalancer } = new GuLoadBalancedAppExperimental(this, {
+		const loadBalancedApp = new GuLoadBalancedAppExperimental(this, {
 			access: { scope: AccessScope.PUBLIC },
 			app,
 			applicationPort: 9000,
@@ -50,11 +51,22 @@ export class CdkPlaygroundEcs extends GuStack {
 			},
 		});
 
+		const cfnService = loadBalancedApp.ecsService!.node
+			.defaultChild as CfnService;
+		cfnService.addPropertyOverride('EnableExecuteCommand', true);
+
+		const cfnTaskDef = loadBalancedApp.ecsService!.taskDefinition.node
+			.defaultChild as CfnTaskDefinition;
+		cfnTaskDef.addPropertyOverride(
+			'ContainerDefinitions.0.ReadonlyRootFilesystem',
+			false,
+		);
+
 		new GuCname(this, 'EcsDns', {
 			app,
 			ttl: Duration.minutes(1),
 			domainName,
-			resourceRecord: loadBalancer.loadBalancerDnsName,
+			resourceRecord: loadBalancedApp.loadBalancer.loadBalancerDnsName,
 		});
 	}
 }
