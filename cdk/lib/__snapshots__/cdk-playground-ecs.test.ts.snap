@@ -729,6 +729,174 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       },
       "Type": "AWS::IAM::Policy",
     },
+    "HealthCheckLogDelivery": {
+      "DependsOn": [
+        "HealthCheckLogsDeliveryPolicy",
+        "HealthCheckLogSource",
+      ],
+      "Properties": {
+        "DeliveryDestinationArn": {
+          "Fn::GetAtt": [
+            "HealthCheckLogDestination",
+            "Arn",
+          ],
+        },
+        "DeliverySourceName": "cdk-playground-CODE-health-check",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::Delivery",
+    },
+    "HealthCheckLogDestination": {
+      "Properties": {
+        "DestinationResourceArn": {
+          "Fn::GetAtt": [
+            "HealthCheckLogs807FF78A",
+            "Arn",
+          ],
+        },
+        "Name": "cdk-playground-CODE-health-check",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::DeliveryDestination",
+    },
+    "HealthCheckLogSource": {
+      "Properties": {
+        "LogType": "ALB_HEALTH_CHECK_LOGS",
+        "Name": "cdk-playground-CODE-health-check",
+        "ResourceArn": {
+          "Ref": "LoadBalancerCdkplayground7C6B4D97",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::DeliverySource",
+    },
+    "HealthCheckLogs807FF78A": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "LogGroupName": "/aws/elasticloadbalancing/cdk-playground-CODE-health-check",
+        "RetentionInDays": 7,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "HealthCheckLogsDeliveryPolicy": {
+      "Properties": {
+        "PolicyDocument": {
+          "Fn::Join": [
+            "",
+            [
+              "{"Version":"2012-10-17","Statement":[{"Sid":"AllowLogDeliveryWrite","Effect":"Allow","Principal":{"Service":"delivery.logs.amazonaws.com"},"Action":["logs:CreateLogStream","logs:PutLogEvents"],"Resource":"arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":logs:eu-west-1:",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":log-group:/aws/elasticloadbalancing/cdk-playground-CODE-health-check:log-stream:*","Condition":{"StringEquals":{"aws:SourceAccount":"",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ""},"ArnLike":{"aws:SourceArn":"",
+              {
+                "Fn::GetAtt": [
+                  "HealthCheckLogSource",
+                  "Arn",
+                ],
+              },
+              ""}}}]}",
+            ],
+          ],
+        },
+        "PolicyName": "cdk-playground-CODE-health-check-logs",
+      },
+      "Type": "AWS::Logs::ResourcePolicy",
+    },
     "ListenerCdkplaygroundA8D9CA6F": {
       "Properties": {
         "Certificates": [

@@ -6,6 +6,9 @@ import type { App } from 'aws-cdk-lib';
 import { ArnFormat, Duration, RemovalPolicy } from 'aws-cdk-lib';
 import { CfnRule } from 'aws-cdk-lib/aws-events';
 import {
+	CfnDelivery,
+	CfnDeliveryDestination,
+	CfnDeliverySource,
 	CfnResourcePolicy,
 	LogGroup,
 	RetentionDays,
@@ -58,6 +61,78 @@ export class CdkPlaygroundEcs extends GuStack {
 				},
 			},
 		);
+
+		// Deliver per-health-check-attempt results (PASS/FAIL, latency, target
+		// IP:port, reason code) straight to CloudWatch Logs as vended logs, so we
+		// can query them alongside task-state events to reconstruct the
+		// registration → healthy phase of a task's lifecycle.
+		// See https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-cloudwatch-logs.html
+		const healthCheckLogsName = `/aws/elasticloadbalancing/${app}-${this.stage}-health-check`;
+		const healthCheckLogs = new LogGroup(this, 'HealthCheckLogs', {
+			logGroupName: healthCheckLogsName,
+			retention: RetentionDays.ONE_WEEK,
+			removalPolicy: RemovalPolicy.DESTROY,
+		});
+
+		const healthCheckLogSource = new CfnDeliverySource(
+			this,
+			'HealthCheckLogSource',
+			{
+				name: `${app}-${this.stage}-health-check`,
+				logType: 'ALB_HEALTH_CHECK_LOGS',
+				resourceArn: loadBalancer.loadBalancerArn,
+			},
+		);
+
+		const healthCheckLogDestination = new CfnDeliveryDestination(
+			this,
+			'HealthCheckLogDestination',
+			{
+				name: `${app}-${this.stage}-health-check`,
+				destinationResourceArn: healthCheckLogs.logGroupArn,
+			},
+		);
+
+		// Allow the CloudWatch Logs delivery service to write to the log group.
+		const healthCheckLogsPolicy = new CfnResourcePolicy(
+			this,
+			'HealthCheckLogsDeliveryPolicy',
+			{
+				policyName: `${app}-${this.stage}-health-check-logs`,
+				policyDocument: JSON.stringify({
+					Version: '2012-10-17',
+					Statement: [
+						{
+							Sid: 'AllowLogDeliveryWrite',
+							Effect: 'Allow',
+							Principal: { Service: 'delivery.logs.amazonaws.com' },
+							Action: ['logs:CreateLogStream', 'logs:PutLogEvents'],
+							Resource: this.formatArn({
+								service: 'logs',
+								resource: 'log-group',
+								resourceName: `${healthCheckLogsName}:log-stream:*`,
+								arnFormat: ArnFormat.COLON_RESOURCE_NAME,
+							}),
+							Condition: {
+								StringEquals: { 'aws:SourceAccount': this.account },
+								ArnLike: { 'aws:SourceArn': healthCheckLogSource.attrArn },
+							},
+						},
+					],
+				}),
+			},
+		);
+
+		const healthCheckLogDelivery = new CfnDelivery(
+			this,
+			'HealthCheckLogDelivery',
+			{
+				deliverySourceName: healthCheckLogSource.name,
+				deliveryDestinationArn: healthCheckLogDestination.attrArn,
+			},
+		);
+		healthCheckLogDelivery.addDependency(healthCheckLogSource);
+		healthCheckLogDelivery.addDependency(healthCheckLogsPolicy);
 
 		// Record every ECS task lifecycle transition (PROVISIONING → ... → STOPPED)
 		// so we can reconstruct a per-state timeline for scale-out latency analysis.
