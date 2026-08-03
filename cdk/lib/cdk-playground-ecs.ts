@@ -3,10 +3,13 @@ import { GuStack, type GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuLoadBalancedAppExperimental } from '@guardian/cdk/lib/experimental/patterns/gu-load-balanced-app';
 import type { App } from 'aws-cdk-lib';
-import { Duration, RemovalPolicy } from 'aws-cdk-lib';
-import { Rule } from 'aws-cdk-lib/aws-events';
-import { CloudWatchLogGroup } from 'aws-cdk-lib/aws-events-targets';
-import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
+import { ArnFormat, Duration, RemovalPolicy } from 'aws-cdk-lib';
+import { CfnRule } from 'aws-cdk-lib/aws-events';
+import {
+	CfnResourcePolicy,
+	LogGroup,
+	RetentionDays,
+} from 'aws-cdk-lib/aws-logs';
 
 interface CdkPlaygroundEcsProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 	/**
@@ -59,19 +62,53 @@ export class CdkPlaygroundEcs extends GuStack {
 		// Record every ECS task lifecycle transition (PROVISIONING → ... → STOPPED)
 		// so we can reconstruct a per-state timeline for scale-out latency analysis.
 		const taskStateEvents = new LogGroup(this, 'TaskStateEvents', {
+			logGroupName: `/aws/events/${app}-${this.stage}-task-state`,
 			retention: RetentionDays.ONE_WEEK,
 			removalPolicy: RemovalPolicy.DESTROY,
 		});
 
-		new Rule(this, 'TaskStateChangeRule', {
+		// Use a low-level CfnRule + native resource policy rather than the L2
+		// CloudWatchLogGroup target: the L2 target injects a Lambda-backed custom
+		// resource (an asset), which requires `cdk deploy`. This keeps the stack
+		// deployable via plain CloudFormation changesets.
+		const taskStateRule = new CfnRule(this, 'TaskStateChangeRule', {
 			eventPattern: {
 				source: ['aws.ecs'],
-				detailType: ['ECS Task State Change'],
+				'detail-type': ['ECS Task State Change'],
 				detail: {
 					clusterArn: [ecsService!.cluster.clusterArn],
 				},
 			},
-			targets: [new CloudWatchLogGroup(taskStateEvents)],
+			targets: [
+				{
+					id: 'TaskStateEventsLog',
+					arn: this.formatArn({
+						service: 'logs',
+						resource: 'log-group',
+						resourceName: taskStateEvents.logGroupName,
+						arnFormat: ArnFormat.COLON_RESOURCE_NAME,
+					}),
+				},
+			],
+		});
+
+		new CfnResourcePolicy(this, 'TaskStateEventsPolicy', {
+			policyName: `${app}-${this.stage}-task-state-events`,
+			policyDocument: JSON.stringify({
+				Version: '2012-10-17',
+				Statement: [
+					{
+						Sid: 'AllowEventBridgeToLog',
+						Effect: 'Allow',
+						Principal: { Service: 'events.amazonaws.com' },
+						Action: ['logs:CreateLogStream', 'logs:PutLogEvents'],
+						Resource: taskStateEvents.logGroupArn,
+						Condition: {
+							ArnEquals: { 'aws:SourceArn': taskStateRule.attrArn },
+						},
+					},
+				],
+			}),
 		});
 
 		new GuCname(this, 'EcsDns', {

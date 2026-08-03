@@ -39,18 +39,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       "Description": "S3 bucket to store your access logs",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "AssetParameters8b1c21efe0e24332f92ed71e98107d8a27ee1544c62b7b191805e0913fcfdf0fArtifactHash6449FA76": {
-      "Description": "Artifact hash for asset "8b1c21efe0e24332f92ed71e98107d8a27ee1544c62b7b191805e0913fcfdf0f"",
-      "Type": "String",
-    },
-    "AssetParameters8b1c21efe0e24332f92ed71e98107d8a27ee1544c62b7b191805e0913fcfdf0fS3Bucket5925A2C0": {
-      "Description": "S3 bucket for asset "8b1c21efe0e24332f92ed71e98107d8a27ee1544c62b7b191805e0913fcfdf0f"",
-      "Type": "String",
-    },
-    "AssetParameters8b1c21efe0e24332f92ed71e98107d8a27ee1544c62b7b191805e0913fcfdf0fS3VersionKey3BAC1810": {
-      "Description": "S3 key for asset version "8b1c21efe0e24332f92ed71e98107d8a27ee1544c62b7b191805e0913fcfdf0f"",
-      "Type": "String",
-    },
     "DeployToolsAccountIdParameter": {
       "Default": "/organisation/accounts/deployTools",
       "Type": "AWS::SSM::Parameter::Value<String>",
@@ -81,136 +69,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
     },
   },
   "Resources": {
-    "AWS679f53fac002430cb0da5b7982bd22872D164C4C": {
-      "DependsOn": [
-        "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
-      ],
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Ref": "AssetParameters8b1c21efe0e24332f92ed71e98107d8a27ee1544c62b7b191805e0913fcfdf0fS3Bucket5925A2C0",
-          },
-          "S3Key": {
-            "Fn::Join": [
-              "",
-              [
-                {
-                  "Fn::Select": [
-                    0,
-                    {
-                      "Fn::Split": [
-                        "||",
-                        {
-                          "Ref": "AssetParameters8b1c21efe0e24332f92ed71e98107d8a27ee1544c62b7b191805e0913fcfdf0fS3VersionKey3BAC1810",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  "Fn::Select": [
-                    1,
-                    {
-                      "Fn::Split": [
-                        "||",
-                        {
-                          "Ref": "AssetParameters8b1c21efe0e24332f92ed71e98107d8a27ee1544c62b7b191805e0913fcfdf0fS3VersionKey3BAC1810",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
-        },
-        "Handler": "index.handler",
-        "Role": {
-          "Fn::GetAtt": [
-            "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs22.x",
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/cdk-playground",
-          },
-          {
-            "Key": "gu:riff-raff:project",
-            "Value": "devx::cdk-playground",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-        "Timeout": 120,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/cdk-playground",
-          },
-          {
-            "Key": "gu:riff-raff:project",
-            "Value": "devx::cdk-playground",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
     "CertificateCdkplayground47FCF7D9": {
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -768,80 +626,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       },
       "Type": "AWS::IAM::Role",
     },
-    "EventsLogGroupPolicyCdkPlaygroundEcsCODETaskStateChangeRule0B555A844FC72981": {
-      "DeletionPolicy": "Delete",
-      "DependsOn": [
-        "EventsLogGroupPolicyCdkPlaygroundEcsCODETaskStateChangeRule0B555A84CustomResourcePolicy90BE36B4",
-      ],
-      "Properties": {
-        "Create": {
-          "Fn::Join": [
-            "",
-            [
-              "{"service":"CloudWatchLogs","action":"putResourcePolicy","parameters":{"policyName":"CdkPlaygroundEcsCODEEventsLogGroupPolicyCdkPlaygroundEcsCODETaskStateChangeRule0B555A84E8FF5D81","policyDocument":"{\\"Statement\\":[{\\"Action\\":[\\"logs:PutLogEvents\\",\\"logs:CreateLogStream\\"],\\"Effect\\":\\"Allow\\",\\"Principal\\":{\\"Service\\":\\"events.amazonaws.com\\"},\\"Resource\\":\\"",
-              {
-                "Fn::GetAtt": [
-                  "TaskStateEvents4E5081CA",
-                  "Arn",
-                ],
-              },
-              "\\"}],\\"Version\\":\\"2012-10-17\\"}"},"physicalResourceId":{"id":"EventsLogGroupPolicyCdkPlaygroundEcsCODETaskStateChangeRule0B555A84"}}",
-            ],
-          ],
-        },
-        "Delete": "{"service":"CloudWatchLogs","action":"deleteResourcePolicy","parameters":{"policyName":"CdkPlaygroundEcsCODEEventsLogGroupPolicyCdkPlaygroundEcsCODETaskStateChangeRule0B555A84E8FF5D81"},"ignoreErrorCodesMatching":"ResourceNotFoundException"}",
-        "InstallLatestAwsSdk": true,
-        "ServiceToken": {
-          "Fn::GetAtt": [
-            "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
-            "Arn",
-          ],
-        },
-        "Update": {
-          "Fn::Join": [
-            "",
-            [
-              "{"service":"CloudWatchLogs","action":"putResourcePolicy","parameters":{"policyName":"CdkPlaygroundEcsCODEEventsLogGroupPolicyCdkPlaygroundEcsCODETaskStateChangeRule0B555A84E8FF5D81","policyDocument":"{\\"Statement\\":[{\\"Action\\":[\\"logs:PutLogEvents\\",\\"logs:CreateLogStream\\"],\\"Effect\\":\\"Allow\\",\\"Principal\\":{\\"Service\\":\\"events.amazonaws.com\\"},\\"Resource\\":\\"",
-              {
-                "Fn::GetAtt": [
-                  "TaskStateEvents4E5081CA",
-                  "Arn",
-                ],
-              },
-              "\\"}],\\"Version\\":\\"2012-10-17\\"}"},"physicalResourceId":{"id":"EventsLogGroupPolicyCdkPlaygroundEcsCODETaskStateChangeRule0B555A84"}}",
-            ],
-          ],
-        },
-      },
-      "Type": "Custom::CloudwatchLogResourcePolicy",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "EventsLogGroupPolicyCdkPlaygroundEcsCODETaskStateChangeRule0B555A84CustomResourcePolicy90BE36B4": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "logs:PutResourcePolicy",
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-            {
-              "Action": "logs:DeleteResourcePolicy",
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "EventsLogGroupPolicyCdkPlaygroundEcsCODETaskStateChangeRule0B555A84CustomResourcePolicy90BE36B4",
-        "Roles": [
-          {
-            "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "GuHttpsEgressSecurityGroupCdkplaygroundecs59F0C490": {
       "Properties": {
         "GroupDescription": "Allow all outbound HTTPS traffic",
@@ -1159,7 +943,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       },
       "Type": "AWS::IAM::Policy",
     },
-    "TaskStateChangeRule57F6E27C": {
+    "TaskStateChangeRule": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -1179,7 +963,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             "aws.ecs",
           ],
         },
-        "State": "ENABLED",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -1223,7 +1006,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                 ],
               ],
             },
-            "Id": "Target0",
+            "Id": "TaskStateEventsLog",
           },
         ],
       },
@@ -1232,6 +1015,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
     "TaskStateEvents4E5081CA": {
       "DeletionPolicy": "Delete",
       "Properties": {
+        "LogGroupName": "/aws/events/cdk-playground-CODE-task-state",
         "RetentionInDays": 7,
         "Tags": [
           {
@@ -1258,6 +1042,34 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       },
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Delete",
+    },
+    "TaskStateEventsPolicy": {
+      "Properties": {
+        "PolicyDocument": {
+          "Fn::Join": [
+            "",
+            [
+              "{"Version":"2012-10-17","Statement":[{"Sid":"AllowEventBridgeToLog","Effect":"Allow","Principal":{"Service":"events.amazonaws.com"},"Action":["logs:CreateLogStream","logs:PutLogEvents"],"Resource":"",
+              {
+                "Fn::GetAtt": [
+                  "TaskStateEvents4E5081CA",
+                  "Arn",
+                ],
+              },
+              "","Condition":{"ArnEquals":{"aws:SourceArn":"",
+              {
+                "Fn::GetAtt": [
+                  "TaskStateChangeRule",
+                  "Arn",
+                ],
+              },
+              ""}}}]}",
+            ],
+          ],
+        },
+        "PolicyName": "cdk-playground-CODE-task-state-events",
+      },
+      "Type": "AWS::Logs::ResourcePolicy",
     },
     "cdkplaygroundEcsClusterF9ADCF3E": {
       "Properties": {
