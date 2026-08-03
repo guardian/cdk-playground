@@ -5,6 +5,14 @@ import { randomBytes } from 'node:crypto';
 // CloudWatch Logs. Trace ID = the 32-hex ECS task ID; one span per lifecycle
 // state (PROVISIONING/PENDING/ACTIVATING/RUNNING/...). No pull/container detail.
 // Usage: node ecs-lifecycle-trace.mjs <taskId> [--flags]
+//
+// Jaeger container (all-in-one, in-memory; UI on 16687, OTLP HTTP on 4319):
+//   Start:   docker run -d --name ecs-timeline-jaeger \
+//              -p 16687:16686 -p 4319:4318 jaegertracing/jaeger:2.6.0
+//   Restart: docker restart ecs-timeline-jaeger   (clears all traces)
+//   Stop:    docker rm -f ecs-timeline-jaeger
+//   UI:      http://localhost:16687
+
 
 const arg = (name, fallback) => {
 	const i = process.argv.indexOf(`--${name}`);
