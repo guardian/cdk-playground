@@ -40,7 +40,7 @@ export class CdkPlayground extends GuStack {
 
 		const ec2App = 'cdk-playground';
 
-		const { loadBalancer } = new GuLoadBalancedAppExperimental(this, {
+		const loadBalancedApp = new GuLoadBalancedAppExperimental(this, {
 			applicationPort: 9000,
 			app: ec2App,
 			access: { scope: AccessScope.PUBLIC },
@@ -91,7 +91,15 @@ export class CdkPlayground extends GuStack {
 			app: ec2App,
 			ttl: Duration.hours(1),
 			domainName: ec2AppDomainName,
-			resourceRecord: loadBalancer.loadBalancerDnsName,
+			resourceRecord: loadBalancedApp.loadBalancer.loadBalancerDnsName,
 		});
+
+		if (loadBalancedApp.targetGroups.ecs) {
+			this.overrideLogicalId(loadBalancedApp.targetGroups.ecs, {
+				logicalId: 'cdk-playground-ecs-target',
+				reason:
+					'Reverse engineering CloudFormation logic for naming a target group',
+			});
+		}
 	}
 }
