@@ -96,7 +96,7 @@ export class CdkPlayground extends GuStack {
 
 		if (loadBalancedApp.targetGroups.ecs) {
 			this.overrideLogicalId(loadBalancedApp.targetGroups.ecs, {
-				logicalId: 'cdk-playground-ecs-target',
+				logicalId: 'cdkplaygroundecstarget',
 				reason:
 					'Reverse engineering CloudFormation logic for naming a target group',
 			});

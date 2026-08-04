@@ -339,7 +339,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
             "ContainerName": "cdk-playground",
             "ContainerPort": 9000,
             "TargetGroupArn": {
-              "Ref": "cdk-playground-ecs-target",
+              "Ref": "cdkplaygroundecstarget",
             },
           },
         ],
@@ -1022,7 +1022,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
                 },
                 {
                   "TargetGroupArn": {
-                    "Ref": "cdk-playground-ecs-target",
+                    "Ref": "cdkplaygroundecstarget",
                   },
                   "Weight": 1,
                 },
@@ -1073,7 +1073,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         "Actions": [
           {
             "TargetGroupArn": {
-              "Ref": "cdk-playground-ecs-target",
+              "Ref": "cdkplaygroundecstarget",
             },
             "Type": "forward",
           },
@@ -1397,7 +1397,34 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
       },
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
     },
-    "cdk-playground-ecs-target": {
+    "cdkplaygroundEcsClusterF9ADCF3E": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::Cluster",
+    },
+    "cdkplaygroundecstarget": {
       "Properties": {
         "HealthCheckIntervalSeconds": 10,
         "HealthCheckPath": "/healthcheck",
@@ -1449,33 +1476,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         },
       },
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
-    },
-    "cdkplaygroundEcsClusterF9ADCF3E": {
-      "Properties": {
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/cdk-playground",
-          },
-          {
-            "Key": "gu:riff-raff:project",
-            "Value": "devx::cdk-playground",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-      },
-      "Type": "AWS::ECS::Cluster",
     },
     "deployCODEcdkplaygroundCA0A63B1": {
       "DependsOn": [
