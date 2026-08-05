@@ -108,6 +108,24 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       "Type": "AWS::CertificateManager::Certificate",
       "UpdateReplacePolicy": "Retain",
     },
+    "CpuTargetTracking785C9A34": {
+      "Properties": {
+        "PolicyName": "CdkPlaygroundEcsCODECpuTargetTracking49E9E1E2",
+        "PolicyType": "TargetTrackingScaling",
+        "ScalingTargetId": {
+          "Ref": "EcsServiceTaskCountTarget02FCCE22",
+        },
+        "TargetTrackingScalingPolicyConfiguration": {
+          "PredefinedMetricSpecification": {
+            "PredefinedMetricType": "ECSServiceAverageCPUUtilizationHighResolution",
+          },
+          "ScaleInCooldown": 60,
+          "ScaleOutCooldown": 60,
+          "TargetValue": 50,
+        },
+      },
+      "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+    },
     "EcsDns": {
       "Properties": {
         "Name": "cdk-playground-ecs.code.dev-gutools.co.uk",
@@ -162,6 +180,16 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             },
           },
         ],
+        "Monitoring": {
+          "MetricConfigurations": [
+            {
+              "MetricNames": [
+                "CPUUtilization",
+              ],
+              "ResolutionSeconds": 20,
+            },
+          ],
+        },
         "NetworkConfiguration": {
           "AwsvpcConfiguration": {
             "AssignPublicIp": "DISABLED",
@@ -212,7 +240,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         "EcsTaskDefinitionTaskRoleB7B6D8DD",
       ],
       "Properties": {
-        "MaxCapacity": 2,
+        "MaxCapacity": 10,
         "MinCapacity": 1,
         "ResourceId": {
           "Fn::Join": [

@@ -2,8 +2,13 @@ import { AccessScope } from '@guardian/cdk/lib/constants/access';
 import { GuStack, type GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuLoadBalancedAppExperimental } from '@guardian/cdk/lib/experimental/patterns/gu-load-balanced-app';
-import type { App } from 'aws-cdk-lib';
+import type { App, CfnResource } from 'aws-cdk-lib';
 import { ArnFormat, Duration, RemovalPolicy } from 'aws-cdk-lib';
+import {
+	type PredefinedMetric,
+	TargetTrackingScalingPolicy,
+} from 'aws-cdk-lib/aws-applicationautoscaling';
+import type { ScalableTaskCount } from 'aws-cdk-lib/aws-ecs';
 import { CfnRule } from 'aws-cdk-lib/aws-events';
 import {
 	CfnDelivery,
@@ -56,11 +61,34 @@ export class CdkPlaygroundEcs extends GuStack {
 					repositoryName: 'guardian/cdk-playground',
 					scaling: {
 						minimumTasks: 1,
-						maximumTasks: 2,
+						maximumTasks: 10,
 					},
 				},
 			},
 		);
+
+		const scalableTaskCount = ecsService!.node.findChild(
+			'TaskCount',
+		) as ScalableTaskCount;
+
+		const cfnService = ecsService!.node.defaultChild as CfnResource;
+		cfnService.addPropertyOverride('Monitoring', {
+			MetricConfigurations: [
+				{
+					MetricNames: ['CPUUtilization'],
+					ResolutionSeconds: 20,
+				},
+			],
+		});
+
+		new TargetTrackingScalingPolicy(this, 'CpuTargetTracking', {
+			scalingTarget: scalableTaskCount,
+			targetValue: 50,
+			predefinedMetric:
+				'ECSServiceAverageCPUUtilizationHighResolution' as unknown as PredefinedMetric,
+			scaleOutCooldown: Duration.seconds(60),
+			scaleInCooldown: Duration.seconds(60),
+		});
 
 		// Deliver per-health-check-attempt results (PASS/FAIL, latency, target
 		// IP:port, reason code) straight to CloudWatch Logs as vended logs, so we
