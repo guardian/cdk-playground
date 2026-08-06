@@ -181,6 +181,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         "PropagateTags": "SERVICE",
         "Tags": [
           {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
@@ -315,6 +319,28 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                 "Ref": "RiffRaffDeploymentId",
               },
             },
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "CODE",
+              },
+              {
+                "Name": "APP",
+                "Value": "cdk-playground",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "cdk-playground",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/cdk-playground",
+              },
+            ],
             "Essential": true,
             "Image": {
               "Fn::Join": [
@@ -417,6 +443,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         ],
         "Tags": [
           {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
@@ -466,6 +496,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           "Version": "2012-10-17",
         },
         "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
           {
             "Key": "gu:cdk:version",
             "Value": "TEST",
@@ -563,6 +597,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         "RetentionInDays": 1,
         "Tags": [
           {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
@@ -602,6 +640,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           "Version": "2012-10-17",
         },
         "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
           {
             "Key": "gu:cdk:version",
             "Value": "TEST",
@@ -946,6 +988,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
     "cdkplaygroundEcsClusterF9ADCF3E": {
       "Properties": {
         "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
           {
             "Key": "gu:cdk:version",
             "Value": "TEST",
