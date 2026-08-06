@@ -222,6 +222,59 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         },
       },
     },
+    "CdkplaygroundEcsTargetGroupCdkplayground074CB57B": {
+      "Properties": {
+        "HealthCheckIntervalSeconds": 10,
+        "HealthCheckPath": "/healthcheck",
+        "HealthCheckProtocol": "HTTP",
+        "HealthCheckTimeoutSeconds": 5,
+        "HealthyThresholdCount": 5,
+        "Port": 9000,
+        "Protocol": "HTTP",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "TargetGroupAttributes": [
+          {
+            "Key": "deregistration_delay.timeout_seconds",
+            "Value": "30",
+          },
+          {
+            "Key": "stickiness.enabled",
+            "Value": "false",
+          },
+        ],
+        "TargetType": "ip",
+        "UnhealthyThresholdCount": 2,
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+    },
     "CertificateCdkplayground47FCF7D9": {
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -339,7 +392,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
             "ContainerName": "cdk-playground",
             "ContainerPort": 9000,
             "TargetGroupArn": {
-              "Ref": "EcsTargetGroupCdkplayground55757231",
+              "Ref": "CdkplaygroundEcsTargetGroupCdkplayground074CB57B",
             },
           },
         ],
@@ -437,59 +490,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         "ServiceNamespace": "ecs",
       },
       "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
-    },
-    "EcsTargetGroupCdkplayground55757231": {
-      "Properties": {
-        "HealthCheckIntervalSeconds": 10,
-        "HealthCheckPath": "/healthcheck",
-        "HealthCheckProtocol": "HTTP",
-        "HealthCheckTimeoutSeconds": 5,
-        "HealthyThresholdCount": 5,
-        "Port": 9000,
-        "Protocol": "HTTP",
-        "Tags": [
-          {
-            "Key": "App",
-            "Value": "cdk-playground",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/cdk-playground",
-          },
-          {
-            "Key": "gu:riff-raff:project",
-            "Value": "devx::cdk-playground",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-        "TargetGroupAttributes": [
-          {
-            "Key": "deregistration_delay.timeout_seconds",
-            "Value": "30",
-          },
-          {
-            "Key": "stickiness.enabled",
-            "Value": "false",
-          },
-        ],
-        "TargetType": "ip",
-        "UnhealthyThresholdCount": 2,
-        "VpcId": {
-          "Ref": "VpcId",
-        },
-      },
-      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
     },
     "EcsTaskDefinition63157ED3": {
       "Properties": {
@@ -1117,7 +1117,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
                 },
                 {
                   "TargetGroupArn": {
-                    "Ref": "EcsTargetGroupCdkplayground55757231",
+                    "Ref": "CdkplaygroundEcsTargetGroupCdkplayground074CB57B",
                   },
                   "Weight": 1,
                 },
@@ -1160,6 +1160,32 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
           "Ref": "ListenerCdkplaygroundA8D9CA6F",
         },
         "Priority": 10,
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
       },
       "Type": "AWS::ElasticLoadBalancingV2::ListenerRule",
     },
@@ -1168,7 +1194,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         "Actions": [
           {
             "TargetGroupArn": {
-              "Ref": "EcsTargetGroupCdkplayground55757231",
+              "Ref": "CdkplaygroundEcsTargetGroupCdkplayground074CB57B",
             },
             "Type": "forward",
           },
@@ -1188,6 +1214,32 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
           "Ref": "ListenerCdkplaygroundA8D9CA6F",
         },
         "Priority": 11,
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
       },
       "Type": "AWS::ElasticLoadBalancingV2::ListenerRule",
     },
