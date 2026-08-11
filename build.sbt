@@ -55,5 +55,5 @@ lazy val root = (project in file("."))
     ),
 
     dockerBaseImage := "amazoncorretto:21-alpine",
-    dockerBuildxPlatforms := Seq("linux/amd64")
+    dockerBuildxPlatforms := Seq("linux/amd64", "linux/arm64")
   )
