@@ -204,6 +204,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           "Type": "ECS",
         },
         "EnableECSManagedTags": false,
+        "EnableExecuteCommand": false,
         "HealthCheckGracePeriodSeconds": 60,
         "LaunchType": "FARGATE",
         "LoadBalancers": [
