@@ -40,6 +40,7 @@ jobs:
           BRANCH_NAME: ${{ needs.facts.outputs.branchName }}
           BUILD_TIME: ${{ needs.facts.outputs.buildTime }}
         run: sbt Docker/publishLocal
+      - run: docker image ls --format '{{.Repository}}:{{.Tag}}' | xargs -I {} docker inspect --format '{{.RepoTags}} - {{.Os}}/{{.Architecture}}' {}
       - name: Normalise Docker image name
         run: docker image tag cdk-playground:1.0-SNAPSHOT ${{ github.repository }}:latest
       - name: Publish Image
