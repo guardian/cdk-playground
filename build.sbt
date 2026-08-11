@@ -55,5 +55,11 @@ lazy val root = (project in file("."))
     ),
 
     dockerBaseImage := "amazoncorretto:21-alpine",
-    dockerBuildxPlatforms := Seq("linux/amd64", "linux/arm64")
+    dockerBuildxPlatforms := Seq("linux/amd64", "linux/arm64"),
+
+    // sbt-native-packager only honours `dockerBuildxPlatforms` for `Docker/publish`, so `Docker/publishLocal` would
+    // otherwise build a single-platform image for the host architecture only.
+    dockerBuildCommand := dockerExecCommand.value ++
+      Seq("buildx", "build", s"--platform=${dockerBuildxPlatforms.value.mkString(",")}", "--load") ++
+      dockerBuildOptions.value ++ Seq(".")
   )
