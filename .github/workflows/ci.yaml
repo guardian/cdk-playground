@@ -35,7 +35,7 @@ jobs:
       - uses: guardian/setup-scala@v1
       # The containerd image store is required to hold a multi-platform image locally.
       - name: Enable containerd image store
-        uses: docker/setup-docker-action@v4.3.0
+        uses: docker/setup-docker-action@v5.4.0
         with:
           daemon-config: |
             { "features": { "containerd-snapshotter": true } }
