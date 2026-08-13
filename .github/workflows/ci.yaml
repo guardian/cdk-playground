@@ -23,7 +23,7 @@ jobs:
         id: get-build-facts
 
   ci-image:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     needs: [facts]
     permissions:
       contents: read

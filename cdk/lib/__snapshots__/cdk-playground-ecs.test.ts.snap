@@ -441,6 +441,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         "RequiresCompatibilities": [
           "FARGATE",
         ],
+        "RuntimePlatform": {
+          "CpuArchitecture": "ARM64",
+          "OperatingSystemFamily": "LINUX",
+        },
         "Tags": [
           {
             "Key": "App",
