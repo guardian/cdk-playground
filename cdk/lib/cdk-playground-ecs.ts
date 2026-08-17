@@ -2,8 +2,15 @@ import { AccessScope } from '@guardian/cdk/lib/constants/access';
 import { GuStack, type GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuLoadBalancedAppExperimental } from '@guardian/cdk/lib/experimental/patterns/gu-load-balanced-app';
-import type { App } from 'aws-cdk-lib';
+import type { App, CfnResource } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
+import {
+	AdjustmentType,
+	MetricAggregationType,
+	StepScalingPolicy,
+} from 'aws-cdk-lib/aws-applicationautoscaling';
+import { Metric } from 'aws-cdk-lib/aws-cloudwatch';
+import type { ScalableTaskCount } from 'aws-cdk-lib/aws-ecs';
 
 interface CdkPlaygroundEcsProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 	/**
@@ -30,24 +37,66 @@ export class CdkPlaygroundEcs extends GuStack {
 		const app = 'cdk-playground';
 		const domainName = 'cdk-playground-ecs.code.dev-gutools.co.uk';
 
-		const { loadBalancer } = new GuLoadBalancedAppExperimental(this, {
-			access: { scope: AccessScope.PUBLIC },
-			app,
-			applicationPort: 9000,
-			certificateProps: {
-				domainName,
-			},
-			monitoringConfiguration: { noMonitoring: true },
-			ecsProps: {
-				imageIdentifier,
-				memoryLimitMiB: 2048,
-				cpu: 1024,
-				repositoryName: 'guardian/cdk-playground',
-				scaling: {
-					minimumTasks: 1,
-					maximumTasks: 2,
+		const { loadBalancer, ecsService } = new GuLoadBalancedAppExperimental(
+			this,
+			{
+				access: { scope: AccessScope.PUBLIC },
+				app,
+				applicationPort: 9000,
+				certificateProps: {
+					domainName,
+				},
+				monitoringConfiguration: { noMonitoring: true },
+				ecsProps: {
+					imageIdentifier,
+					memoryLimitMiB: 2048,
+					cpu: 1024,
+					repositoryName: 'guardian/cdk-playground',
+					scaling: {
+						minimumTasks: 1,
+						maximumTasks: 4,
+					},
 				},
 			},
+		);
+
+		// Enable 20-second high-resolution metric publishing on the ECS service.
+		const cfnService = ecsService!.node.defaultChild as CfnResource;
+		cfnService.addPropertyOverride('Monitoring', {
+			MetricConfigurations: [
+				{
+					MetricNames: ['CPUUtilization'],
+					ResolutionSeconds: 20,
+				},
+			],
+		});
+
+		const scalableTaskCount = ecsService!.node.findChild(
+			'TaskCount',
+		) as ScalableTaskCount;
+
+		const cpuMetric = new Metric({
+			namespace: 'AWS/ECS',
+			metricName: 'CPUUtilization',
+			dimensionsMap: {
+				ClusterName: ecsService!.cluster.clusterName,
+				ServiceName: ecsService!.serviceName,
+			},
+			statistic: 'Average',
+			period: Duration.seconds(10),
+		});
+
+		new StepScalingPolicy(this, 'CpuStepScaling', {
+			scalingTarget: scalableTaskCount,
+			metric: cpuMetric,
+			adjustmentType: AdjustmentType.CHANGE_IN_CAPACITY,
+			metricAggregationType: MetricAggregationType.AVERAGE,
+			scalingSteps: [
+				{ upper: 30, change: -1 },
+				{ lower: 50, change: +1 },
+				{ lower: 70, change: +2 },
+			],
+			cooldown: Duration.seconds(60),
 		});
 
 		new GuCname(this, 'EcsDns', {

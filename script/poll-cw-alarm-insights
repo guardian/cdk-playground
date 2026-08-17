@@ -1,0 +1,290 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Poll ECS scaling CloudWatch alarm state every 10 seconds.
+# On Ctrl+C, prints a TSV table you can paste into a spreadsheet.
+#
+# The metric namespace, name, dimensions, and period are auto-discovered from
+# the scaling policy alarm definition — no manual configuration needed.
+#
+# Usage:
+#   ./script/poll-cw-alarm-insights
+#   # In another terminal: ./script/load-test -p 75
+#   # Press Ctrl+C when done to get the TSV table.
+
+CLUSTER="deploy-CODE-cdk-playground-ecs-cdkplaygroundEcsClusterF9ADCF3E-5PfTxqZC43w3"
+SERVICE="deploy-CODE-cdk-playground-ecs-EcsService81FC6EF6-PZx5rhnQimVv"
+PROFILE="deployTools"
+REGION="eu-west-1"
+
+RESOURCE_ID="service/${CLUSTER}/${SERVICE}"
+
+# Discover scaling alarm names from Application Auto Scaling policies
+echo "Discovering scaling alarms..."
+POLICIES_JSON=$(aws application-autoscaling describe-scaling-policies \
+  --service-namespace ecs \
+  --resource-id "$RESOURCE_ID" \
+  --profile "$PROFILE" \
+  --region "$REGION" \
+  --no-cli-pager \
+  --output json 2>/dev/null || echo '{"ScalingPolicies":[]}')
+
+# Try StepScaling first, then fall back to TargetTrackingScaling
+UPPER_ALARM=$(echo "$POLICIES_JSON" | jq -r '
+  [.ScalingPolicies[] | select(.PolicyType == "StepScaling") | .Alarms[]] |
+  map(select(.AlarmName | test("Upper"))) | first | .AlarmName // empty')
+
+LOWER_ALARM=$(echo "$POLICIES_JSON" | jq -r '
+  [.ScalingPolicies[] | select(.PolicyType == "StepScaling") | .Alarms[]] |
+  map(select(.AlarmName | test("Lower"))) | first | .AlarmName // empty')
+
+# Fall back to target tracking if no step scaling alarms found
+if [[ -z "$UPPER_ALARM" || -z "$LOWER_ALARM" ]]; then
+  UPPER_ALARM=$(echo "$POLICIES_JSON" | jq -r '
+    [.ScalingPolicies[] | select(.PolicyType == "TargetTrackingScaling")] | first |
+    .Alarms[] | select(.AlarmName | test("AlarmHigh")) | .AlarmName // empty')
+
+  LOWER_ALARM=$(echo "$POLICIES_JSON" | jq -r '
+    [.ScalingPolicies[] | select(.PolicyType == "TargetTrackingScaling")] | first |
+    .Alarms[] | select(.AlarmName | test("AlarmLow")) | .AlarmName // empty')
+fi
+
+if [[ -z "$UPPER_ALARM" || -z "$LOWER_ALARM" ]]; then
+  echo "ERROR: Could not discover scaling alarms from scaling policies." >&2
+  echo "Policies found:" >&2
+  echo "$POLICIES_JSON" | jq '.ScalingPolicies[].PolicyName' >&2
+  exit 1
+fi
+
+# Discover metric configuration from the upper alarm definition
+echo "Discovering metric configuration from alarm..."
+ALARM_DEF=$(aws cloudwatch describe-alarms \
+  --alarm-names "$UPPER_ALARM" \
+  --profile "$PROFILE" \
+  --region "$REGION" \
+  --no-cli-pager \
+  --output json 2>/dev/null || echo '{"MetricAlarms":[]}')
+
+METRIC_NAMESPACE=$(echo "$ALARM_DEF" | jq -r '.MetricAlarms[0].Namespace // empty')
+METRIC_NAME=$(echo "$ALARM_DEF" | jq -r '.MetricAlarms[0].MetricName // empty')
+METRIC_PERIOD=$(echo "$ALARM_DEF" | jq -r '.MetricAlarms[0].Period // 60')
+METRIC_STAT=$(echo "$ALARM_DEF" | jq -r '.MetricAlarms[0].Statistic // "Average"')
+
+# Build dimensions array for get-metric-statistics CLI
+METRIC_DIMS=()
+while IFS= read -r dim; do
+  METRIC_DIMS+=("$dim")
+done < <(echo "$ALARM_DEF" | jq -r '.MetricAlarms[0].Dimensions[] | "Name=\(.Name),Value=\(.Value)"')
+
+if [[ -z "$METRIC_NAMESPACE" || -z "$METRIC_NAME" || ${#METRIC_DIMS[@]} -eq 0 ]]; then
+  echo "ERROR: Could not extract metric configuration from alarm '$UPPER_ALARM'." >&2
+  exit 1
+fi
+
+echo "Metric: ${METRIC_NAMESPACE} :: ${METRIC_NAME} (period: ${METRIC_PERIOD}s, stat: ${METRIC_STAT})"
+
+# Poll frequently to capture task/alarm state changes between metric updates
+POLL_INTERVAL=10
+
+# Discover the target group ARN from the ECS service
+TARGET_GROUP_ARN=$(aws ecs describe-services \
+  --cluster "$CLUSTER" \
+  --services "$SERVICE" \
+  --profile "$PROFILE" \
+  --region "$REGION" \
+  --no-cli-pager \
+  --output json 2>/dev/null | jq -r '.services[0].loadBalancers[0].targetGroupArn // empty')
+
+if [[ -z "$TARGET_GROUP_ARN" ]]; then
+  echo "ERROR: Could not discover target group ARN from ECS service." >&2
+  exit 1
+fi
+echo "Target group: ${TARGET_GROUP_ARN}"
+
+# Accumulate rows here
+ROWS=()
+
+print_table() {
+  printf "Poll Time (UTC)\tMetric Value (%%)\tMetric Timestamp\tUpper State\tUpper QueryDate\tUpper Datapoints\tUpper Threshold\tUpper StateUpdated\tLower State\tLower QueryDate\tLower Datapoints\tLower Threshold\tLower StateUpdated\tDesired\tRunning\tTG Healthy\tTG Initial\tTG Unhealthy\tTG Draining\tScaling Status\tScaling Description\tScaling StartTime\n"
+  for row in "${ROWS[@]}"; do
+    printf "%s\n" "$row"
+  done
+}
+
+cleanup() {
+  echo ""
+  echo "--- Collected ${#ROWS[@]} samples ---"
+  echo ""
+  print_table
+  exit 0
+}
+
+trap cleanup SIGINT SIGTERM
+
+get_latest_datapoint() {
+  local end_time
+  local start_time
+
+  end_time=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  start_time=$(date -u -v-2M +"%Y-%m-%dT%H:%M:%SZ")
+
+  local result
+  result=$(aws cloudwatch get-metric-statistics \
+    --namespace "$METRIC_NAMESPACE" \
+    --metric-name "$METRIC_NAME" \
+    --dimensions "${METRIC_DIMS[@]}" \
+    --start-time "$start_time" \
+    --end-time "$end_time" \
+    --period "$METRIC_PERIOD" \
+    --statistics "$METRIC_STAT" \
+    --profile "$PROFILE" \
+    --region "$REGION" \
+    --no-cli-pager \
+    --output json 2>/dev/null || echo '{"Datapoints":[]}')
+
+  local value timestamp
+  value=$(echo "$result" | jq -r '[.Datapoints[] | {ts: .Timestamp, val: .Average}] | sort_by(.ts) | last // empty | .val // "-"')
+  timestamp=$(echo "$result" | jq -r '[.Datapoints[] | {ts: .Timestamp, val: .Average}] | sort_by(.ts) | last // empty | .ts // "-"')
+
+  if [[ -z "$value" ]]; then
+    value="-"
+    timestamp="-"
+  fi
+
+  echo "${value}	${timestamp}"
+}
+
+get_alarm_state() {
+  local alarm_name="$1"
+
+  local result
+  result=$(aws cloudwatch describe-alarms \
+    --alarm-names "$alarm_name" \
+    --profile "$PROFILE" \
+    --region "$REGION" \
+    --no-cli-pager \
+    --output json 2>/dev/null || echo '{"MetricAlarms":[]}')
+
+  local state state_reason_data query_date datapoints threshold state_updated
+  state=$(echo "$result" | jq -r '.MetricAlarms[0].StateValue // "-"')
+  state_reason_data=$(echo "$result" | jq -r '.MetricAlarms[0].StateReasonData // "{}"')
+  state_updated=$(echo "$result" | jq -r '.MetricAlarms[0].StateUpdatedTimestamp // "-"')
+
+  # Parse StateReasonData JSON for evaluation details
+  query_date=$(echo "$state_reason_data" | jq -r '.queryDate // "-"')
+  datapoints=$(echo "$state_reason_data" | jq -r '(.recentDatapoints // []) | map(tostring) | join(",")')
+  threshold=$(echo "$state_reason_data" | jq -r '.threshold // "-"')
+
+  if [[ -z "$datapoints" ]]; then
+    datapoints="-"
+  fi
+
+  echo "${state}	${query_date}	${datapoints}	${threshold}	${state_updated}"
+}
+
+get_service_counts() {
+  local result
+  result=$(aws ecs describe-services \
+    --cluster "$CLUSTER" \
+    --services "$SERVICE" \
+    --profile "$PROFILE" \
+    --region "$REGION" \
+    --no-cli-pager \
+    --output json 2>/dev/null || echo '{"services":[]}')
+
+  local desired running
+  desired=$(echo "$result" | jq -r '.services[0].desiredCount // "-"')
+  running=$(echo "$result" | jq -r '.services[0].runningCount // "-"')
+
+  echo "${desired}	${running}"
+}
+
+get_target_health() {
+  local result
+  result=$(aws elbv2 describe-target-health \
+    --target-group-arn "$TARGET_GROUP_ARN" \
+    --profile "$PROFILE" \
+    --region "$REGION" \
+    --no-cli-pager \
+    --output json 2>/dev/null || echo '{"TargetHealthDescriptions":[]}')
+
+  local healthy initial unhealthy draining
+  healthy=$(echo "$result" | jq '[.TargetHealthDescriptions[] | select(.TargetHealth.State == "healthy")] | length')
+  initial=$(echo "$result" | jq '[.TargetHealthDescriptions[] | select(.TargetHealth.State == "initial")] | length')
+  unhealthy=$(echo "$result" | jq '[.TargetHealthDescriptions[] | select(.TargetHealth.State == "unhealthy")] | length')
+  draining=$(echo "$result" | jq '[.TargetHealthDescriptions[] | select(.TargetHealth.State == "draining")] | length')
+
+  printf '%s\t%s\t%s\t%s' "$healthy" "$initial" "$unhealthy" "$draining"
+}
+
+get_latest_scaling_activity() {
+  local result
+  result=$(aws application-autoscaling describe-scaling-activities \
+    --service-namespace ecs \
+    --resource-id "$RESOURCE_ID" \
+    --max-results 1 \
+    --profile "$PROFILE" \
+    --region "$REGION" \
+    --no-cli-pager \
+    --output json 2>/dev/null || echo '{"ScalingActivities":[]}')
+
+  local status_code description start_time
+  status_code=$(echo "$result" | jq -r '.ScalingActivities[0].StatusCode // "-"')
+  description=$(echo "$result" | jq -r '.ScalingActivities[0].Description // "-"' | sed 's/\t/ /g')
+  start_time=$(echo "$result" | jq -r '.ScalingActivities[0].StartTime // "-"')
+
+  echo "${status_code}	${description}	${start_time}"
+}
+
+echo "Polling scaling alarm state every ${POLL_INTERVAL}s. Press Ctrl+C to stop and print the table."
+echo "Upper alarm (scale-out): ${UPPER_ALARM}"
+echo "Lower alarm (scale-in):  ${LOWER_ALARM}"
+echo ""
+
+while true; do
+  poll_time=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+  # Fetch the underlying metric (same one the alarm evaluates)
+  metric=$(get_latest_datapoint)
+  metric_val=$(echo "$metric" | cut -f1)
+  metric_ts=$(echo "$metric" | cut -f2)
+
+  # Fetch both alarm states
+  upper=$(get_alarm_state "$UPPER_ALARM")
+  lower=$(get_alarm_state "$LOWER_ALARM")
+
+  upper_state=$(echo "$upper" | cut -f1)
+  upper_query=$(echo "$upper" | cut -f2)
+  upper_datapoints=$(echo "$upper" | cut -f3)
+  upper_threshold=$(echo "$upper" | cut -f4)
+  upper_updated=$(echo "$upper" | cut -f5)
+  lower_state=$(echo "$lower" | cut -f1)
+  lower_query=$(echo "$lower" | cut -f2)
+  lower_datapoints=$(echo "$lower" | cut -f3)
+  lower_threshold=$(echo "$lower" | cut -f4)
+  lower_updated=$(echo "$lower" | cut -f5)
+
+  # Fetch ECS service desired/running counts
+  svc=$(get_service_counts)
+  desired=$(echo "$svc" | cut -f1)
+  running=$(echo "$svc" | cut -f2)
+
+  # Fetch ALB target group health states
+  tg=$(get_target_health)
+  tg_healthy=$(echo "$tg" | cut -f1)
+  tg_initial=$(echo "$tg" | cut -f2)
+  tg_unhealthy=$(echo "$tg" | cut -f3)
+  tg_draining=$(echo "$tg" | cut -f4)
+
+  # Fetch most recent scaling activity
+  scaling=$(get_latest_scaling_activity)
+  scaling_status=$(echo "$scaling" | cut -f1)
+  scaling_desc=$(echo "$scaling" | cut -f2)
+  scaling_start=$(echo "$scaling" | cut -f3)
+
+  ROWS+=("${poll_time}	${metric_val}	${metric_ts}	${upper_state}	${upper_query}	${upper_datapoints}	${upper_threshold}	${upper_updated}	${lower_state}	${lower_query}	${lower_datapoints}	${lower_threshold}	${lower_updated}	${desired}	${running}	${tg_healthy}	${tg_initial}	${tg_unhealthy}	${tg_draining}	${scaling_status}	${scaling_desc}	${scaling_start}")
+
+  echo "[${poll_time}] Metric: ${metric_val}% (ts: ${metric_ts}) | Upper: ${upper_state} | Tasks: ${running}/${desired} | TG: ${tg_healthy}h/${tg_initial}i/${tg_unhealthy}u/${tg_draining}d | Scaling: ${scaling_status} (samples: ${#ROWS[@]})"
+
+  sleep "$POLL_INTERVAL"
+done
