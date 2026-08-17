@@ -5,6 +5,7 @@ class AppLoader extends ApplicationLoader {
   private var components: AppComponents = _
 
   def load(context: ApplicationLoader.Context): Application = {
+    throw new Exception("error")
     new LogbackLoggerConfigurator().configure(context.environment)
     components = new AppComponents(context)
     components.application
