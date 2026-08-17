@@ -43,7 +43,7 @@ jobs:
       - name: Normalise Docker image name
         run: docker image tag cdk-playground:1.0-SNAPSHOT ${{ github.repository }}:latest
       - name: Publish Image
-        uses: guardian/actions-publish-image@v0.0.2
+        uses: guardian/actions-publish-image@aa/reduce-aws-credentials-time
         id: publish-image
         with:
           roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
