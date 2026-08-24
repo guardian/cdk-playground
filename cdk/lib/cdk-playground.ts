@@ -1,10 +1,13 @@
 import { AccessScope } from '@guardian/cdk/lib/constants/access';
-import { GuStack, type GuStackProps } from '@guardian/cdk/lib/constructs/core';
+import { AppIdentity, GuStack, type GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuLoadBalancedAppExperimental } from '@guardian/cdk/lib/experimental/patterns/gu-load-balanced-app';
 import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
+
+import { GuVpc, SubnetType } from '@guardian/cdk/lib/constructs/ec2';
+import { HttpTrafficMirroring } from './HttpTrafficMirroring';
 
 interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 	/**
@@ -40,7 +43,19 @@ export class CdkPlayground extends GuStack {
 
 		const ec2App = 'cdk-playground';
 
-		const { loadBalancer } = new GuLoadBalancedAppExperimental(this, {
+		// Same as defaults in GuLoadBalancedAppExperimental, but we need reference to configure traffic mirroring
+		const vpc = GuVpc.fromIdParameter(
+			this,
+			AppIdentity.addAppToStringEnd({ app: ec2App }, 'VPC'),
+		);
+		const privateSubnets = GuVpc.subnetsFromParameter(this, {
+			type: SubnetType.PRIVATE,
+			app: ec2App,
+		});
+
+		const { loadBalancer, autoScalingGroup } = new GuLoadBalancedAppExperimental(this, {
+      vpc,
+      privateSubnets,
 			applicationPort: 9000,
 			app: ec2App,
 			access: { scope: AccessScope.PUBLIC },
@@ -86,6 +101,17 @@ export class CdkPlayground extends GuStack {
 				ecs: 1,
 			},
 		});
+
+
+    if (autoScalingGroup) {
+      new HttpTrafficMirroring(this, 'Ec2ToEcsTrafficMirror', {
+        vpc,
+        privateSubnets,
+        trafficSource: autoScalingGroup,
+        trafficTarget: loadBalancer,
+      });
+    }
+
 
 		new GuCname(this, 'EC2AppDNS', {
 			app: ec2App,
