@@ -215,6 +215,7 @@ export class HttpTrafficMirroring extends Construct {
 				'vxlan',
 				'--output-http',
 				'https://cdk-playground.code.dev-gutools.co.uk',
+        '--output-stdout',
         '--http-header',
         'X-Gu-Target-Group: ecs',
 			],
