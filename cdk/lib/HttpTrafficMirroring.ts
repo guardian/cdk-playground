@@ -37,11 +37,7 @@ export interface HttpTrafficMirroringProps {
 }
 
 export class HttpTrafficMirroring extends Construct {
-	constructor(
-		scope: GuStack,
-		id: string,
-		props: HttpTrafficMirroringProps,
-	) {
+	constructor(scope: GuStack, id: string, props: HttpTrafficMirroringProps) {
 		super(scope, id);
 
 		// if (props.trafficTarget.vpc === undefined) {
@@ -67,10 +63,13 @@ export class HttpTrafficMirroring extends Construct {
 			},
 		);
 
-		const mirrorFilter: ec2.CfnTrafficMirrorFilter =
-			new CfnTrafficMirrorFilter(this, 'Filter', {
+		const mirrorFilter: ec2.CfnTrafficMirrorFilter = new CfnTrafficMirrorFilter(
+			this,
+			'Filter',
+			{
 				description: `Traffic mirror filter created by ${id}`,
-			});
+			},
+		);
 
 		new CfnTrafficMirrorFilterRule(this, 'AllowAllInbound', {
 			trafficMirrorFilterId: mirrorFilter.attrId,
@@ -83,14 +82,11 @@ export class HttpTrafficMirroring extends Construct {
 
 		// Lambda function to attach Mirror Session on ASG instance launch
 		// TODO: Will this always attach and run before the very first asg instances are created?
-		const attacherLambda = new lambda.Function(
-			this,
-			'SessionAttacherLambda',
-			{
-				runtime: lambda.Runtime.NODEJS_24_X,
-				handler: 'index.handler',
-				timeout: Duration.seconds(30),
-				code: lambda.Code.fromInline(`
+		const attacherLambda = new lambda.Function(this, 'SessionAttacherLambda', {
+			runtime: lambda.Runtime.NODEJS_24_X,
+			handler: 'index.handler',
+			timeout: Duration.seconds(30),
+			code: lambda.Code.fromInline(`
 		      const { EC2Client, DescribeInstancesCommand, CreateTrafficMirrorSessionCommand } = require('@aws-sdk/client-ec2');
 		      const ec2 = new EC2Client();
 
@@ -122,20 +118,16 @@ export class HttpTrafficMirroring extends Construct {
 		        console.log(\`Successfully created session: \${sessionRes.TrafficMirrorSession.TrafficMirrorSessionId}\`);
 		      };
 		    `),
-				environment: {
-					TARGET_ID: mirrorTarget.attrId,
-					FILTER_ID: mirrorFilter.attrId,
-				},
+			environment: {
+				TARGET_ID: mirrorTarget.attrId,
+				FILTER_ID: mirrorFilter.attrId,
 			},
-		);
+		});
 
 		// Grant Lambda EC2 access permissions
 		attacherLambda.addToRolePolicy(
 			new iam.PolicyStatement({
-				actions: [
-					'ec2:DescribeInstances',
-					'ec2:CreateTrafficMirrorSession',
-				],
+				actions: ['ec2:DescribeInstances', 'ec2:CreateTrafficMirrorSession'],
 				resources: ['*'],
 			}),
 		);
@@ -146,9 +138,7 @@ export class HttpTrafficMirroring extends Construct {
 				source: ['aws.autoscaling'],
 				detailType: ['EC2 Instance Launch Successful'],
 				detail: {
-					AutoScalingGroupName: [
-						props.trafficSource.autoScalingGroupName,
-					],
+					AutoScalingGroupName: [props.trafficSource.autoScalingGroupName],
 				},
 			},
 		});
@@ -215,9 +205,9 @@ export class HttpTrafficMirroring extends Construct {
 				'vxlan',
 				'--output-http',
 				'https://cdk-playground.code.dev-gutools.co.uk',
-        '--output-stdout',
-        '--http-header',
-        'X-Gu-Target-Group: ecs',
+				'--output-stdout',
+				'--http-header',
+				'X-Gu-Target-Group: ecs',
 			],
 			// TODO: logging: fireLensLogDriver,
 			readonlyRootFilesystem: true,
