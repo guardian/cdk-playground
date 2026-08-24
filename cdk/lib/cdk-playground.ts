@@ -5,12 +5,11 @@ import {
 	type GuStackProps,
 } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
+import { GuVpc, SubnetType } from '@guardian/cdk/lib/constructs/ec2';
 import { GuLoadBalancedAppExperimental } from '@guardian/cdk/lib/experimental/patterns/gu-load-balanced-app';
 import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
-
-import { GuVpc, SubnetType } from '@guardian/cdk/lib/constructs/ec2';
 import { HttpTrafficMirroring } from './HttpTrafficMirroring';
 
 interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {

@@ -52,7 +52,6 @@ export class HttpTrafficMirroring extends Construct {
 			props.vpc,
 			props.privateSubnets,
 			scope,
-			props.trafficTarget,
 		);
 
 		const mirrorTarget: CfnTrafficMirrorTarget = new CfnTrafficMirrorTarget(
@@ -150,7 +149,6 @@ export class HttpTrafficMirroring extends Construct {
 		vpc: ec2.IVpc,
 		subnets: ISubnet[],
 		stack: GuStack,
-		target: ApplicationLoadBalancer,
 	): NetworkLoadBalancer {
 		const ecsCluster = Cluster.fromClusterAttributes(
 			this,
