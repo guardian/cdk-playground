@@ -150,14 +150,9 @@ export class HttpTrafficMirroring extends Construct {
 		subnets: ISubnet[],
 		stack: GuStack,
 	): NetworkLoadBalancer {
-		const ecsCluster = Cluster.fromClusterAttributes(
-			this,
-			'MirroringHandlerEcsCluster',
-			{
-				clusterName: 'MirroringHandlerEcsCluster',
-				vpc,
-			},
-		);
+		const ecsCluster = new Cluster(this, 'MirroringHandlerEcsCluster', {
+			vpc,
+		});
 
 		const taskDefinition = new FargateTaskDefinition(
 			this,

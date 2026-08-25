@@ -525,6 +525,40 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
       },
       "Type": "AWS::EC2::TrafficMirrorFilter",
     },
+    "Ec2ToEcsTrafficMirrorMirroringHandlerEcsClusterAD96951F": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::Cluster",
+    },
     "Ec2ToEcsTrafficMirrorMirroringHandlerEcsTaskDefinitionCCF3FF96": {
       "DependsOn": [
         "AutoScalingGroupCdkplaygroundASGD6E49F0F",
@@ -673,7 +707,9 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
       ],
       "Properties": {
-        "Cluster": "MirroringHandlerEcsCluster",
+        "Cluster": {
+          "Ref": "Ec2ToEcsTrafficMirrorMirroringHandlerEcsClusterAD96951F",
+        },
         "DeploymentConfiguration": {
           "Alarms": {
             "AlarmNames": [],
