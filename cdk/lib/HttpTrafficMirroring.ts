@@ -282,7 +282,7 @@ export class HttpTrafficMirroring extends Construct {
 		);
 
 		fargateService.autoScaleTaskCount({
-			minCapacity: 1,
+			minCapacity: 0,
 			maxCapacity: 1,
 		});
 
