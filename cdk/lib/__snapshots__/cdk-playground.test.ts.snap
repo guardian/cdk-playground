@@ -783,6 +783,57 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
       },
       "Type": "AWS::ECS::Service",
     },
+    "Ec2ToEcsTrafficMirrorMirroringHandlerFargateServiceTaskCountTargetA8CB8FA8": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "Ec2ToEcsTrafficMirrorMirroringHandlerEcsTaskDefinitionTaskRoleD1815E9F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "MaxCapacity": 1,
+        "MinCapacity": 1,
+        "ResourceId": {
+          "Fn::Join": [
+            "",
+            [
+              "service/",
+              {
+                "Ref": "Ec2ToEcsTrafficMirrorMirroringHandlerEcsClusterAD96951F",
+              },
+              "/",
+              {
+                "Fn::GetAtt": [
+                  "Ec2ToEcsTrafficMirrorMirroringHandlerFargateService6F2CB37C",
+                  "Name",
+                ],
+              },
+            ],
+          ],
+        },
+        "RoleARN": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":iam::",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService",
+            ],
+          ],
+        },
+        "ScalableDimension": "ecs:service:DesiredCount",
+        "ServiceNamespace": "ecs",
+      },
+      "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
+    },
     "Ec2ToEcsTrafficMirrorMirroringHandlerNLB41FDD9B0": {
       "DependsOn": [
         "AutoScalingGroupCdkplaygroundASGD6E49F0F",

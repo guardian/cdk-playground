@@ -175,9 +175,7 @@ export class HttpTrafficMirroring extends Construct {
 		// Nginx by default serves a simple welcome page on port 80, which can pass the health check.
 		taskDefinition.addContainer('MirroringHandlerHealthCheckContainer', {
 			image: ContainerImage.fromRegistry('nginx'),
-			portMappings: [
-				{ containerPort: 80, protocol: ECSProtocol.TCP, hostPort: 80 },
-			],
+			portMappings: [{ containerPort: 80, hostPort: 80 }],
 			// TODO: logging: fireLensLogDriver,
 			readonlyRootFilesystem: true,
 		});
@@ -230,6 +228,11 @@ export class HttpTrafficMirroring extends Construct {
 				],
 			},
 		);
+
+		fargateService.autoScaleTaskCount({
+			minCapacity: 1,
+			maxCapacity: 1,
+		});
 
 		const nlb = new NetworkLoadBalancer(this, 'MirroringHandlerNLB', {
 			vpc,
