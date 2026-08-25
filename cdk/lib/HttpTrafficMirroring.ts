@@ -15,6 +15,7 @@ import {
 	Protocol as ECSProtocol,
 	FargateService,
 	FargateTaskDefinition,
+	LogDriver,
 	OperatingSystemFamily,
 	PropagatedTagSource,
 } from 'aws-cdk-lib/aws-ecs';
@@ -27,6 +28,7 @@ import * as events from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
+import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Construct } from 'constructs';
 
 export interface HttpTrafficMirroringProps {
@@ -175,6 +177,15 @@ export class HttpTrafficMirroring extends Construct {
 		// Nginx by default serves a simple welcome page on port 80, which can pass the health check.
 		taskDefinition.addContainer('MirroringHandlerHealthCheckContainer', {
 			image: ContainerImage.fromRegistry('nginx'),
+			logging: LogDriver.awsLogs({
+				streamPrefix: [
+					stack.stack,
+					stack.stage,
+					stack.app,
+					'mirroring-health-check-logs',
+				].join('/'),
+				logRetention: RetentionDays.ONE_DAY,
+			}),
 			portMappings: [{ containerPort: 80, hostPort: 80 }],
 			// TODO: logging: fireLensLogDriver,
 			readonlyRootFilesystem: true,
@@ -182,6 +193,15 @@ export class HttpTrafficMirroring extends Construct {
 
 		taskDefinition.addContainer('MirroringHandlerContainer', {
 			image: ContainerImage.fromRegistry('jauderho/goreplay'),
+			logging: LogDriver.awsLogs({
+				streamPrefix: [
+					stack.stack,
+					stack.stage,
+					stack.app,
+					'mirroring-handler-logs',
+				].join('/'),
+				logRetention: RetentionDays.ONE_DAY,
+			}),
 			portMappings: [
 				{
 					containerPort: 4789,
