@@ -571,7 +571,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         "ContainerDefinitions": [
           {
             "Essential": true,
-            "Image": "nginx",
+            "Image": "nginx:latest",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -605,7 +605,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
               "X-Gu-Target-Group: ecs",
             ],
             "Essential": true,
-            "Image": "jauderho/goreplay",
+            "Image": "jauderho/goreplay:latest",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -757,6 +757,20 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
                   "Arn",
                 ],
               },
+            },
+            {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": "arn:aws:ecr:eu-west-1:694911143906:repository/aws-guardduty-agent-fargate",
             },
           ],
           "Version": "2012-10-17",
@@ -1327,6 +1341,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
       ],
       "Properties": {
+        "Description": "Traffic mirror target created by Ec2ToEcsTrafficMirror",
         "NetworkLoadBalancerArn": {
           "Ref": "Ec2ToEcsTrafficMirrorMirroringHandlerNLB41FDD9B0",
         },

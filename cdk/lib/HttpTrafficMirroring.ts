@@ -56,11 +56,14 @@ export class HttpTrafficMirroring extends Construct {
 			scope,
 		);
 
+		// The mirrorTarget and mirrorFilter will not be able to be cleaned up by cloud formation
+		// unless the mirroring session is deleted, though sessions are created by the lambda.
 		const mirrorTarget: CfnTrafficMirrorTarget = new CfnTrafficMirrorTarget(
 			this,
 			'Target',
 			{
 				networkLoadBalancerArn: handlerNlb.loadBalancerArn,
+				description: `Traffic mirror target created by ${id}`,
 			},
 		);
 
@@ -176,7 +179,7 @@ export class HttpTrafficMirroring extends Construct {
 		//
 		// Nginx by default serves a simple welcome page on port 80, which can pass the health check.
 		taskDefinition.addContainer('MirroringHandlerHealthCheckContainer', {
-			image: ContainerImage.fromRegistry('nginx'),
+			image: ContainerImage.fromRegistry('nginx:latest'),
 			logging: LogDriver.awsLogs({
 				streamPrefix: [
 					stack.stack,
@@ -192,7 +195,7 @@ export class HttpTrafficMirroring extends Construct {
 		});
 
 		taskDefinition.addContainer('MirroringHandlerContainer', {
-			image: ContainerImage.fromRegistry('jauderho/goreplay'),
+			image: ContainerImage.fromRegistry('jauderho/goreplay:latest'),
 			logging: LogDriver.awsLogs({
 				streamPrefix: [
 					stack.stack,
@@ -223,6 +226,35 @@ export class HttpTrafficMirroring extends Construct {
 			// TODO: logging: fireLensLogDriver,
 			readonlyRootFilesystem: true,
 		});
+
+		/*
+		     GuardDuty is enabled at the organisation level and runs as a sidecar.
+		     We need to add specific permissions to allow pulling the GuardDuty image.
+		     See https://docs.aws.amazon.com/guardduty/latest/ug/prereq-runtime-monitoring-ecs-support.html.
+		     */
+		const guardDutyPolicies = [
+			new iam.PolicyStatement({
+				effect: iam.Effect.ALLOW,
+				actions: ['ecr:GetAuthorizationToken'],
+				resources: ['*'],
+			}),
+			new iam.PolicyStatement({
+				effect: iam.Effect.ALLOW,
+				actions: [
+					'ecr:BatchCheckLayerAvailability',
+					'ecr:GetDownloadUrlForLayer',
+					'ecr:BatchGetImage',
+				],
+				resources: [
+					// See https://docs.aws.amazon.com/guardduty/latest/ug/runtime-monitoring-ecr-repository-gdu-agent.html
+					'arn:aws:ecr:eu-west-1:694911143906:repository/aws-guardduty-agent-fargate',
+				],
+			}),
+		];
+
+		guardDutyPolicies.forEach((policy) =>
+			taskDefinition.addToExecutionRolePolicy(policy),
+		);
 
 		const fargateService = new FargateService(
 			this,
