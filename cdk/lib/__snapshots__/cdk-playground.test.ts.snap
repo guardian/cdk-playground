@@ -716,15 +716,8 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
             "Enable": false,
             "Rollback": false,
           },
-          "DeploymentCircuitBreaker": {
-            "Enable": true,
-            "Rollback": true,
-          },
           "MaximumPercent": 200,
           "MinimumHealthyPercent": 100,
-        },
-        "DeploymentController": {
-          "Type": "ECS",
         },
         "EnableECSManagedTags": false,
         "HealthCheckGracePeriodSeconds": 60,
