@@ -212,11 +212,10 @@ export class HttpTrafficMirroring extends Construct {
 			}),
 			portMappings: [{ containerPort: 80, hostPort: 80 }],
 			// TODO: logging: fireLensLogDriver,
-			readonlyRootFilesystem: true,
 		});
 
 		taskDefinition.addContainer('MirroringHandlerContainer', {
-			image: ContainerImage.fromRegistry('jauderho/goreplay:latest'),
+			image: ContainerImage.fromRegistry('jauderho/goreplay:1.3.3'),
 			logging: LogDriver.awsLogs({
 				streamPrefix: 'mirroring-handler',
 				logGroup: handlerLogGroup,
