@@ -1,6 +1,6 @@
 import type { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuHttpsEgressSecurityGroup } from '@guardian/cdk/lib/constructs/ec2/security-groups/base';
-import { Duration, type aws_ec2 as ec2 } from 'aws-cdk-lib';
+import { Duration, type aws_ec2 as ec2, RemovalPolicy } from 'aws-cdk-lib';
 import type { AutoScalingGroup } from 'aws-cdk-lib/aws-autoscaling';
 import type { ISubnet, IVpc } from 'aws-cdk-lib/aws-ec2';
 import {
@@ -28,7 +28,7 @@ import * as events from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
-import { RetentionDays } from 'aws-cdk-lib/aws-logs';
+import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Construct } from 'constructs';
 
 export interface HttpTrafficMirroringProps {
@@ -172,6 +172,32 @@ export class HttpTrafficMirroring extends Construct {
 			},
 		);
 
+		const healthCheckLogGroup = new LogGroup(
+			this,
+			'MirroringHandlerHealthCheckLogGroup',
+			{
+				logGroupName: [
+					stack.stack,
+					stack.stage,
+					stack.app,
+					'mirroring-health-check-logs',
+				].join('/'),
+				retention: RetentionDays.ONE_DAY,
+				removalPolicy: RemovalPolicy.DESTROY,
+			},
+		);
+
+		const handlerLogGroup = new LogGroup(this, 'MirroringHandlerLogGroup', {
+			logGroupName: [
+				stack.stack,
+				stack.stage,
+				stack.app,
+				'mirroring-handler-logs',
+			].join('/'),
+			retention: RetentionDays.ONE_DAY,
+			removalPolicy: RemovalPolicy.DESTROY,
+		});
+
 		// TCP for health check
 		// We have to add this first as the network load balancer will send health check traffic to the default container.
 		// If we don't add this first then we fail to add the ECS service to the target group as there is no tcp endpoint.
@@ -181,13 +207,8 @@ export class HttpTrafficMirroring extends Construct {
 		taskDefinition.addContainer('MirroringHandlerHealthCheckContainer', {
 			image: ContainerImage.fromRegistry('nginx:latest'),
 			logging: LogDriver.awsLogs({
-				streamPrefix: [
-					stack.stack,
-					stack.stage,
-					stack.app,
-					'mirroring-health-check-logs',
-				].join('/'),
-				logRetention: RetentionDays.ONE_DAY,
+				streamPrefix: 'mirroring-health-check',
+				logGroup: healthCheckLogGroup,
 			}),
 			portMappings: [{ containerPort: 80, hostPort: 80 }],
 			// TODO: logging: fireLensLogDriver,
@@ -197,13 +218,8 @@ export class HttpTrafficMirroring extends Construct {
 		taskDefinition.addContainer('MirroringHandlerContainer', {
 			image: ContainerImage.fromRegistry('jauderho/goreplay:latest'),
 			logging: LogDriver.awsLogs({
-				streamPrefix: [
-					stack.stack,
-					stack.stage,
-					stack.app,
-					'mirroring-handler-logs',
-				].join('/'),
-				logRetention: RetentionDays.ONE_DAY,
+				streamPrefix: 'mirroring-handler',
+				logGroup: handlerLogGroup,
 			}),
 			portMappings: [
 				{

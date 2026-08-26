@@ -576,10 +576,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "Ec2ToEcsTrafficMirrorMirroringHandlerEcsTaskDefinitionMirroringHandlerHealthCheckContainerLogGroup118B6540",
+                  "Ref": "Ec2ToEcsTrafficMirrorMirroringHandlerHealthCheckLogGroup0F60D809",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/CODE//mirroring-health-check-logs",
+                "awslogs-stream-prefix": "mirroring-health-check",
               },
             },
             "Name": "MirroringHandlerHealthCheckContainer",
@@ -610,10 +610,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "Ec2ToEcsTrafficMirrorMirroringHandlerEcsTaskDefinitionMirroringHandlerContainerLogGroupA759477B",
+                  "Ref": "Ec2ToEcsTrafficMirrorMirroringHandlerLogGroup3B3619EE",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/CODE//mirroring-handler-logs",
+                "awslogs-stream-prefix": "mirroring-handler",
               },
             },
             "Name": "MirroringHandlerContainer",
@@ -740,7 +740,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "Ec2ToEcsTrafficMirrorMirroringHandlerEcsTaskDefinitionMirroringHandlerHealthCheckContainerLogGroup118B6540",
+                  "Ec2ToEcsTrafficMirrorMirroringHandlerHealthCheckLogGroup0F60D809",
                   "Arn",
                 ],
               },
@@ -753,7 +753,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "Ec2ToEcsTrafficMirrorMirroringHandlerEcsTaskDefinitionMirroringHandlerContainerLogGroupA759477B",
+                  "Ec2ToEcsTrafficMirrorMirroringHandlerLogGroup3B3619EE",
                   "Arn",
                 ],
               },
@@ -783,80 +783,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "Ec2ToEcsTrafficMirrorMirroringHandlerEcsTaskDefinitionMirroringHandlerContainerLogGroupA759477B": {
-      "DeletionPolicy": "Retain",
-      "DependsOn": [
-        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
-        "LoadBalancerCdkplayground7C6B4D97",
-        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
-        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
-        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
-      ],
-      "Properties": {
-        "RetentionInDays": 1,
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/cdk-playground",
-          },
-          {
-            "Key": "gu:riff-raff:project",
-            "Value": "devx::cdk-playground",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-      },
-      "Type": "AWS::Logs::LogGroup",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "Ec2ToEcsTrafficMirrorMirroringHandlerEcsTaskDefinitionMirroringHandlerHealthCheckContainerLogGroup118B6540": {
-      "DeletionPolicy": "Retain",
-      "DependsOn": [
-        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
-        "LoadBalancerCdkplayground7C6B4D97",
-        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
-        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
-        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
-      ],
-      "Properties": {
-        "RetentionInDays": 1,
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/cdk-playground",
-          },
-          {
-            "Key": "gu:riff-raff:project",
-            "Value": "devx::cdk-playground",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-      },
-      "Type": "AWS::Logs::LogGroup",
-      "UpdateReplacePolicy": "Retain",
     },
     "Ec2ToEcsTrafficMirrorMirroringHandlerEcsTaskDefinitionTaskRoleD1815E9F": {
       "DependsOn": [
@@ -1035,6 +961,82 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         "ServiceNamespace": "ecs",
       },
       "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
+    },
+    "Ec2ToEcsTrafficMirrorMirroringHandlerHealthCheckLogGroup0F60D809": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "LogGroupName": "deploy/CODE//mirroring-health-check-logs",
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "Ec2ToEcsTrafficMirrorMirroringHandlerLogGroup3B3619EE": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "LogGroupName": "deploy/CODE//mirroring-handler-logs",
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
     },
     "Ec2ToEcsTrafficMirrorMirroringHandlerNLB41FDD9B0": {
       "DependsOn": [
