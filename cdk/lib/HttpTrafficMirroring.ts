@@ -215,7 +215,7 @@ export class HttpTrafficMirroring extends Construct {
 		});
 
 		taskDefinition.addContainer('MirroringHandlerContainer', {
-			image: ContainerImage.fromRegistry('jauderho/goreplay:v1.3.2'),
+			image: ContainerImage.fromRegistry('noviantonugroho/goreplay:1.3.3'),
 			logging: LogDriver.awsLogs({
 				streamPrefix: 'mirroring-handler',
 				logGroup: handlerLogGroup,
