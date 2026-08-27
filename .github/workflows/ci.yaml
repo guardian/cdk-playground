@@ -52,29 +52,29 @@ jobs:
           buildNumber: ${{ needs.facts.outputs.buildNumber }}
           commitSha: ${{ needs.facts.outputs.commitSha }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-  http-mirroring-handler-image:
-    runs-on: ubuntu-24.04-arm
-    needs: [facts]
-    permissions:
-      contents: read
-      id-token: write # Required to exchange for AWS credentials using OIDC
-      pull-requests: write # Required by guardian/actions-publish-image to comment on PRs
-    outputs:
-      imageDigest: ${{ steps.publish-image.outputs.imageDigest }}
-    steps:
-      - uses: actions/checkout@v7.0.0
-      - name: Build Docker image
-        run: docker build -t mirror-handler:latest cdk/http-mirroring-handler/
-      - name: Publish Image
-        uses: guardian/actions-publish-image@v0.0.3
-        id: publish-image
-        with:
-          imageName: mirror-handler
-          roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
-          branchName: ${{ needs.facts.outputs.branchName }}
-          buildNumber: ${{ needs.facts.outputs.buildNumber }}
-          commitSha: ${{ needs.facts.outputs.commitSha }}
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
+  # http-mirroring-handler-image:
+  #   runs-on: ubuntu-24.04-arm
+  #   needs: [facts]
+  #   permissions:
+  #     contents: read
+  #     id-token: write # Required to exchange for AWS credentials using OIDC
+  #     pull-requests: write # Required by guardian/actions-publish-image to comment on PRs
+  #   outputs:
+  #     imageDigest: ${{ steps.publish-image.outputs.imageDigest }}
+  #   steps:
+  #     - uses: actions/checkout@v7.0.0
+  #     - name: Build Docker image
+  #       run: docker build -t mirror-handler:latest cdk/http-mirroring-handler/
+  #     - name: Publish Image
+  #       uses: guardian/actions-publish-image@v0.0.3
+  #       id: publish-image
+  #       with:
+  #         imageName: mirror-handler
+  #         roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
+  #         branchName: ${{ needs.facts.outputs.branchName }}
+  #         buildNumber: ${{ needs.facts.outputs.buildNumber }}
+  #         commitSha: ${{ needs.facts.outputs.commitSha }}
+  #         githubToken: ${{ secrets.GITHUB_TOKEN }}
 
   CI:
     runs-on: ubuntu-latest
