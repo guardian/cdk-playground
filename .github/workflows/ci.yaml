@@ -64,11 +64,12 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.0
       - name: Build Docker image
-        run: docker build -t ${{ github.repository }}:latest -t mirror-handler:latest cdk/http-mirroring-handler/
+        run: docker build -t ${{ github.repository }}:latest cdk/http-mirroring-handler/
       - name: Publish Image
         uses: guardian/actions-publish-image@v0.0.3
         id: publish-image
         with:
+          imageName: mirror-handler
           roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
           branchName: ${{ needs.facts.outputs.branchName }}
           buildNumber: ${{ needs.facts.outputs.buildNumber }}

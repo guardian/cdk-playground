@@ -222,7 +222,10 @@ export class HttpTrafficMirroring extends Construct {
 		);
 
 		taskDefinition.addContainer('MirroringHandlerContainer', {
-			image: ContainerImage.fromEcrRepository(mirroringHandlerRepo, 'branch-mirroring-cdk-playground'),
+			image: ContainerImage.fromEcrRepository(
+				mirroringHandlerRepo,
+				'mirror-handler',
+			),
 			logging: LogDriver.awsLogs({
 				streamPrefix: 'mirroring-handler',
 				logGroup: handlerLogGroup,
