@@ -224,7 +224,7 @@ export class HttpTrafficMirroring extends Construct {
 		taskDefinition.addContainer('MirroringHandlerContainer', {
 			image: ContainerImage.fromEcrRepository(
 				mirroringHandlerRepo,
-				'@sha256:4f23ab1bb11b2ba79121126874e76ce58fbfac53571e2ce631dbfc0ef3e4b732',
+				'build-2681',
 			),
 			logging: LogDriver.awsLogs({
 				streamPrefix: 'mirroring-handler',
