@@ -1149,6 +1149,8 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
       ],
       "Properties": {
+        "HealthCheckPort": "80",
+        "HealthCheckProtocol": "TCP",
         "Port": 4789,
         "Protocol": "UDP",
         "Tags": [

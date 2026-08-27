@@ -320,10 +320,10 @@ export class HttpTrafficMirroring extends Construct {
 		const targetGroup = listener.addTargets('ECSHandlers', {
 			port: 4789,
 			protocol: ELBProtocol.UDP,
-      healthCheck: {
-        port: '80',
-        protocol: ELBProtocol.TCP,
-      },
+			healthCheck: {
+				port: '80',
+				protocol: ELBProtocol.TCP,
+			},
 		});
 
 		targetGroup.addTarget(fargateService);
