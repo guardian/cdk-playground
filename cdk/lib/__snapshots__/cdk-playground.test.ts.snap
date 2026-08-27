@@ -28,6 +28,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
       "GuAccessLoggingBucketParameter",
       "GuHttpsApplicationListener",
       "GuHttpsEgressSecurityGroup",
+      "GuHttpsEgressSecurityGroup",
       "GuCname",
     ],
     "gu:cdk:version": "TEST",
@@ -1086,6 +1087,14 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
           },
         ],
         "Scheme": "internal",
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "GuHttpsEgressSecurityGroupUndefinednlbE4C4AA16",
+              "GroupId",
+            ],
+          },
+        ],
         "Subnets": {
           "Ref": "cdkplaygroundPrivateSubnets",
         },
@@ -2080,6 +2089,50 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
           {
             "Key": "App",
             "Value": "undefined-ecs",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "GuHttpsEgressSecurityGroupUndefinednlbE4C4AA16": {
+      "Properties": {
+        "GroupDescription": "Allow all outbound HTTPS traffic",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound HTTPS traffic",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "undefined-nlb",
           },
           {
             "Key": "gu:cdk:version",

@@ -7,6 +7,8 @@ import {
 	CfnTrafficMirrorFilter,
 	CfnTrafficMirrorFilterRule,
 	CfnTrafficMirrorTarget,
+	Peer,
+	Port,
 } from 'aws-cdk-lib/aws-ec2';
 import { Repository } from 'aws-cdk-lib/aws-ecr';
 import {
@@ -296,6 +298,18 @@ export class HttpTrafficMirroring extends Construct {
 					GuHttpsEgressSecurityGroup.forVpc(stack, {
 						app: `${stack.app}-ecs`,
 						vpc,
+						ingresses: [
+							{
+								range: Peer.anyIpv4(),
+								port: 80,
+								description: 'allow health check port 80',
+							},
+							{
+								range: Peer.anyIpv4(),
+								port: Port.udp(4789),
+								description: 'allow VXLAN traffic',
+							},
+						],
 					}),
 				],
 			},
@@ -310,6 +324,19 @@ export class HttpTrafficMirroring extends Construct {
 			vpc,
 			internetFacing: false, // Don't think this is needed given the subnets, but i want to be safe
 			vpcSubnets: { subnets },
+			securityGroups: [
+				GuHttpsEgressSecurityGroup.forVpc(stack, {
+					app: `${stack.app}-nlb`,
+					vpc,
+					ingresses: [
+						{
+							range: Peer.anyIpv4(),
+							port: Port.udp(4789),
+							description: 'allow vxlan traffic',
+						},
+					],
+				}),
+			],
 		});
 
 		const listener = nlb.addListener('MirroringHandlerListener', {
