@@ -8,6 +8,7 @@ import {
 	CfnTrafficMirrorFilterRule,
 	CfnTrafficMirrorTarget,
 } from 'aws-cdk-lib/aws-ec2';
+import { Repository } from 'aws-cdk-lib/aws-ecr';
 import {
 	Cluster,
 	ContainerImage,
@@ -214,8 +215,14 @@ export class HttpTrafficMirroring extends Construct {
 			// TODO: logging: fireLensLogDriver,
 		});
 
+		const mirroringHandlerRepo = Repository.fromRepositoryName(
+			this,
+			'HttpMirroringHandlerRepo',
+			'guardian/cdk-playground',
+		);
+
 		taskDefinition.addContainer('MirroringHandlerContainer', {
-			image: ContainerImage.fromRegistry('noviantonugroho/goreplay:1.3.3'),
+			image: ContainerImage.fromEcrRepository(mirroringHandlerRepo, 'branch-mirroring-cdk-playground'),
 			logging: LogDriver.awsLogs({
 				streamPrefix: 'mirroring-handler',
 				logGroup: handlerLogGroup,
@@ -228,15 +235,10 @@ export class HttpTrafficMirroring extends Construct {
 				},
 			],
 			command: [
-				'--input-raw',
-				':80',
-				'--input-raw-engine',
-				'vxlan',
-				'--output-http',
-				'https://cdk-playground.code.dev-gutools.co.uk',
-				'--output-stdout',
-				'--http-header',
-				'X-Gu-Target-Group: ecs',
+				'deploy-LoadB-Il8Mi5eaoqiF-2013471505.eu-west-1.elb.amazonaws.com',
+				'80',
+				'--header',
+				'"X-Gu-Target-Group: ecs"',
 			],
 			// TODO: logging: fireLensLogDriver,
 			readonlyRootFilesystem: true,
