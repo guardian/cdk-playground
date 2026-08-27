@@ -64,7 +64,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.0
       - name: Build Docker image
-        run: docker build -t ${{ github.repository }}:latest cdk/http-mirroring-handler/
+        run: docker build -t mirror-handler:latest cdk/http-mirroring-handler/
       - name: Publish Image
         uses: guardian/actions-publish-image@v0.0.3
         id: publish-image
