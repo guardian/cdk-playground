@@ -47,7 +47,7 @@ jobs:
         uses: guardian/actions-publish-image@v0.0.3
         id: publish-image
         with:
-          roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
+          roleArn: ${{ secrets.GU_ARTIFACTS_ROLE_ARN }}
           branchName: ${{ needs.facts.outputs.branchName }}
           buildNumber: ${{ needs.facts.outputs.buildNumber }}
           commitSha: ${{ needs.facts.outputs.commitSha }}
