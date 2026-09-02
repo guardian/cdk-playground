@@ -54,6 +54,18 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
       "Description": "S3 bucket to store your access logs",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
+    "AssetParameterse16ffb3b34af185b8b30c88fdb19faa13b6c42bb38580485c4e84b384ee48b63ArtifactHashECDBBC99": {
+      "Description": "Artifact hash for asset "e16ffb3b34af185b8b30c88fdb19faa13b6c42bb38580485c4e84b384ee48b63"",
+      "Type": "String",
+    },
+    "AssetParameterse16ffb3b34af185b8b30c88fdb19faa13b6c42bb38580485c4e84b384ee48b63S3BucketAA03EDFB": {
+      "Description": "S3 bucket for asset "e16ffb3b34af185b8b30c88fdb19faa13b6c42bb38580485c4e84b384ee48b63"",
+      "Type": "String",
+    },
+    "AssetParameterse16ffb3b34af185b8b30c88fdb19faa13b6c42bb38580485c4e84b384ee48b63S3VersionKeyE212FEA2": {
+      "Description": "S3 key for asset version "e16ffb3b34af185b8b30c88fdb19faa13b6c42bb38580485c4e84b384ee48b63"",
+      "Type": "String",
+    },
     "DeployToolsAccountIdParameter": {
       "Default": "/organisation/accounts/deployTools",
       "Type": "AWS::SSM::Parameter::Value<String>",
@@ -1376,6 +1388,458 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "Ec2ToEcsTrafficMirrorSessionInitializerLambda86AC887B": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "Ec2ToEcsTrafficMirrorSessionInitializerLambdaServiceRoleDefaultPolicy1ABD5A55",
+        "Ec2ToEcsTrafficMirrorSessionInitializerLambdaServiceRoleC19E4E74",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "Code": {
+          "ZipFile": "
+		      const { EC2Client, DescribeInstancesCommand, CreateTrafficMirrorSessionCommand } = require('@aws-sdk/client-ec2');
+		      const { AutoScalingClient, DescribeAutoScalingGroupsCommand } = require('@aws-sdk/client-autoscaling');
+
+		      const ec2 = new EC2Client();
+		      const asg = new AutoScalingClient();
+
+		      exports.handler = async (event) => {
+		        console.log('Event:', JSON.stringify(event));
+
+		        if (event.RequestType === 'Delete') {
+		          return { PhysicalResourceId: event.PhysicalResourceId };
+		        }
+
+		        const { AsgName, TargetId, FilterId } = event.ResourceProperties;
+
+		        const asgRes = await asg.send(new DescribeAutoScalingGroupsCommand({
+		          AutoScalingGroupNames: [AsgName],
+		        }));
+
+		        const asgGroup = asgRes.AutoScalingGroups?.[0];
+		        if (!asgGroup) throw new Error(\`ASG not found: \${AsgName}\`);
+
+		        const instanceIds = (asgGroup.Instances ?? [])
+		          .filter(i => i.LifecycleState === 'InService' && i.InstanceId)
+		          .map(i => i.InstanceId);
+
+		        console.log(\`Found \${instanceIds.length} in-service instances: \${instanceIds.join(', ')}\`);
+
+		        for (const instanceId of instanceIds) {
+		          const describeRes = await ec2.send(new DescribeInstancesCommand({ InstanceIds: [instanceId] }));
+		          const instance = describeRes.Reservations?.[0]?.Instances?.[0];
+		          const primaryEniId = instance?.NetworkInterfaces?.[0]?.NetworkInterfaceId;
+
+		          if (!primaryEniId) {
+		            console.warn(\`Unable to find primary ENI for instance: \${instanceId}, skipping\`);
+		            continue;
+		          }
+
+		          try {
+		            const sessionRes = await ec2.send(new CreateTrafficMirrorSessionCommand({
+		              NetworkInterfaceId: primaryEniId,
+		              TrafficMirrorTargetId: TargetId,
+		              TrafficMirrorFilterId: FilterId,
+		              SessionNumber: 1,
+		              Description: \`Auto-attached traffic mirror for instance \${instanceId}\`,
+		            }));
+		            console.log(\`Created session: \${sessionRes.TrafficMirrorSession.TrafficMirrorSessionId} for instance \${instanceId}\`);
+		          } catch (err) {
+		            // Session may already exist if this custom resource is being updated
+		            if (err.Code === 'TrafficMirrorSessionAlreadyExists') {
+		              console.log(\`Session already exists for instance \${instanceId}, skipping\`);
+		            } else {
+		              throw err;
+		            }
+		          }
+		        }
+
+		        return { PhysicalResourceId: 'traffic-mirror-session-initializer' };
+		      };
+		    ",
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "Ec2ToEcsTrafficMirrorSessionInitializerLambdaServiceRoleC19E4E74",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs24.x",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "Timeout": 300,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "Ec2ToEcsTrafficMirrorSessionInitializerLambdaServiceRoleC19E4E74": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "Ec2ToEcsTrafficMirrorSessionInitializerLambdaServiceRoleDefaultPolicy1ABD5A55": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "autoscaling:DescribeAutoScalingGroups",
+                "ec2:DescribeInstances",
+                "ec2:CreateTrafficMirrorSession",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "Ec2ToEcsTrafficMirrorSessionInitializerLambdaServiceRoleDefaultPolicy1ABD5A55",
+        "Roles": [
+          {
+            "Ref": "Ec2ToEcsTrafficMirrorSessionInitializerLambdaServiceRoleC19E4E74",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "Ec2ToEcsTrafficMirrorSessionInitializerProviderframeworkonEvent7F3952FD": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "Ec2ToEcsTrafficMirrorSessionInitializerProviderframeworkonEventServiceRoleDefaultPolicy79188CEC",
+        "Ec2ToEcsTrafficMirrorSessionInitializerProviderframeworkonEventServiceRole4426A1A2",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "AssetParameterse16ffb3b34af185b8b30c88fdb19faa13b6c42bb38580485c4e84b384ee48b63S3BucketAA03EDFB",
+          },
+          "S3Key": {
+            "Fn::Join": [
+              "",
+              [
+                {
+                  "Fn::Select": [
+                    0,
+                    {
+                      "Fn::Split": [
+                        "||",
+                        {
+                          "Ref": "AssetParameterse16ffb3b34af185b8b30c88fdb19faa13b6c42bb38580485c4e84b384ee48b63S3VersionKeyE212FEA2",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  "Fn::Select": [
+                    1,
+                    {
+                      "Fn::Split": [
+                        "||",
+                        {
+                          "Ref": "AssetParameterse16ffb3b34af185b8b30c88fdb19faa13b6c42bb38580485c4e84b384ee48b63S3VersionKeyE212FEA2",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Description": "AWS CDK resource provider framework - onEvent (CdkPlayground-CODE/Ec2ToEcsTrafficMirror/SessionInitializerProvider)",
+        "Environment": {
+          "Variables": {
+            "USER_ON_EVENT_FUNCTION_ARN": {
+              "Fn::GetAtt": [
+                "Ec2ToEcsTrafficMirrorSessionInitializerLambda86AC887B",
+                "Arn",
+              ],
+            },
+          },
+        },
+        "Handler": "framework.onEvent",
+        "LoggingConfig": {
+          "ApplicationLogLevel": "FATAL",
+          "LogFormat": "JSON",
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "Ec2ToEcsTrafficMirrorSessionInitializerProviderframeworkonEventServiceRole4426A1A2",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs24.x",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "Timeout": 900,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "Ec2ToEcsTrafficMirrorSessionInitializerProviderframeworkonEventServiceRole4426A1A2": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "Ec2ToEcsTrafficMirrorSessionInitializerProviderframeworkonEventServiceRoleDefaultPolicy79188CEC": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "Ec2ToEcsTrafficMirrorSessionInitializerLambda86AC887B",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "Ec2ToEcsTrafficMirrorSessionInitializerLambda86AC887B",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "lambda:GetFunction",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "Ec2ToEcsTrafficMirrorSessionInitializerLambda86AC887B",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "Ec2ToEcsTrafficMirrorSessionInitializerProviderframeworkonEventServiceRoleDefaultPolicy79188CEC",
+        "Roles": [
+          {
+            "Ref": "Ec2ToEcsTrafficMirrorSessionInitializerProviderframeworkonEventServiceRole4426A1A2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "Ec2ToEcsTrafficMirrorSessionInitializerResource10BC04AB": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "AsgName": {
+          "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        },
+        "FilterId": {
+          "Fn::GetAtt": [
+            "Ec2ToEcsTrafficMirrorFilter8854C552",
+            "Id",
+          ],
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "Ec2ToEcsTrafficMirrorSessionInitializerProviderframeworkonEvent7F3952FD",
+            "Arn",
+          ],
+        },
+        "TargetId": {
+          "Fn::GetAtt": [
+            "Ec2ToEcsTrafficMirrorTarget64F0FC7C",
+            "Id",
+          ],
+        },
+      },
+      "Type": "AWS::CloudFormation::CustomResource",
+      "UpdateReplacePolicy": "Delete",
     },
     "Ec2ToEcsTrafficMirrorTarget64F0FC7C": {
       "DependsOn": [

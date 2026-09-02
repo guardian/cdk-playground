@@ -1,6 +1,11 @@
 import type { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuHttpsEgressSecurityGroup } from '@guardian/cdk/lib/constructs/ec2/security-groups/base';
-import { CustomResource, Duration, type aws_ec2 as ec2, RemovalPolicy } from 'aws-cdk-lib';
+import {
+	CustomResource,
+	Duration,
+	type aws_ec2 as ec2,
+	RemovalPolicy,
+} from 'aws-cdk-lib';
 import type { AutoScalingGroup } from 'aws-cdk-lib/aws-autoscaling';
 import type { ISubnet, IVpc } from 'aws-cdk-lib/aws-ec2';
 import {
