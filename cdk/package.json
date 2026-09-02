@@ -17,6 +17,7 @@
 	},
 	"devDependencies": {
 		"@aws-sdk/client-auto-scaling": "3.1106.0",
+		"@aws-sdk/client-ec2": "3.1106.0",
 		"@aws-sdk/credential-providers": "3.1106.0",
 		"@guardian/cdk": "64.4.0",
 		"@guardian/eslint-config": "16.0.0",

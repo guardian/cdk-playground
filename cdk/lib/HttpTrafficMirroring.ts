@@ -1,6 +1,12 @@
+import * as path from 'path';
 import type { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuHttpsEgressSecurityGroup } from '@guardian/cdk/lib/constructs/ec2/security-groups/base';
-import { CustomResource, Duration, type aws_ec2 as ec2, RemovalPolicy } from 'aws-cdk-lib';
+import {
+	CustomResource,
+	Duration,
+	type aws_ec2 as ec2,
+	RemovalPolicy,
+} from 'aws-cdk-lib';
 import type { AutoScalingGroup } from 'aws-cdk-lib/aws-autoscaling';
 import type { ISubnet, IVpc } from 'aws-cdk-lib/aws-ec2';
 import {
@@ -31,6 +37,7 @@ import * as events from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Provider } from 'aws-cdk-lib/custom-resources';
 import { Construct } from 'constructs';
@@ -89,43 +96,13 @@ export class HttpTrafficMirroring extends Construct {
 		});
 
 		// Lambda function to attach Mirror Session on ASG instance launch
-		// TODO: Will this always attach and run before the very first asg instances are created?
-		const attacherLambda = new lambda.Function(this, 'SessionAttacherLambda', {
+		const attacherLambda = new NodejsFunction(this, 'SessionAttacherLambda', {
+			entry: path.join(
+				__dirname,
+				'http-traffic-mirroring-lambdas/session-attacher.ts',
+			),
 			runtime: lambda.Runtime.NODEJS_24_X,
-			handler: 'index.handler',
 			timeout: Duration.seconds(30),
-			code: lambda.Code.fromInline(`
-		      const { EC2Client, DescribeInstancesCommand, CreateTrafficMirrorSessionCommand } = require('@aws-sdk/client-ec2');
-		      const ec2 = new EC2Client();
-
-		      exports.handler = async (event) => {
-		        const instanceId = event.detail.EC2InstanceId;
-		        const targetId = process.env.TARGET_ID;
-		        const filterId = process.env.FILTER_ID;
-
-		        console.log(\`Processing launch event for instance: \${instanceId}\`);
-
-		        // Fetch instance details to get primary ENI ID
-		        const describeRes = await ec2.send(new DescribeInstancesCommand({ InstanceIds: [instanceId] }));
-		        const instance = describeRes.Reservations?.[0]?.Instances?.[0];
-		        const primaryEniId = instance?.NetworkInterfaces?.[0]?.NetworkInterfaceId;
-
-		        if (!primaryEniId) {
-		          throw new Error(\`Unable to find primary ENI for instance: \${instanceId}\`);
-		        }
-
-		        // Attach Traffic Mirror Session (ASG instance ENI -> EC2 Worker Target ENI)
-		        const sessionRes = await ec2.send(new CreateTrafficMirrorSessionCommand({
-		          NetworkInterfaceId: primaryEniId,
-		          TrafficMirrorTargetId: targetId,
-		          TrafficMirrorFilterId: filterId,
-		          SessionNumber: 1,
-		          Description: \`Auto-attached traffic mirror for instance \${instanceId}\`,
-		        }));
-
-		        console.log(\`Successfully created session: \${sessionRes.TrafficMirrorSession.TrafficMirrorSessionId}\`);
-		      };
-		    `),
 			environment: {
 				TARGET_ID: mirrorTarget.attrId,
 				FILTER_ID: mirrorFilter.attrId,
@@ -142,74 +119,16 @@ export class HttpTrafficMirroring extends Construct {
 
 		// Lambda-backed custom resource to mirror sessions for instances that already
 		// exist in the ASG at deploy time (the event-based lambda only catches new ones).
-		const initializerLambda = new lambda.Function(
+		const initializerLambda = new NodejsFunction(
 			this,
 			'SessionInitializerLambda',
 			{
+				entry: path.join(
+					__dirname,
+					'http-traffic-mirroring-lambdas/session-initializer.ts',
+				),
 				runtime: lambda.Runtime.NODEJS_24_X,
-				handler: 'index.handler',
 				timeout: Duration.minutes(5),
-				code: lambda.Code.fromInline(`
-		      const { EC2Client, DescribeInstancesCommand, CreateTrafficMirrorSessionCommand } = require('@aws-sdk/client-ec2');
-		      const { AutoScalingClient, DescribeAutoScalingGroupsCommand } = require('@aws-sdk/client-autoscaling');
-
-		      const ec2 = new EC2Client();
-		      const asg = new AutoScalingClient();
-
-		      exports.handler = async (event) => {
-		        console.log('Event:', JSON.stringify(event));
-
-		        if (event.RequestType === 'Delete') {
-		          return { PhysicalResourceId: event.PhysicalResourceId };
-		        }
-
-		        const { AsgName, TargetId, FilterId } = event.ResourceProperties;
-
-		        const asgRes = await asg.send(new DescribeAutoScalingGroupsCommand({
-		          AutoScalingGroupNames: [AsgName],
-		        }));
-
-		        const asgGroup = asgRes.AutoScalingGroups?.[0];
-		        if (!asgGroup) throw new Error(\`ASG not found: \${AsgName}\`);
-
-		        const instanceIds = (asgGroup.Instances ?? [])
-		          .filter(i => i.LifecycleState === 'InService' && i.InstanceId)
-		          .map(i => i.InstanceId);
-
-		        console.log(\`Found \${instanceIds.length} in-service instances: \${instanceIds.join(', ')}\`);
-
-		        for (const instanceId of instanceIds) {
-		          const describeRes = await ec2.send(new DescribeInstancesCommand({ InstanceIds: [instanceId] }));
-		          const instance = describeRes.Reservations?.[0]?.Instances?.[0];
-		          const primaryEniId = instance?.NetworkInterfaces?.[0]?.NetworkInterfaceId;
-
-		          if (!primaryEniId) {
-		            console.warn(\`Unable to find primary ENI for instance: \${instanceId}, skipping\`);
-		            continue;
-		          }
-
-		          try {
-		            const sessionRes = await ec2.send(new CreateTrafficMirrorSessionCommand({
-		              NetworkInterfaceId: primaryEniId,
-		              TrafficMirrorTargetId: TargetId,
-		              TrafficMirrorFilterId: FilterId,
-		              SessionNumber: 1,
-		              Description: \`Auto-attached traffic mirror for instance \${instanceId}\`,
-		            }));
-		            console.log(\`Created session: \${sessionRes.TrafficMirrorSession.TrafficMirrorSessionId} for instance \${instanceId}\`);
-		          } catch (err) {
-		            // Session may already exist if this custom resource is being updated
-		            if (err.Code === 'TrafficMirrorSessionAlreadyExists') {
-		              console.log(\`Session already exists for instance \${instanceId}, skipping\`);
-		            } else {
-		              throw err;
-		            }
-		          }
-		        }
-
-		        return { PhysicalResourceId: 'traffic-mirror-session-initializer' };
-		      };
-		    `),
 			},
 		);
 
