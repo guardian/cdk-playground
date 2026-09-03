@@ -205,8 +205,8 @@ export class HttpTrafficMirroring extends Construct {
 		// We have to add this first as the network load balancer will send health check traffic to the default container.
 		// If we don't add this first then we fail to add the ECS service to the target group as there is no tcp endpoint.
 		// Can not do health check over UDP.
-    //
-    // TODO: This also causes the target of network load balancer to target port 80. Which doesn't make much sense.
+		//
+		// TODO: This also causes the target of network load balancer to target port 80. Which doesn't make much sense.
 		//
 		// Nginx by default serves a simple welcome page on port 80, which can pass the health check.
 		taskDefinition.addContainer('MirroringHandlerHealthCheckContainer', {
@@ -228,7 +228,7 @@ export class HttpTrafficMirroring extends Construct {
 		taskDefinition.addContainer('MirroringHandlerContainer', {
 			image: ContainerImage.fromEcrRepository(
 				mirroringHandlerRepo,
-				'build-2681',
+				'build-2703',
 			),
 			logging: LogDriver.awsLogs({
 				streamPrefix: 'mirroring-handler',

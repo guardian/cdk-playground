@@ -611,7 +611,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/cdk-playground:build-2681",
+                  "/guardian/cdk-playground:build-2703",
                 ],
               ],
             },
