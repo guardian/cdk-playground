@@ -56,6 +56,8 @@ def main():
         if len(data) <= SKIP:
             continue
         payload = data[SKIP:]
+        decodedPayload = payload.decode("utf-8", errors="replace").splitlines()[0]
+        print(f"[+] Decoded Payload: {decodedPayload }", flush=True)
         if not payload.startswith(HTTP_METHODS):
             continue
         preview = payload[:80].decode("utf-8", errors="replace").splitlines()[0]

@@ -205,6 +205,8 @@ export class HttpTrafficMirroring extends Construct {
 		// We have to add this first as the network load balancer will send health check traffic to the default container.
 		// If we don't add this first then we fail to add the ECS service to the target group as there is no tcp endpoint.
 		// Can not do health check over UDP.
+    //
+    // TODO: This also causes the target of network load balancer to target port 80. Which doesn't make much sense.
 		//
 		// Nginx by default serves a simple welcome page on port 80, which can pass the health check.
 		taskDefinition.addContainer('MirroringHandlerHealthCheckContainer', {
@@ -295,6 +297,7 @@ export class HttpTrafficMirroring extends Construct {
 				// This is what we do for the current GuEc2App pattern:
 				// https://github.com/guardian/cdk/blob/3b5688637024642055ed0bf576f668e56e40830d/src/constructs/autoscaling/asg.ts#L143-L145
 				securityGroups: [
+					// TODO: This does not create any allow in bound rules in the resulting security group.
 					GuHttpsEgressSecurityGroup.forVpc(stack, {
 						app: `${stack.app}-ecs`,
 						vpc,
@@ -325,6 +328,7 @@ export class HttpTrafficMirroring extends Construct {
 			internetFacing: false, // Don't think this is needed given the subnets, but i want to be safe
 			vpcSubnets: { subnets },
 			securityGroups: [
+				// TODO: Why does this not create a security group with any inbound rules?
 				GuHttpsEgressSecurityGroup.forVpc(stack, {
 					app: `${stack.app}-nlb`,
 					vpc,
