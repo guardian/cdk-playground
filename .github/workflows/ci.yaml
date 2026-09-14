@@ -44,14 +44,15 @@ jobs:
       - name: Normalise Docker image name
         run: docker image tag cdk-playground:1.0-SNAPSHOT ${{ github.repository }}:latest
       - name: Publish Image
-        uses: guardian/actions-publish-image@v0.0.7
+        uses: guardian/actions-publish-image@ash/add-app-name
         id: publish-image
         with:
-          roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
+          roleArn: ${{ secrets.GU_ARTIFACTS_ROLE_ARN }}
           branchName: ${{ needs.facts.outputs.branchName }}
           buildNumber: ${{ needs.facts.outputs.buildNumber }}
           commitSha: ${{ needs.facts.outputs.commitSha }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
+          appName: cdk-playground
   CI:
     runs-on: ubuntu-latest
     needs:
