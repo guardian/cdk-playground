@@ -77,14 +77,42 @@ jobs:
 
       - uses: guardian/setup-scala@v2
 
-      # Build CDK and Play (in sequence)
-      - run: ./script/ci
-        env:
-          COMMIT_SHA: ${{ needs.facts.outputs.commitSha }}
-          BUILD_NUMBER: ${{ needs.facts.outputs.buildNumber }}
-          BRANCH_NAME: ${{ needs.facts.outputs.branchName }}
-          BUILD_TIME: ${{ needs.facts.outputs.buildTime }}
-          IMAGE_DIGEST: ${{ needs.ci-image.outputs.imageDigest }}
+      - run: npm ci
+        working-directory: cdk
+
+      - parallel:
+          - name: CDK lint
+            working-directory: cdk
+            run: npm run lint
+
+          - name: CDK test
+            working-directory: cdk
+            run: npm run test
+
+          - name: CDK synth
+            working-directory: cdk
+            env:
+              IMAGE_DIGEST: ${{ needs.ci-image.outputs.imageDigest }}
+            run: npm run synth
+
+          - name: Build event-forwarder
+            working-directory: cdk
+            run: npm run build:event-forwarder
+
+          - name: Zip lambda
+            working-directory: lambda
+            run: zip cdk-playground-lambda.zip handler.js
+
+          - name: SBT build (for EC2 stack)
+            env:
+              COMMIT_SHA: ${{ needs.facts.outputs.commitSha }}
+              BUILD_NUMBER: ${{ needs.facts.outputs.buildNumber }}
+              BRANCH_NAME: ${{ needs.facts.outputs.branchName }}
+              BUILD_TIME: ${{ needs.facts.outputs.buildTime }}
+            run: |
+              sbt clean compile test debian:packageBin
+              mkdir -p dist/cdk-playground
+              mv target/cdk-playground_1.0-SNAPSHOT_all.deb "dist/cdk-playground/cdk-playground-$GITHUB_RUN_NUMBER.deb"
 
       # Upload our build artifacts to Riff-Raff (well, S3)
       - uses: guardian/actions-riff-raff@v4
