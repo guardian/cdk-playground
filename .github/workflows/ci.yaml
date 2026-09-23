@@ -41,10 +41,8 @@ jobs:
           BRANCH_NAME: ${{ needs.facts.outputs.branchName }}
           BUILD_TIME: ${{ needs.facts.outputs.buildTime }}
         run: sbt Docker/publishLocal
-      - name: Normalise Docker image name
-        run: docker image tag cdk-playground:1.0-SNAPSHOT cdk-playground:latest
       - name: Publish Image
-        uses: guardian/actions-publish-image@ash/add-app-name
+        uses: guardian/actions-publish-image@ash/use-either-and-ignore-tags
         id: publish-image
         with:
           roleArn: ${{ secrets.GU_ARTIFACTS_ROLE_ARN }}
@@ -52,7 +50,6 @@ jobs:
           buildNumber: ${{ needs.facts.outputs.buildNumber }}
           commitSha: ${{ needs.facts.outputs.commitSha }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-          appName: cdk-playground
   CI:
     runs-on: ubuntu-latest
     needs:
