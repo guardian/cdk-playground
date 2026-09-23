@@ -55,5 +55,6 @@ lazy val root = (project in file("."))
     ),
 
     dockerBaseImage := "amazoncorretto:21-alpine",
+    Docker / packageName := "guardian/cdk-playground",
     dockerBuildxPlatforms := Seq("linux/arm64")
   )
