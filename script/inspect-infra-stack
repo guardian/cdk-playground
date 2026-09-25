@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+ROOT_DIR=$DIR/..
+CDK_DIR=$ROOT_DIR/cdk
+ARTIFACT_DIR=$CDK_DIR/artifacts/ecr-stack
+
+if command -v npm >/dev/null 2>&1
+then
+  NPM=(npm)
+elif command -v mise >/dev/null 2>&1
+then
+  NPM=(mise exec -- npm)
+else
+  echo "Unable to find npm or mise."
+  exit 1
+fi
+
+rm -rf "$ARTIFACT_DIR"
+mkdir -p "$ARTIFACT_DIR"
+
+(
+  cd "$CDK_DIR"
+
+  "${NPM[@]}" test -- cdk-playground-infra.test.ts 2>&1 | tee "$ARTIFACT_DIR/test.txt"
+  rm -rf cdk.out
+  "${NPM[@]}" run synth 2>&1 | tee "$ARTIFACT_DIR/synth.txt"
+  cp -R cdk.out "$ARTIFACT_DIR/cdk.out"
+
+  "${NPM[@]}" exec -- cdk diff \
+    --app cdk.out \
+    CdkPlaygroundInfra-CODE \
+    --path-metadata false \
+    --version-reporting false 2>&1 | tee "$ARTIFACT_DIR/diff.txt"
+)
+
+echo "Inspection artifacts saved to $ARTIFACT_DIR"

@@ -16,6 +16,7 @@ There are a couple of helpful scripts in the [script](./script) directory:
 4. `./script/switch-cdk` to install GuCDK from a GitHub branch. This is useful to test changes _without_ publishing to NPM first.
 5. `./script/scale-out` to simulate a scale out event, increasing the capacity of the autoscaling group
 6. `./script/scale-in` to simulate a scale in event, decreasing the capacity of the autoscaling group
+7. `./script/inspect-infra-stack` to test and synthesise the experimental ECR stack, retaining its templates, Riff-Raff configuration, and diff under `cdk/artifacts/ecr-stack`
 
 ## Deploying
 The app is set up in the usual way, with CI on each branch (via GitHub Actions) and [CD](https://riffraff.gutools.co.uk/deployment/history?projectName=devx%3A%3Acdk-playground&stage=CODE&pageSize=20&page=1) on `main`.
