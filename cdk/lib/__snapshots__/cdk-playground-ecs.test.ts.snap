@@ -1003,16 +1003,58 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       },
       "Type": "AWS::IAM::Policy",
     },
-    "cdkplaygroundECSInstanceProfile58D4BC43": {
+    "cdkplaygroundECSManagedInstancesProfile29E82C8A": {
       "Properties": {
-        "InstanceProfileName": "ecsInstanceRole",
         "Roles": [
           {
-            "Ref": "cdkplaygroundEcsInstanceRole40F25786",
+            "Ref": "cdkplaygroundECSManagedInstancesRole96480596",
           },
         ],
       },
       "Type": "AWS::IAM::InstanceProfile",
+    },
+    "cdkplaygroundECSManagedInstancesRole96480596": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ec2.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/AmazonECSInstanceRolePolicyForManagedInstances",
+          "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
     },
     "cdkplaygroundEcsClusterF9ADCF3E": {
       "Properties": {
@@ -1051,50 +1093,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       },
       "Type": "AWS::ECS::Cluster",
     },
-    "cdkplaygroundEcsInstanceRole40F25786": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "ec2.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/AmazonECSInstanceRolePolicyForManagedInstances",
-          "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
-        ],
-        "RoleName": "ecsInstanceRole",
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/cdk-playground",
-          },
-          {
-            "Key": "gu:riff-raff:project",
-            "Value": "devx::cdk-playground",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
     "cdkplaygroundManagedInstancesCapacityProvider4E4FAC73": {
       "Properties": {
         "ClusterName": {
@@ -1110,7 +1108,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           "InstanceLaunchTemplate": {
             "Ec2InstanceProfileArn": {
               "Fn::GetAtt": [
-                "cdkplaygroundECSInstanceProfile58D4BC43",
+                "cdkplaygroundECSManagedInstancesProfile29E82C8A",
                 "Arn",
               ],
             },
