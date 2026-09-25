@@ -13,7 +13,6 @@ const app = new GuRoot();
 new GuInfraStackExperimental(app, 'CdkPlaygroundInfra-CODE', {
 	app: 'cdk-playground',
 	stack: 'deploy',
-	stage: 'CODE',
 	cloudFormationStackName: 'deploy-CODE-cdk-playground-infra',
 	githubSlug: 'guardian@164318/cdk-playground@361767568',
 	riffRaffProjectName,
