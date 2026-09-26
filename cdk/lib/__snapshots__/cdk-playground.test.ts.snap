@@ -27,6 +27,8 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
       "GuApplicationLoadBalancer",
       "GuAccessLoggingBucketParameter",
       "GuHttpsApplicationListener",
+      "GuHttpsEgressSecurityGroup",
+      "GuHttpsEgressSecurityGroup",
       "GuCname",
     ],
     "gu:cdk:version": "TEST",
@@ -356,6 +358,1062 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         "TTL": 3600,
       },
       "Type": "Guardian::DNS::RecordSet",
+    },
+    "Ec2ToEcsTrafficMirrorAllowAllInbound46A802A0": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "RuleAction": "accept",
+        "RuleNumber": 100,
+        "SourceCidrBlock": "0.0.0.0/0",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "TrafficDirection": "ingress",
+        "TrafficMirrorFilterId": {
+          "Fn::GetAtt": [
+            "Ec2ToEcsTrafficMirrorFilter8854C552",
+            "Id",
+          ],
+        },
+      },
+      "Type": "AWS::EC2::TrafficMirrorFilterRule",
+    },
+    "Ec2ToEcsTrafficMirrorAsgInstanceLaunchRule32C9EB6F": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "AutoScalingGroupName": [
+              {
+                "Ref": "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+              },
+            ],
+          },
+          "detail-type": [
+            "EC2 Instance Launch Successful",
+          ],
+          "source": [
+            "aws.autoscaling",
+          ],
+        },
+        "State": "ENABLED",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "Ec2ToEcsTrafficMirrorSessionAttacherLambdaCA9F6846",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "Ec2ToEcsTrafficMirrorAsgInstanceLaunchRuleAllowEventRuleCdkPlaygroundCODEEc2ToEcsTrafficMirrorSessionAttacherLambdaAB5F54506FE860FA": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "Ec2ToEcsTrafficMirrorSessionAttacherLambdaCA9F6846",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "Ec2ToEcsTrafficMirrorAsgInstanceLaunchRule32C9EB6F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "Ec2ToEcsTrafficMirrorFilter8854C552": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "Description": "Traffic mirror filter created by Ec2ToEcsTrafficMirror",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::TrafficMirrorFilter",
+    },
+    "Ec2ToEcsTrafficMirrorMirroringHandlerEcsClusterAD96951F": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::Cluster",
+    },
+    "Ec2ToEcsTrafficMirrorMirroringHandlerEcsTaskDefinitionCCF3FF96": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "nginx:latest",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "Ec2ToEcsTrafficMirrorMirroringHandlerHealthCheckLogGroup0F60D809",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "mirroring-health-check",
+              },
+            },
+            "Name": "MirroringHandlerHealthCheckContainer",
+            "PortMappings": [
+              {
+                "ContainerPort": 80,
+                "HostPort": 80,
+                "Protocol": "tcp",
+              },
+            ],
+          },
+          {
+            "Command": [
+              "deploy-LoadB-Il8Mi5eaoqiF-2013471505.eu-west-1.elb.amazonaws.com",
+              "80",
+              "--header",
+              ""X-Gu-Target-Group: ecs"",
+            ],
+            "Essential": true,
+            "Image": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "AWS::AccountId",
+                  },
+                  ".dkr.ecr.eu-west-1.",
+                  {
+                    "Ref": "AWS::URLSuffix",
+                  },
+                  "/guardian/cdk-playground:build-2703",
+                ],
+              ],
+            },
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "Ec2ToEcsTrafficMirrorMirroringHandlerLogGroup3B3619EE",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "mirroring-handler",
+              },
+            },
+            "Name": "MirroringHandlerContainer",
+            "PortMappings": [
+              {
+                "ContainerPort": 4789,
+                "HostPort": 4789,
+                "Protocol": "udp",
+              },
+            ],
+            "ReadonlyRootFilesystem": true,
+          },
+        ],
+        "Cpu": "1024",
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": [
+            "Ec2ToEcsTrafficMirrorMirroringHandlerEcsTaskDefinitionExecutionRoleB56761CF",
+            "Arn",
+          ],
+        },
+        "Family": "CdkPlaygroundCODEEc2ToEcsTrafficMirrorMirroringHandlerEcsTaskDefinitionEF9290AD",
+        "Memory": "2048",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "FARGATE",
+        ],
+        "RuntimePlatform": {
+          "CpuArchitecture": "ARM64",
+          "OperatingSystemFamily": "LINUX",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
+            "Ec2ToEcsTrafficMirrorMirroringHandlerEcsTaskDefinitionTaskRoleD1815E9F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "Ec2ToEcsTrafficMirrorMirroringHandlerEcsTaskDefinitionExecutionRoleB56761CF": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "Ec2ToEcsTrafficMirrorMirroringHandlerEcsTaskDefinitionExecutionRoleDefaultPolicy729407C4": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "Ec2ToEcsTrafficMirrorMirroringHandlerHealthCheckLogGroup0F60D809",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecr:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":repository/guardian/cdk-playground",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "Ec2ToEcsTrafficMirrorMirroringHandlerLogGroup3B3619EE",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": "arn:aws:ecr:eu-west-1:694911143906:repository/aws-guardduty-agent-fargate",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "Ec2ToEcsTrafficMirrorMirroringHandlerEcsTaskDefinitionExecutionRoleDefaultPolicy729407C4",
+        "Roles": [
+          {
+            "Ref": "Ec2ToEcsTrafficMirrorMirroringHandlerEcsTaskDefinitionExecutionRoleB56761CF",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "Ec2ToEcsTrafficMirrorMirroringHandlerEcsTaskDefinitionTaskRoleD1815E9F": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "Ec2ToEcsTrafficMirrorMirroringHandlerFargateService6F2CB37C": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "Ec2ToEcsTrafficMirrorMirroringHandlerEcsTaskDefinitionTaskRoleD1815E9F",
+        "Ec2ToEcsTrafficMirrorMirroringHandlerNLBMirroringHandlerListenerECSHandlersGroupCB72232A",
+        "Ec2ToEcsTrafficMirrorMirroringHandlerNLBMirroringHandlerListenerDC91CFB0",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "Cluster": {
+          "Ref": "Ec2ToEcsTrafficMirrorMirroringHandlerEcsClusterAD96951F",
+        },
+        "DeploymentConfiguration": {
+          "Alarms": {
+            "AlarmNames": [],
+            "Enable": false,
+            "Rollback": false,
+          },
+          "MaximumPercent": 200,
+          "MinimumHealthyPercent": 100,
+        },
+        "EnableECSManagedTags": false,
+        "HealthCheckGracePeriodSeconds": 60,
+        "LaunchType": "FARGATE",
+        "LoadBalancers": [
+          {
+            "ContainerName": "MirroringHandlerHealthCheckContainer",
+            "ContainerPort": 80,
+            "TargetGroupArn": {
+              "Ref": "Ec2ToEcsTrafficMirrorMirroringHandlerNLBMirroringHandlerListenerECSHandlersGroupCB72232A",
+            },
+          },
+        ],
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "AssignPublicIp": "DISABLED",
+            "SecurityGroups": [
+              {
+                "Fn::GetAtt": [
+                  "GuHttpsEgressSecurityGroupUndefinedecs0AE96607",
+                  "GroupId",
+                ],
+              },
+            ],
+            "Subnets": {
+              "Ref": "cdkplaygroundPrivateSubnets",
+            },
+          },
+        },
+        "PropagateTags": "SERVICE",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "TaskDefinition": {
+          "Ref": "Ec2ToEcsTrafficMirrorMirroringHandlerEcsTaskDefinitionCCF3FF96",
+        },
+      },
+      "Type": "AWS::ECS::Service",
+    },
+    "Ec2ToEcsTrafficMirrorMirroringHandlerFargateServiceTaskCountTargetA8CB8FA8": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "Ec2ToEcsTrafficMirrorMirroringHandlerEcsTaskDefinitionTaskRoleD1815E9F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "MaxCapacity": 1,
+        "MinCapacity": 0,
+        "ResourceId": {
+          "Fn::Join": [
+            "",
+            [
+              "service/",
+              {
+                "Ref": "Ec2ToEcsTrafficMirrorMirroringHandlerEcsClusterAD96951F",
+              },
+              "/",
+              {
+                "Fn::GetAtt": [
+                  "Ec2ToEcsTrafficMirrorMirroringHandlerFargateService6F2CB37C",
+                  "Name",
+                ],
+              },
+            ],
+          ],
+        },
+        "RoleARN": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":iam::",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService",
+            ],
+          ],
+        },
+        "ScalableDimension": "ecs:service:DesiredCount",
+        "ServiceNamespace": "ecs",
+      },
+      "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
+    },
+    "Ec2ToEcsTrafficMirrorMirroringHandlerHealthCheckLogGroup0F60D809": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "LogGroupName": "deploy/CODE//mirroring-health-check-logs",
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "Ec2ToEcsTrafficMirrorMirroringHandlerLogGroup3B3619EE": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "LogGroupName": "deploy/CODE//mirroring-handler-logs",
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "Ec2ToEcsTrafficMirrorMirroringHandlerNLB41FDD9B0": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "LoadBalancerAttributes": [
+          {
+            "Key": "deletion_protection.enabled",
+            "Value": "false",
+          },
+        ],
+        "Scheme": "internal",
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "GuHttpsEgressSecurityGroupUndefinednlbE4C4AA16",
+              "GroupId",
+            ],
+          },
+        ],
+        "Subnets": {
+          "Ref": "cdkplaygroundPrivateSubnets",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "Type": "network",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+    },
+    "Ec2ToEcsTrafficMirrorMirroringHandlerNLBMirroringHandlerListenerDC91CFB0": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "DefaultActions": [
+          {
+            "TargetGroupArn": {
+              "Ref": "Ec2ToEcsTrafficMirrorMirroringHandlerNLBMirroringHandlerListenerECSHandlersGroupCB72232A",
+            },
+            "Type": "forward",
+          },
+        ],
+        "LoadBalancerArn": {
+          "Ref": "Ec2ToEcsTrafficMirrorMirroringHandlerNLB41FDD9B0",
+        },
+        "Port": 4789,
+        "Protocol": "UDP",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+    },
+    "Ec2ToEcsTrafficMirrorMirroringHandlerNLBMirroringHandlerListenerECSHandlersGroupCB72232A": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "HealthCheckPort": "80",
+        "HealthCheckProtocol": "TCP",
+        "Port": 4789,
+        "Protocol": "UDP",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "TargetType": "ip",
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+    },
+    "Ec2ToEcsTrafficMirrorSessionAttacherLambdaCA9F6846": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "Ec2ToEcsTrafficMirrorSessionAttacherLambdaServiceRoleDefaultPolicyA9AD3ECB",
+        "Ec2ToEcsTrafficMirrorSessionAttacherLambdaServiceRoleBCEFCFAB",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "Code": {
+          "ZipFile": "
+		      const { EC2Client, DescribeInstancesCommand, CreateTrafficMirrorSessionCommand } = require('@aws-sdk/client-ec2');
+		      const ec2 = new EC2Client();
+
+		      exports.handler = async (event) => {
+		        const instanceId = event.detail.EC2InstanceId;
+		        const targetId = process.env.TARGET_ID;
+		        const filterId = process.env.FILTER_ID;
+
+		        console.log(\`Processing launch event for instance: \${instanceId}\`);
+
+		        // Fetch instance details to get primary ENI ID
+		        const describeRes = await ec2.send(new DescribeInstancesCommand({ InstanceIds: [instanceId] }));
+		        const instance = describeRes.Reservations?.[0]?.Instances?.[0];
+		        const primaryEniId = instance?.NetworkInterfaces?.[0]?.NetworkInterfaceId;
+
+		        if (!primaryEniId) {
+		          throw new Error(\`Unable to find primary ENI for instance: \${instanceId}\`);
+		        }
+
+		        // Attach Traffic Mirror Session (ASG instance ENI -> EC2 Worker Target ENI)
+		        const sessionRes = await ec2.send(new CreateTrafficMirrorSessionCommand({
+		          NetworkInterfaceId: primaryEniId,
+		          TrafficMirrorTargetId: targetId,
+		          TrafficMirrorFilterId: filterId,
+		          SessionNumber: 1,
+		          Description: \`Auto-attached traffic mirror for instance \${instanceId}\`,
+		        }));
+
+		        console.log(\`Successfully created session: \${sessionRes.TrafficMirrorSession.TrafficMirrorSessionId}\`);
+		      };
+		    ",
+        },
+        "Environment": {
+          "Variables": {
+            "FILTER_ID": {
+              "Fn::GetAtt": [
+                "Ec2ToEcsTrafficMirrorFilter8854C552",
+                "Id",
+              ],
+            },
+            "TARGET_ID": {
+              "Fn::GetAtt": [
+                "Ec2ToEcsTrafficMirrorTarget64F0FC7C",
+                "Id",
+              ],
+            },
+          },
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "Ec2ToEcsTrafficMirrorSessionAttacherLambdaServiceRoleBCEFCFAB",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs24.x",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "Timeout": 30,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "Ec2ToEcsTrafficMirrorSessionAttacherLambdaServiceRoleBCEFCFAB": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "Ec2ToEcsTrafficMirrorSessionAttacherLambdaServiceRoleDefaultPolicyA9AD3ECB": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "ec2:DescribeInstances",
+                "ec2:CreateTrafficMirrorSession",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "Ec2ToEcsTrafficMirrorSessionAttacherLambdaServiceRoleDefaultPolicyA9AD3ECB",
+        "Roles": [
+          {
+            "Ref": "Ec2ToEcsTrafficMirrorSessionAttacherLambdaServiceRoleBCEFCFAB",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "Ec2ToEcsTrafficMirrorTarget64F0FC7C": {
+      "DependsOn": [
+        "AutoScalingGroupCdkplaygroundASGD6E49F0F",
+        "LoadBalancerCdkplayground7C6B4D97",
+        "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplayground610B4DD790000DEACC63",
+        "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundCODEGuHttpsEgressSecurityGroupCdkplaygroundecsA834682C900045F0D1E9",
+      ],
+      "Properties": {
+        "Description": "Traffic mirror target created by Ec2ToEcsTrafficMirror",
+        "NetworkLoadBalancerArn": {
+          "Ref": "Ec2ToEcsTrafficMirrorMirroringHandlerNLB41FDD9B0",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::TrafficMirrorTarget",
     },
     "EcsService81FC6EF6": {
       "DependsOn": [
@@ -1014,6 +2072,94 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         "ToPort": 9000,
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "GuHttpsEgressSecurityGroupUndefinedecs0AE96607": {
+      "Properties": {
+        "GroupDescription": "Allow all outbound HTTPS traffic",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound HTTPS traffic",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "undefined-ecs",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "GuHttpsEgressSecurityGroupUndefinednlbE4C4AA16": {
+      "Properties": {
+        "GroupDescription": "Allow all outbound HTTPS traffic",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound HTTPS traffic",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "undefined-nlb",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
     },
     "GuLogShippingPolicy981BFE5A": {
       "Properties": {
