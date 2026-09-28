@@ -42,7 +42,7 @@ jobs:
           BUILD_TIME: ${{ needs.facts.outputs.buildTime }}
         run: sbt Docker/publishLocal
       - name: Publish Image
-        uses: guardian/actions-publish-image@ash/no-more-build-facts
+        uses: guardian/actions-publish-image@ash/split-action-up
         id: publish-image
         with:
           roleArn: ${{ secrets.GU_ARTIFACTS_ROLE_ARN }}
