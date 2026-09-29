@@ -44,8 +44,8 @@ export class CdkPlaygroundEcs extends GuStack {
 				cpu: 1024,
 				repositoryName: 'guardian/cdk-playground',
 				scaling: {
-					minimumTasks: 1,
-					maximumTasks: 2,
+					minimumTasks: 3,
+					maximumTasks: 18,
 				},
 			},
 		});

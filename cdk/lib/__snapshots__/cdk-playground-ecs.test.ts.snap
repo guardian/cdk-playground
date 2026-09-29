@@ -287,8 +287,8 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         "EcsTaskDefinitionTaskRoleB7B6D8DD",
       ],
       "Properties": {
-        "MaxCapacity": 2,
-        "MinCapacity": 1,
+        "MaxCapacity": 18,
+        "MinCapacity": 3,
         "ResourceId": {
           "Fn::Join": [
             "",
