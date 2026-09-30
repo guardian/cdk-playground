@@ -1003,6 +1003,24 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       },
       "Type": "AWS::IAM::Policy",
     },
+    "cdkplaygroundCpuScaling387C44F9": {
+      "Properties": {
+        "PolicyName": "CdkPlaygroundEcsCODEcdkplaygroundCpuScaling50825F5C",
+        "PolicyType": "TargetTrackingScaling",
+        "ScalingTargetId": {
+          "Ref": "EcsServiceTaskCountTarget02FCCE22",
+        },
+        "TargetTrackingScalingPolicyConfiguration": {
+          "PredefinedMetricSpecification": {
+            "PredefinedMetricType": "ECSServiceAverageCPUUtilizationHighResolution",
+          },
+          "ScaleInCooldown": 60,
+          "ScaleOutCooldown": 60,
+          "TargetValue": 20,
+        },
+      },
+      "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+    },
     "cdkplaygroundECSInfrastructureRoleEF7E0071": {
       "Properties": {
         "AssumeRolePolicyDocument": {

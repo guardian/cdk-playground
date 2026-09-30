@@ -46,6 +46,11 @@ export class CdkPlaygroundEcs extends GuStack {
 				scaling: {
 					minimumTasks: 3,
 					maximumTasks: 18,
+					cpuScaling: {
+						targetValue: 20,
+						scaleInCooldown: Duration.seconds(60),
+						scaleOutCooldown: Duration.seconds(60),
+					},
 				},
 			},
 		});
