@@ -21,7 +21,7 @@
 		"@guardian/cdk": "64.4.0",
 		"@guardian/eslint-config": "16.0.0",
 		"@guardian/prettier": "11.0.0",
-		"@types/aws-lambda": "8.10.162",
+		"@types/aws-lambda": "8.10.163",
 		"@types/jest": "^30.0.0",
 		"@types/node": "26.5.0",
 		"esbuild": "0.28.2",
