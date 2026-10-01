@@ -40,12 +40,12 @@ export class CdkPlaygroundEcs extends GuStack {
 			monitoringConfiguration: { noMonitoring: true },
 			ecsProps: {
 				imageIdentifier,
-				memoryLimitMiB: 2048,
-				cpu: 1024,
+				memoryLimitMiB: 4096,
+				cpu: 2048,
 				repositoryName: 'guardian/cdk-playground',
 				scaling: {
-					minimumTasks: 3,
-					maximumTasks: 18,
+					minimumTasks: 9,
+					maximumTasks: 90,
 					cpuScaling: {
 						targetValue: 20,
 						scaleInCooldown: Duration.seconds(60),

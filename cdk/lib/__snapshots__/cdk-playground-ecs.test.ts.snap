@@ -287,8 +287,8 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         "EcsTaskDefinitionTaskRoleB7B6D8DD",
       ],
       "Properties": {
-        "MaxCapacity": 18,
-        "MinCapacity": 3,
+        "MaxCapacity": 90,
+        "MinCapacity": 9,
         "ResourceId": {
           "Fn::Join": [
             "",
@@ -446,7 +446,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             "VersionConsistency": "disabled",
           },
         ],
-        "Cpu": "1024",
+        "Cpu": "2048",
         "ExecutionRoleArn": {
           "Fn::GetAtt": [
             "EcsTaskDefinitionExecutionRoleBE450C73",
@@ -454,7 +454,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           ],
         },
         "Family": "CdkPlaygroundEcsCODEEcsTaskDefinitionF3F230E3",
-        "Memory": "2048",
+        "Memory": "4096",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "MANAGED_INSTANCES",
@@ -1205,10 +1205,10 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                 "current",
               ],
               "MemoryMiB": {
-                "Min": 2048,
+                "Min": 4096,
               },
               "VCpuCount": {
-                "Min": 1,
+                "Min": 2,
               },
             },
             "NetworkConfiguration": {
