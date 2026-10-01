@@ -19,13 +19,13 @@ lazy val root = (project in file("."))
   .settings(
     name := """cdk-playground""",
     version := "1.0-SNAPSHOT",
-    scalaVersion := "2.13.18",
+    scalaVersion := "3.9.0",
     scalacOptions ++= List(
       "-encoding", "utf8",
       "-deprecation",
       "-feature",
       "-unchecked",
-      "-Xfatal-warnings"
+      "-Werror"
     ),
     Universal / javaOptions ++= Seq(
       s"-Dpidfile.path=/dev/null",
