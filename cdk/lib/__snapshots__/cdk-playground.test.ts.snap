@@ -52,8 +52,8 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
       "Description": "S3 bucket to store your access logs",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "DeployToolsAccountIdParameter": {
-      "Default": "/organisation/accounts/deployTools",
+    "ArtifactAccountIdParameter": {
+      "Default": "/organisation/accounts/artifacts",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "DistributionBucketName": {
@@ -365,6 +365,14 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         "ListenerCdkplaygroundA8D9CA6F",
       ],
       "Properties": {
+        "CapacityProviderStrategy": [
+          {
+            "CapacityProvider": {
+              "Ref": "cdkplaygroundManagedInstancesCapacityProvider4E4FAC73",
+            },
+            "Weight": 1,
+          },
+        ],
         "Cluster": {
           "Ref": "cdkplaygroundEcsClusterF9ADCF3E",
         },
@@ -386,7 +394,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         },
         "EnableECSManagedTags": false,
         "HealthCheckGracePeriodSeconds": 60,
-        "LaunchType": "FARGATE",
         "LoadBalancers": [
           {
             "ContainerName": "cdk-playground",
@@ -396,6 +403,17 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
             },
           },
         ],
+        "Monitoring": {
+          "MetricConfigurations": [
+            {
+              "MetricNames": [
+                "CPUUtilization",
+                "MemoryUtilization",
+              ],
+              "ResolutionSeconds": 20,
+            },
+          ],
+        },
         "NetworkConfiguration": {
           "AwsvpcConfiguration": {
             "AssignPublicIp": "DISABLED",
@@ -528,7 +546,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
                 "",
                 [
                   {
-                    "Ref": "DeployToolsAccountIdParameter",
+                    "Ref": "ArtifactAccountIdParameter",
                   },
                   ".dkr.ecr.eu-west-1.",
                   {
@@ -620,12 +638,8 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         "Memory": "2048",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
-          "FARGATE",
+          "MANAGED_INSTANCES",
         ],
-        "RuntimePlatform": {
-          "CpuArchitecture": "ARM64",
-          "OperatingSystemFamily": "LINUX",
-        },
         "Tags": [
           {
             "Key": "App",
@@ -730,7 +744,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
                     },
                     ":ecr:eu-west-1:",
                     {
-                      "Ref": "DeployToolsAccountIdParameter",
+                      "Ref": "ArtifactAccountIdParameter",
                     },
                     ":repository/guardian/cdk-playground",
                   ],
@@ -1548,8 +1562,134 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
       },
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
     },
+    "cdkplaygroundECSInfrastructureRoleEF7E0071": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/AmazonECSInfrastructureRolePolicyForManagedInstances",
+        ],
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "iam:PassRole",
+                  "Condition": {
+                    "StringLike": {
+                      "iam:PassedToService": "ec2.*",
+                    },
+                  },
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::GetAtt": [
+                      "cdkplaygroundECSManagedInstancesRole96480596",
+                      "Arn",
+                    ],
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "PassInstanceRoleToEC2",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "cdkplaygroundECSManagedInstancesProfile29E82C8A": {
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "cdkplaygroundECSManagedInstancesRole96480596",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::InstanceProfile",
+    },
+    "cdkplaygroundECSManagedInstancesRole96480596": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ec2.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/AmazonECSInstanceRolePolicyForManagedInstances",
+          "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
     "cdkplaygroundEcsClusterF9ADCF3E": {
       "Properties": {
+        "ClusterSettings": [
+          {
+            "Name": "containerInsights",
+            "Value": "enhanced",
+          },
+        ],
         "Tags": [
           {
             "Key": "App",
@@ -1578,6 +1718,83 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         ],
       },
       "Type": "AWS::ECS::Cluster",
+    },
+    "cdkplaygroundManagedInstancesCapacityProvider4E4FAC73": {
+      "Properties": {
+        "ClusterName": {
+          "Ref": "cdkplaygroundEcsClusterF9ADCF3E",
+        },
+        "ManagedInstancesProvider": {
+          "InfrastructureRoleArn": {
+            "Fn::GetAtt": [
+              "cdkplaygroundECSInfrastructureRoleEF7E0071",
+              "Arn",
+            ],
+          },
+          "InstanceLaunchTemplate": {
+            "Ec2InstanceProfileArn": {
+              "Fn::GetAtt": [
+                "cdkplaygroundECSManagedInstancesProfile29E82C8A",
+                "Arn",
+              ],
+            },
+            "InstanceRequirements": {
+              "CpuManufacturers": [
+                "amazon-web-services",
+              ],
+              "InstanceGenerations": [
+                "current",
+              ],
+              "MemoryMiB": {
+                "Min": 2048,
+              },
+              "VCpuCount": {
+                "Min": 1,
+              },
+            },
+            "NetworkConfiguration": {
+              "SecurityGroups": [
+                {
+                  "Fn::GetAtt": [
+                    "GuHttpsEgressSecurityGroupCdkplaygroundecs59F0C490",
+                    "GroupId",
+                  ],
+                },
+              ],
+              "Subnets": {
+                "Ref": "cdkplaygroundPrivateSubnets",
+              },
+            },
+          },
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::CapacityProvider",
     },
     "deployCODEcdkplaygroundCA0A63B1": {
       "DependsOn": [
