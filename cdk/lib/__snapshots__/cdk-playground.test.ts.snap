@@ -52,8 +52,8 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
       "Description": "S3 bucket to store your access logs",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "DeployToolsAccountIdParameter": {
-      "Default": "/organisation/accounts/deployTools",
+    "ArtifactAccountIdParameter": {
+      "Default": "/organisation/accounts/artifacts",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "DistributionBucketName": {
@@ -396,6 +396,17 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
             },
           },
         ],
+        "Monitoring": {
+          "MetricConfigurations": [
+            {
+              "MetricNames": [
+                "CPUUtilization",
+                "MemoryUtilization",
+              ],
+              "ResolutionSeconds": 20,
+            },
+          ],
+        },
         "NetworkConfiguration": {
           "AwsvpcConfiguration": {
             "AssignPublicIp": "DISABLED",
@@ -528,7 +539,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
                 "",
                 [
                   {
-                    "Ref": "DeployToolsAccountIdParameter",
+                    "Ref": "ArtifactAccountIdParameter",
                   },
                   ".dkr.ecr.eu-west-1.",
                   {
@@ -730,7 +741,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
                     },
                     ":ecr:eu-west-1:",
                     {
-                      "Ref": "DeployToolsAccountIdParameter",
+                      "Ref": "ArtifactAccountIdParameter",
                     },
                     ":repository/guardian/cdk-playground",
                   ],
@@ -1550,6 +1561,12 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
     },
     "cdkplaygroundEcsClusterF9ADCF3E": {
       "Properties": {
+        "ClusterSettings": [
+          {
+            "Name": "containerInsights",
+            "Value": "enhanced",
+          },
+        ],
         "Tags": [
           {
             "Key": "App",
