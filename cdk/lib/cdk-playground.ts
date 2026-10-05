@@ -75,7 +75,7 @@ export class CdkPlayground extends GuStack {
 				imageIdentifier,
 				memoryLimitMiB: 2048,
 				cpu: 1024,
-				repositoryName: 'guardian/cdk-playground',
+				repositoryName: 'guardian/cdk-playground/cdk-playground',
 				scaling: {
 					minimumTasks: 1,
 					maximumTasks: 2,
