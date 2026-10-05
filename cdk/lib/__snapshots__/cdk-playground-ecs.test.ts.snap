@@ -364,7 +364,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/cdk-playground@sha256:12345",
+                  "/guardian/cdk-playground/cdk-playground@sha256:12345",
                 ],
               ],
             },
@@ -562,7 +562,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                     {
                       "Ref": "ArtifactAccountIdParameter",
                     },
-                    ":repository/guardian/cdk-playground",
+                    ":repository/guardian/cdk-playground/cdk-playground",
                   ],
                 ],
               },
