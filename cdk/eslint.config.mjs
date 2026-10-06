@@ -10,6 +10,10 @@ export default [
 		},
 		rules: {
 			'prettier/prettier': 'error',
+			'import/order': 'off',
 		},
+	},
+	{
+		ignores: ['vendor/**'],
 	},
 ];
