@@ -427,7 +427,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                   {
                     "Ref": "artifactsaccountidparameterParameter",
                   },
-                  ".dkr.ecr.eu-west-1.amazonaws.com/guardian/devx-logs/devx-logs:lifecycle-am-ac-publish-to-ecr-58",
+                  ".dkr.ecr.eu-west-1.amazonaws.com/guardian/cdk/logging:branch-a777m-devx-logs-changes",
                 ],
               ],
             },
