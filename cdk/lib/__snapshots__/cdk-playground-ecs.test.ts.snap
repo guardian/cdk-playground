@@ -12,8 +12,8 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       "GuArtifactsAccountId",
       "GuLoggingStreamNameParameter",
       "GuHttpsEgressSecurityGroup",
-      "GuECSManagedInstanceRole",
-      "GuECSInstanceRolePolicyForManagedInstances",
+      "GuECSManagedInstanceRoleExperimental",
+      "GuECSInstanceRolePolicyForManagedInstancesExperimental",
       "GuRiffRaffDeploymentIdParameterExperimental",
       "GuLogShippingPolicy",
       "GuParameterStoreReadPolicy",
@@ -366,6 +366,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       "DependsOn": [
         "EcsTaskDefinitionTaskRoleB7B6D8DD",
         "ListenerCdkplaygroundA8D9CA6F",
+        "ManagedInstancesCapacityProviderC2946447",
       ],
       "Properties": {
         "CapacityProviderStrategy": [
@@ -469,6 +470,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
     "EcsServiceTaskCountTarget02FCCE22": {
       "DependsOn": [
         "EcsTaskDefinitionTaskRoleB7B6D8DD",
+        "ManagedInstancesCapacityProviderC2946447",
       ],
       "Properties": {
         "MaxCapacity": 2,
