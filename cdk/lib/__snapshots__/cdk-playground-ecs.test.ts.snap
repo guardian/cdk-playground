@@ -364,6 +364,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
     },
     "EcsService81FC6EF6": {
       "DependsOn": [
+        "ECSInstanceProfileBA4A4DA9",
         "EcsTaskDefinitionTaskRoleB7B6D8DD",
         "ListenerCdkplaygroundA8D9CA6F",
         "ManagedInstancesCapacityProviderC2946447",
@@ -469,6 +470,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
     },
     "EcsServiceTaskCountTarget02FCCE22": {
       "DependsOn": [
+        "ECSInstanceProfileBA4A4DA9",
         "EcsTaskDefinitionTaskRoleB7B6D8DD",
         "ManagedInstancesCapacityProviderC2946447",
       ],
