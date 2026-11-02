@@ -42,7 +42,7 @@ jobs:
           BUILD_TIME: ${{ needs.facts.outputs.buildTime }}
         run: sbt Docker/publishLocal
       - name: Publish Image
-        uses: guardian/actions-ecr/push@v1.0.0
+        uses: guardian/actions-ecr/push@aa/scout
         id: publish-image
         with:
           app: cdk-playground
