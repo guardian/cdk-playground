@@ -47,7 +47,6 @@ export class CdkPlaygroundEcs extends GuStack {
 					minimumTasks: 1,
 					maximumTasks: 2,
 				},
-				managedInstancesProps: {},
 				provisionManagedSecurityRole: true,
 			},
 		});
