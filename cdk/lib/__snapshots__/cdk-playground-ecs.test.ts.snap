@@ -8,11 +8,15 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       "GuSubnetListParameter",
       "GuSubnetListParameter",
       "GuLoadBalancedAppExperimental",
+      "GuRepository",
+      "GuArtifactsAccountId",
       "GuLoggingStreamNameParameter",
+      "GuHttpsEgressSecurityGroup",
+      "GuECSManagedInstanceRoleExperimental",
+      "GuECSInstanceRolePolicyForManagedInstancesExperimental",
       "GuRiffRaffDeploymentIdParameterExperimental",
       "GuLogShippingPolicy",
       "GuParameterStoreReadPolicy",
-      "GuHttpsEgressSecurityGroup",
       "GuApplicationTargetGroup",
       "GuCertificate",
       "GuApplicationLoadBalancer",
@@ -39,8 +43,9 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       "Description": "S3 bucket to store your access logs",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "ArtifactAccountIdParameter": {
+    "ArtifactsAccountId": {
       "Default": "/organisation/accounts/artifacts",
+      "Description": "Account ID of the Artifacts account. Useful as some shared resources live here.",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "LoggingStreamName": {
@@ -161,6 +166,118 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       "Type": "AWS::CertificateManager::Certificate",
       "UpdateReplacePolicy": "Retain",
     },
+    "ECSInstanceProfileBA4A4DA9": {
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "ECSManagedInstancesRole1E652558",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::InstanceProfile",
+    },
+    "ECSInstanceRolePolicyD0240271": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ecs:DiscoverPollEndpoint",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": "ecs:RegisterContainerInstance",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "cdkplaygroundEcsClusterF9ADCF3E",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "ecs:Poll",
+              "Effect": "Allow",
+              "Resource": [
+                "arn:aws:ecs:*:*:container-instance/*",
+                "arn:aws:ecs:*:*:task-set/*",
+              ],
+            },
+            {
+              "Action": [
+                "ecs:StartTelemetrySession",
+                "ecs:PutSystemLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "arn:aws:ecs:*:*:container-instance/*",
+            },
+            {
+              "Action": [
+                "ecs:SubmitAttachmentStateChanges",
+                "ecs:SubmitTaskStateChange",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "cdkplaygroundEcsClusterF9ADCF3E",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ECSInstanceRolePolicyD0240271",
+        "Roles": [
+          {
+            "Ref": "ECSManagedInstancesRole1E652558",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ECSManagedInstancesRole1E652558": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ec2.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
     "EcsDns": {
       "Properties": {
         "Name": "cdk-playground-ecs.code.dev-gutools.co.uk",
@@ -232,7 +349,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             "SecurityGroups": [
               {
                 "Fn::GetAtt": [
-                  "GuHttpsEgressSecurityGroupCdkplaygroundecs59F0C490",
+                  "EcsServiceSecurityGroup8FDFD52F",
                   "GroupId",
                 ],
               },
@@ -274,6 +391,75 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         },
       },
       "Type": "AWS::ECS::Service",
+    },
+    "EcsServiceSecurityGroup8FDFD52F": {
+      "DependsOn": [
+        "EcsTaskDefinitionTaskRoleB7B6D8DD",
+      ],
+      "Properties": {
+        "GroupDescription": "CdkPlaygroundEcs-CODE/EcsService/SecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cdk-playground",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-playground",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "devx::cdk-playground",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "EcsServiceSecurityGroupfromCdkPlaygroundEcsCODELoadBalancerCdkplaygroundSecurityGroup658128409000F7F2AEA9": {
+      "DependsOn": [
+        "EcsTaskDefinitionTaskRoleB7B6D8DD",
+      ],
+      "Properties": {
+        "Description": "Load balancer to target",
+        "FromPort": 9000,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "EcsServiceSecurityGroup8FDFD52F",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
+            "GroupId",
+          ],
+        },
+        "ToPort": 9000,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
     },
     "EcsServiceTaskCountTarget02FCCE22": {
       "DependsOn": [
@@ -358,7 +544,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                 "",
                 [
                   {
-                    "Ref": "ArtifactAccountIdParameter",
+                    "Ref": "ArtifactsAccountId",
                   },
                   ".dkr.ecr.eu-west-1.",
                   {
@@ -560,7 +746,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
                     },
                     ":ecr:eu-west-1:",
                     {
-                      "Ref": "ArtifactAccountIdParameter",
+                      "Ref": "ArtifactsAccountId",
                     },
                     ":repository/guardian/cdk-playground/cdk-playground",
                   ],
@@ -726,27 +912,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
-    },
-    "GuHttpsEgressSecurityGroupCdkplaygroundecsfromCdkPlaygroundEcsCODELoadBalancerCdkplaygroundSecurityGroup658128409000DE48CFEB": {
-      "Properties": {
-        "Description": "Load balancer to target",
-        "FromPort": 9000,
-        "GroupId": {
-          "Fn::GetAtt": [
-            "GuHttpsEgressSecurityGroupCdkplaygroundecs59F0C490",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": {
-          "Fn::GetAtt": [
-            "LoadBalancerCdkplaygroundSecurityGroupAE8BCA05",
-            "GroupId",
-          ],
-        },
-        "ToPort": 9000,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
     },
     "GuLogShippingPolicy981BFE5A": {
       "Properties": {
@@ -928,12 +1093,12 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundEcsCODEGuHttpsEgressSecurityGroupCdkplaygroundecsD24FE46B9000F65AA812": {
+    "LoadBalancerCdkplaygroundSecurityGrouptoCdkPlaygroundEcsCODEEcsServiceSecurityGroup7825FDB3900014A76362": {
       "Properties": {
         "Description": "Load balancer to target",
         "DestinationSecurityGroupId": {
           "Fn::GetAtt": [
-            "GuHttpsEgressSecurityGroupCdkplaygroundecs59F0C490",
+            "EcsServiceSecurityGroup8FDFD52F",
             "GroupId",
           ],
         },
