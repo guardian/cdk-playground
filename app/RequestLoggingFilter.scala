@@ -39,7 +39,7 @@ class RequestLoggingFilter(override val mat: Materializer)(implicit ec: Executio
     )
 
     val markers = MarkerContext(appendEntries(mandatoryMarkers.asJava))
-    logger.info(s"""$originIp - "${request.method} ${request.uri} ${request.version}" ${response.header.status} $length "$referer" ${duration}ms""")(markers)
+    logger.info(s"""$originIp - "${request.method} ${request.uri} ${request.version}" ${response.header.status} $length "$referer" ${duration}ms""")(using markers)
   }
 
   private def logFailure(request: RequestHeader, throwable: Throwable, duration: Long): Unit = {
@@ -55,7 +55,7 @@ class RequestLoggingFilter(override val mat: Materializer)(implicit ec: Executio
     )
 
     val markers = MarkerContext(appendEntries(mandatoryMarkers.asJava))
-    logger.info(s"""$originIp - "${request.method} ${request.uri} ${request.version}" ERROR "$referer" ${duration}ms""")(markers)
+    logger.info(s"""$originIp - "${request.method} ${request.uri} ${request.version}" ERROR "$referer" ${duration}ms""")(using markers)
     logger.error(s"Error for ${request.method} ${request.uri}", throwable)
   }
 }
