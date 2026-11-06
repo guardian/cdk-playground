@@ -37,6 +37,9 @@ lazy val root = (project in file("."))
         "net.logstash.logback" % "logstash-logback-encoder" % "8.1",
         // Transient dependency of Play. No newer version of Play 2.9 or Play 3.0 with this vulnerability fixed.
         "ch.qos.logback" % "logback-classic" % "1.6.3",
+
+        // CVE-2026-102554
+        "com.google.guava" % "guava" % "33.7.2-jre"
       ),
 
     buildInfoKeys ++= Seq[BuildInfoKey](
