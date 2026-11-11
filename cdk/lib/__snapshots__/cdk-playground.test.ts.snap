@@ -21,6 +21,8 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
       "GuAutoScalingGroup",
       "GuApplicationTargetGroup",
       "GuRiffRaffDeploymentIdParameterExperimental",
+      "GuRepository",
+      "GuArtifactsAccountId",
       "GuHttpsEgressSecurityGroup",
       "GuApplicationTargetGroup",
       "GuCertificate",
@@ -52,8 +54,9 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
       "Description": "S3 bucket to store your access logs",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "ArtifactAccountIdParameter": {
+    "ArtifactsAccountId": {
       "Default": "/organisation/accounts/artifacts",
+      "Description": "Account ID of the Artifacts account. Useful as some shared resources live here.",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "DistributionBucketName": {
@@ -539,7 +542,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
                 "",
                 [
                   {
-                    "Ref": "ArtifactAccountIdParameter",
+                    "Ref": "ArtifactsAccountId",
                   },
                   ".dkr.ecr.eu-west-1.",
                   {
@@ -571,6 +574,11 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
             "VersionConsistency": "disabled",
           },
           {
+            "Command": [
+              "/bin/bash",
+              "-c",
+              "mkdir -p /tmp/guardian && printf '%s\\n' "$GU_FLUENT_BIT_PARSERS" > /tmp/guardian/guardian-parsers.conf && printf '%s\\n' "$GU_FLUENT_BIT_CONFIG" > /tmp/guardian/guardian.conf && exec /init/fluent_bit_init_entrypoint.sh",
+            ],
             "Environment": [
               {
                 "Name": "STACK",
@@ -592,12 +600,66 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
                 "Name": "GU_REPO",
                 "Value": "guardian/cdk-playground",
               },
+              {
+                "Name": "aws_fluent_bit_init_file_1",
+                "Value": "/tmp/guardian/guardian-parsers.conf",
+              },
+              {
+                "Name": "aws_fluent_bit_init_file_2",
+                "Value": "/ecs/ecs-metadata.conf",
+              },
+              {
+                "Name": "aws_fluent_bit_init_file_3",
+                "Value": "/tmp/guardian/guardian.conf",
+              },
+              {
+                "Name": "OUTPUT_PLUGIN",
+                "Value": "null",
+              },
+              {
+                "Name": "GU_FLUENT_BIT_PARSERS",
+                "Value": "
+[PARSER]
+    Name json
+    Format json
+    Time_Key time
+    Time_Format %Y-%m-%dT%H:%M:%SZ",
+              },
+              {
+                "Name": "GU_FLUENT_BIT_CONFIG",
+                "Value": "
+[FILTER]
+    Name modify
+    Match *
+    Rename log message
+
+[FILTER]
+    Name parser
+    Match *
+    Key_Name message
+    Parser json
+    Reserve_Data On
+
+[FILTER]
+    Name modify
+    Match *
+    Add ShippedBy devx-logs
+    Add stack \${STACK}
+    Add stage \${STAGE}
+    Add app \${APP}
+    Add gu:repo \${GU_REPO}
+    Add task \${TASK_NAME}
+
+[OUTPUT]
+    Name \${OUTPUT_PLUGIN}
+    Match *",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs@sha256:cf91724a5166f1c143e07958820aa2122afb61c164b68555d15cb92abb5acda0",
+            "Image": "public.ecr.aws/aws-observability/aws-for-fluent-bit:init-3.4.11@sha256:0aa2921b14e44b8f00e057c68a0a3bafb944261a1c5aac36362bf2e1be8bef4d",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -610,7 +672,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init",
+                "ContainerPath": "/tmp",
                 "ReadOnly": false,
                 "SourceVolume": "logging-volume",
               },
@@ -741,7 +803,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
                     },
                     ":ecr:eu-west-1:",
                     {
-                      "Ref": "ArtifactAccountIdParameter",
+                      "Ref": "ArtifactsAccountId",
                     },
                     ":repository/guardian/cdk-playground/cdk-playground",
                   ],
