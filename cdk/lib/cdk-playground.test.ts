@@ -4,7 +4,7 @@ import { CdkPlayground } from './cdk-playground';
 
 describe('The cdk-playground infrastructure definition', () => {
 	it('matches the snapshot', () => {
-		const app = new App({ outdir: '/tmp/cdk.out' });
+		const app = new App();
 		const stack = new CdkPlayground(app, 'CdkPlayground-CODE', {
 			buildIdentifier: 'TEST',
 			imageIdentifier: 'sha256:12345',

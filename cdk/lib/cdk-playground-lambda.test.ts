@@ -4,7 +4,7 @@ import { CdkPlaygroundLambda } from './cdk-playground-lambda';
 
 describe('The cdk-playground infrastructure definition', () => {
 	it('matches the snapshot for Lambda', () => {
-		const app = new App({ outdir: '/tmp/cdk.out' });
+		const app = new App();
 		const stack = new CdkPlaygroundLambda(app, 'CdkPlaygroundLambda-CODE', {
 			riffRaffProjectName: 'devx::cdk-playground',
 		});

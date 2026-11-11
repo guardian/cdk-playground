@@ -4,7 +4,7 @@ import { CdkPlaygroundEcs } from './cdk-playground-ecs';
 
 describe('The cdk-playground infrastructure definition', () => {
 	it('matches the snapshot for ECS', () => {
-		const app = new App({ outdir: '/tmp/cdk.out' });
+		const app = new App();
 		const stack = new CdkPlaygroundEcs(app, 'CdkPlaygroundEcs-CODE', {
 			imageIdentifier: 'sha256:12345',
 			riffRaffProjectName: 'devx::cdk-playground',
