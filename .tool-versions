@@ -1,2 +1,3 @@
 java corretto-21
 nodejs 24
+awscli 2.40.1

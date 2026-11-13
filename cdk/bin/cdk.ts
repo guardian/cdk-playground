@@ -20,7 +20,7 @@ const playground = new CdkPlayground(app, 'CdkPlayground-CODE', {
 
 new CdkPlayground(app, 'CdkPlaygroundDeveloperPlayground-CODE', {
 	stack: 'playground',
-	domainName: 'cdk-playground-developer-playground.code.dev-gutools.co.uk',
+	domainName: 'cdk-playground.code.dev-guardianapis.com',
 	buildIdentifier: process.env.GITHUB_RUN_NUMBER ?? 'DEV',
 	imageIdentifier: process.env.IMAGE_DIGEST ?? 'DEV',
 	riffRaffProjectName,
