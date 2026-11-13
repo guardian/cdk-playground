@@ -6,6 +6,8 @@ describe('The cdk-playground infrastructure definition', () => {
 	it('matches the snapshot', () => {
 		const app = new App({ outdir: '/tmp/cdk.out' });
 		const stack = new CdkPlayground(app, 'CdkPlayground-CODE', {
+			stack: 'deploy',
+			domainName: 'cdk-playground.code.dev-gutools.co.uk',
 			buildIdentifier: 'TEST',
 			imageIdentifier: 'sha256:12345',
 			riffRaffProjectName: 'devx::cdk-playground',

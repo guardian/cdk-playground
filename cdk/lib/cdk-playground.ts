@@ -6,7 +6,12 @@ import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 
-interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
+interface CdkPlaygroundProps extends Omit<GuStackProps, 'stage'> {
+	/**
+	 * The domain name to serve the application on.
+	 */
+	domainName: string;
+
 	/**
 	 * Which application build to run.
 	 * This will typically match the build number provided by CI.
@@ -29,14 +34,15 @@ export class CdkPlayground extends GuStack {
 	constructor(scope: App, id: string, props: CdkPlaygroundProps) {
 		super(scope, id, {
 			...props,
-			stack: 'deploy',
 			stage: 'CODE',
 			env: { region: 'eu-west-1' },
 		});
 
-		const { buildIdentifier, imageIdentifier } = props;
-
-		const ec2AppDomainName = 'cdk-playground.code.dev-gutools.co.uk';
+		const {
+			buildIdentifier,
+			imageIdentifier,
+			domainName: ec2AppDomainName,
+		} = props;
 
 		const ec2App = 'cdk-playground';
 
