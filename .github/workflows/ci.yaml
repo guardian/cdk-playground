@@ -75,8 +75,8 @@ jobs:
 
       - uses: guardian/setup-scala@v2
 
-      - run: npm ci
-        working-directory: cdk/vendor/guardian-cdk
+      # - run: npm ci
+      #   working-directory: cdk/vendor/guardian-cdk
 
       - run: npm ci
         working-directory: cdk
