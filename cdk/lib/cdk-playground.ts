@@ -28,6 +28,11 @@ interface CdkPlaygroundProps extends Omit<GuStackProps, 'stage'> {
 	 * @see https://docs.docker.com/dhi/core-concepts/digests
 	 */
 	imageIdentifier: string;
+
+	/**
+	 * Run zero ECS tasks and send all traffic to EC2.
+	 */
+	scaleEcsToZero?: boolean;
 }
 
 export class CdkPlayground extends GuStack {
@@ -42,6 +47,7 @@ export class CdkPlayground extends GuStack {
 			buildIdentifier,
 			imageIdentifier,
 			domainName: ec2AppDomainName,
+			scaleEcsToZero = false,
 		} = props;
 
 		const ec2App = 'cdk-playground';
@@ -83,13 +89,14 @@ export class CdkPlayground extends GuStack {
 				cpu: 1024,
 				repositoryName: 'guardian/cdk-playground/cdk-playground',
 				scaling: {
-					minimumTasks: 1,
-					maximumTasks: 2,
+					minimumTasks: scaleEcsToZero ? 0 : 1,
+					maximumTasks: scaleEcsToZero ? 0 : 2,
 				},
 			},
 			targetGroupWeights: {
 				ec2: 1,
-				ecs: 1,
+				// A weighted target group with no tasks would return 503s for its share of traffic
+				ecs: scaleEcsToZero ? 0 : 1,
 			},
 		});
 

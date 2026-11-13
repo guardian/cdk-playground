@@ -23,6 +23,7 @@ new CdkPlayground(app, 'CdkPlaygroundDeveloperPlayground-CODE', {
 	domainName: 'cdk-playground.code.dev-guardianapis.com',
 	buildIdentifier: process.env.GITHUB_RUN_NUMBER ?? 'DEV',
 	imageIdentifier: process.env.IMAGE_DIGEST ?? 'DEV',
+	scaleEcsToZero: true,
 	riffRaffProjectName,
 });
 
