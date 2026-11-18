@@ -581,26 +581,6 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
             ],
             "Environment": [
               {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "CODE",
-              },
-              {
-                "Name": "APP",
-                "Value": "cdk-playground",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "cdk-playground",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/cdk-playground",
-              },
-              {
                 "Name": "aws_fluent_bit_init_file_1",
                 "Value": "/tmp/guardian/guardian-parsers.conf",
               },
@@ -644,11 +624,12 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
     Name modify
     Match *
     Add ShippedBy devx-logs
-    Add stack \${STACK}
-    Add stage \${STAGE}
-    Add app \${APP}
-    Add gu:repo \${GU_REPO}
-    Add task \${TASK_NAME}
+    Add gu:logging-sidecar sha256:0aa2921b14e44b8f00e057c68a0a3bafb944261a1c5aac36362bf2e1be8bef4d
+    Add stack deploy
+    Add stage CODE
+    Add app cdk-playground
+    Add gu:repo guardian/cdk-playground
+    Add task cdk-playground
 
 [OUTPUT]
     Name \${OUTPUT_PLUGIN}
