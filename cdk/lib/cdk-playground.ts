@@ -6,7 +6,12 @@ import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 
-interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
+interface CdkPlaygroundProps extends Omit<GuStackProps, 'stage'> {
+	/**
+	 * The domain name to serve the application on.
+	 */
+	domainName: string;
+
 	/**
 	 * Which application build to run.
 	 * This will typically match the build number provided by CI.
@@ -23,20 +28,27 @@ interface CdkPlaygroundProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 	 * @see https://docs.docker.com/dhi/core-concepts/digests
 	 */
 	imageIdentifier: string;
+
+	/**
+	 * Run zero ECS tasks and send all traffic to EC2.
+	 */
+	scaleEcsToZero?: boolean;
 }
 
 export class CdkPlayground extends GuStack {
 	constructor(scope: App, id: string, props: CdkPlaygroundProps) {
 		super(scope, id, {
 			...props,
-			stack: 'deploy',
 			stage: 'CODE',
 			env: { region: 'eu-west-1' },
 		});
 
-		const { buildIdentifier, imageIdentifier } = props;
-
-		const ec2AppDomainName = 'cdk-playground.code.dev-gutools.co.uk';
+		const {
+			buildIdentifier,
+			imageIdentifier,
+			domainName: ec2AppDomainName,
+			scaleEcsToZero = false,
+		} = props;
 
 		const ec2App = 'cdk-playground';
 
@@ -77,13 +89,14 @@ export class CdkPlayground extends GuStack {
 				cpu: 1024,
 				repositoryName: 'guardian/cdk-playground/cdk-playground',
 				scaling: {
-					minimumTasks: 1,
-					maximumTasks: 2,
+					minimumTasks: scaleEcsToZero ? 0 : 1,
+					maximumTasks: scaleEcsToZero ? 0 : 2,
 				},
 			},
 			targetGroupWeights: {
 				ec2: 1,
-				ecs: 1,
+				// A weighted target group with no tasks would return 503s for its share of traffic
+				ecs: scaleEcsToZero ? 0 : 1,
 			},
 		});
 
