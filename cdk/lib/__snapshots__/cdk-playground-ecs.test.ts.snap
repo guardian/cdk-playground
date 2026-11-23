@@ -1221,6 +1221,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
               },
             },
           },
+          "PropagateTags": "CAPACITY_PROVIDER",
         },
         "Tags": [
           {
