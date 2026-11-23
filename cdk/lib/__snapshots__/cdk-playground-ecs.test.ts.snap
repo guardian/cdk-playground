@@ -651,7 +651,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             "VersionConsistency": "disabled",
           },
         ],
-        "Cpu": "1024",
+        "Cpu": "2048",
         "ExecutionRoleArn": {
           "Fn::GetAtt": [
             "EcsTaskDefinitionExecutionRoleBE450C73",
@@ -659,7 +659,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           ],
         },
         "Family": "CdkPlaygroundEcsCODEEcsTaskDefinitionF3F230E3",
-        "Memory": "2048",
+        "Memory": "1024",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "MANAGED_INSTANCES",
@@ -1197,14 +1197,14 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             },
             "InstanceRequirements": {
               "AllowedInstanceTypes": [
-                "t4g.*",
+                "t4g.small",
               ],
               "BurstablePerformance": "required",
               "MemoryMiB": {
                 "Min": 2048,
               },
               "VCpuCount": {
-                "Min": 1,
+                "Min": 2,
               },
             },
             "NetworkConfiguration": {
