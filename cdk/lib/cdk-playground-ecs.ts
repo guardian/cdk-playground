@@ -48,13 +48,11 @@ export class CdkPlaygroundEcs extends GuStack {
 					minimumTasks: 1,
 					maximumTasks: 2,
 				},
-				managedInstancesProps: {
-					instancesRequirements: {
-						memoryMin: Size.mebibytes(2048),
-						burstablePerformance: BurstablePerformance.REQUIRED,
-						vCpuCountMin: 1,
-						allowedInstanceTypes: ['t4g.*'],
-					},
+				instancesRequirements: {
+					memoryMin: Size.mebibytes(2048),
+					burstablePerformance: BurstablePerformance.REQUIRED,
+					vCpuCountMin: 1,
+					allowedInstanceTypes: ['t4g.*'],
 				},
 			},
 		});
