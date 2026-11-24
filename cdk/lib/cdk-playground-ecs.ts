@@ -4,7 +4,6 @@ import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuLoadBalancedAppExperimental } from '@guardian/cdk/lib/experimental/patterns/gu-load-balanced-app';
 import type { App } from 'aws-cdk-lib';
 import { Duration, Size } from 'aws-cdk-lib';
-import { BurstablePerformance } from 'aws-cdk-lib/aws-ec2';
 
 interface CdkPlaygroundEcsProps extends Omit<GuStackProps, 'stack' | 'stage'> {
 	/**
@@ -41,8 +40,8 @@ export class CdkPlaygroundEcs extends GuStack {
 			monitoringConfiguration: { noMonitoring: true },
 			ecsProps: {
 				imageIdentifier,
-				cpu: 2048,
-				memoryLimitMiB: 1024,
+				cpu: 1024,
+				memoryLimitMiB: 1280,
 				repositoryName: 'guardian/cdk-playground/cdk-playground',
 				scaling: {
 					minimumTasks: 1,
@@ -50,9 +49,8 @@ export class CdkPlaygroundEcs extends GuStack {
 				},
 				instancesRequirements: {
 					memoryMin: Size.mebibytes(2048),
-					burstablePerformance: BurstablePerformance.REQUIRED,
-					vCpuCountMin: 2,
-					allowedInstanceTypes: ['t4g.small'],
+					vCpuCountMin: 1,
+					allowedInstanceTypes: ['c8g.medium'],
 				},
 			},
 		});
