@@ -659,7 +659,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
           ],
         },
         "Family": "CdkPlaygroundEcsCODEEcsTaskDefinitionF3F230E3",
-        "Memory": "2048",
+        "Memory": "1280",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "MANAGED_INSTANCES",
@@ -1197,9 +1197,8 @@ exports[`The cdk-playground infrastructure definition matches the snapshot for E
             },
             "InstanceRequirements": {
               "AllowedInstanceTypes": [
-                "t4g.*",
+                "c8g.medium",
               ],
-              "BurstablePerformance": "required",
               "MemoryMiB": {
                 "Min": 2048,
               },
