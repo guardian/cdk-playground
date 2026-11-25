@@ -1,4 +1,4 @@
-# CDK Playground
+# CDK Playground!
 
 A minimal Scala Play app running in EC2 using infrastructure provided by [@guardian/cdk](https://github.com/guardian/cdk) (aka GuCDK).
 
