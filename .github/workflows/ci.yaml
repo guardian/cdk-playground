@@ -111,7 +111,7 @@ jobs:
               mv target/cdk-playground_1.0-SNAPSHOT_all.deb "dist/cdk-playground/cdk-playground-$GITHUB_RUN_NUMBER.deb"
 
       # Upload our build artifacts to Riff-Raff (well, S3)
-      - uses: guardian/actions-riff-raff@c9b8f7d84576e857a8005a61708ab5c1e071515b
+      - uses: guardian/actions-riff-raff@1f7155f05ef951bd79ef4674c66a319349670452
         with:
           projectName: devx::cdk-playground
           githubToken: ${{ secrets.GITHUB_TOKEN }}
