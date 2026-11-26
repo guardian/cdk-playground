@@ -1,0 +1,54 @@
+name: Deploy ECS stack
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_digest:
+        description: SHA-256 digest of the published cdk-playground image
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: deploy-cdk-playground-ecs-code
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate image digest
+        env:
+          IMAGE_DIGEST: ${{ inputs.image_digest }}
+        run: |
+          if [[ ! "$IMAGE_DIGEST" =~ ^sha256:[0-9a-f]{64}$ ]]; then
+            echo "::error::Image digest must be a SHA-256 digest (sha256: followed by 64 lowercase hexadecimal characters)."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v7.0.1
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .tool-versions
+          cache: npm
+          cache-dependency-path: cdk/package-lock.json
+
+      - name: Install CDK dependencies
+        working-directory: cdk
+        run: npm ci
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.CDK_ECS_DEPLOY_ROLE_ARN }}
+          aws-region: eu-west-1
+
+      - name: Deploy ECS stack
+        working-directory: cdk
+        env:
+          IMAGE_DIGEST: ${{ inputs.image_digest }}
+        run: npx --no-install cdk deploy CdkPlaygroundEcs-CODE --require-approval never
