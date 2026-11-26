@@ -430,6 +430,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
       "Type": "AWS::IAM::Role",
     },
     "ECSInstanceProfileBA4A4DA9": {
+      "DeletionPolicy": "Retain",
       "Properties": {
         "Roles": [
           {
@@ -438,6 +439,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         ],
       },
       "Type": "AWS::IAM::InstanceProfile",
+      "UpdateReplacePolicy": "Retain",
     },
     "ECSInstanceRolePolicyD0240271": {
       "Properties": {
@@ -500,6 +502,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
       "Type": "AWS::IAM::Policy",
     },
     "ECSManagedInstancesRole1E652558": {
+      "DeletionPolicy": "Retain",
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -540,6 +543,7 @@ exports[`The cdk-playground infrastructure definition matches the snapshot 1`] =
         ],
       },
       "Type": "AWS::IAM::Role",
+      "UpdateReplacePolicy": "Retain",
     },
     "EcsService81FC6EF6": {
       "DependsOn": [
