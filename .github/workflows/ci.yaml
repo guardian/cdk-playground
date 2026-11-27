@@ -42,7 +42,7 @@ jobs:
           BUILD_TIME: ${{ needs.facts.outputs.buildTime }}
         run: sbt Docker/publishLocal
       - name: Publish Image
-        uses: guardian/actions-ecr/push@v1.0.0
+        uses: guardian/actions-ecr/push@ebbd030b49e21d0a9fd782eaff2178efea2811f0
         id: publish-image
         with:
           app: cdk-playground
@@ -111,7 +111,7 @@ jobs:
               mv target/cdk-playground_1.0-SNAPSHOT_all.deb "dist/cdk-playground/cdk-playground-$GITHUB_RUN_NUMBER.deb"
 
       # Upload our build artifacts to Riff-Raff (well, S3)
-      - uses: guardian/actions-riff-raff@v4
+      - uses: guardian/actions-riff-raff@1f7155f05ef951bd79ef4674c66a319349670452
         with:
           projectName: devx::cdk-playground
           githubToken: ${{ secrets.GITHUB_TOKEN }}
